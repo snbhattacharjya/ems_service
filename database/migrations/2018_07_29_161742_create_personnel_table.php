@@ -15,6 +15,8 @@ class CreatePersonnelTable extends Migration
     {
         Schema::create('personnel', function (Blueprint $table) {
             $table->string('id',9)->primary();
+            $table->string('office_id',8);
+            $table->foreign('office_id')->references('id')->on('offices');
             $table->string('name',50);
             $table->string('designation',50);
             $table->timestamps();

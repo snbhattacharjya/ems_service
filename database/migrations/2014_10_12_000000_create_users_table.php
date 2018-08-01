@@ -20,8 +20,8 @@ class CreateUsersTable extends Migration
             $table->string('mobile',10)->unique();
             $table->string('aadhaar',12)->unique();
             $table->string('designation',50);
-            $table->tinyInteger('level');
-            $table->string('area',50);
+            $table->tinyInteger('level')->unsigned();
+            $table->mediumInteger('area')->index();
             $table->string('password');
             $table->boolean('is_active');
             $table->boolean('change_password');
