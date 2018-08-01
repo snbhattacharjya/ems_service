@@ -21,7 +21,6 @@ class CreateUsersTable extends Migration
             $table->string('aadhaar',12)->unique();
             $table->string('designation',50);
             $table->tinyInteger('level');
-            $table->foreign('level')->references('id')->on('user_levels');
             $table->string('area',50);
             $table->string('password');
             $table->boolean('is_active');

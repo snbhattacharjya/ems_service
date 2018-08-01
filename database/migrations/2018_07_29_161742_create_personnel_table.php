@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePollingPersonnelsTable extends Migration
+class CreatePersonnelTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,9 @@ class CreatePollingPersonnelsTable extends Migration
     public function up()
     {
         Schema::create('personnel', function (Blueprint $table) {
-            $table->increments('id');
+            $table->string('id',9)->primary();
+            $table->string('name',50);
+            $table->string('designation',50);
             $table->timestamps();
         });
     }

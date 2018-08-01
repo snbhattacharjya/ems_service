@@ -14,7 +14,7 @@ class CreateCountingPostsTable extends Migration
     public function up()
     {
         Schema::create('counting_posts', function (Blueprint $table) {
-            $table->increments('id');
+            $table->tinyIncrements('id');
             $table->string('abbr',5)->unique();
             $table->string('name',50)->unique();
             $table->timestamps();
