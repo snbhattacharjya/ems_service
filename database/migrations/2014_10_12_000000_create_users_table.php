@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('name',50);
             $table->string('email',50)->unique();
             $table->string('mobile',10)->unique();
-            $table->string('aadhaar',12)->unique();
+            $table->string('aadhaar',12)->nullable();
             $table->string('designation',50);
             $table->tinyInteger('level')->unsigned();
             $table->mediumInteger('area')->index();

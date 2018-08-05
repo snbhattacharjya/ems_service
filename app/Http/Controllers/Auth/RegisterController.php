@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -21,52 +20,29 @@ class RegisterController extends Controller
     |
     */
 
-    use RegistersUsers;
 
-    /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/home';
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function register(Request $request)
     {
-        $this->middleware('guest');
-    }
-
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+        $request->validate([
+            'name' => 'required|string|max:50',
+            'email' => 'required|string|email|max:50|unique:users',
+            'mobiile' => 'required|string|max:10|unique:users',
+            'password' => 'required|string|min:6',
+            'designation' => 'required|string|max:50',
         ]);
-    }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\User
-     */
-    protected function create(array $data)
-    {
         return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'mobile' => $request->mobile,
+            'aadhaar' => $request->aadhaar,
+            'designation' => $request->designation,
+            'level' => $request->level,
+            'area' => $request->area,
+            'is_active' => $request->is_active,
+            'change_password' => $request->change_password,
         ]);
     }
 }
