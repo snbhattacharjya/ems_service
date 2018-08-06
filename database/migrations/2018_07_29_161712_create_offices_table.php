@@ -17,6 +17,8 @@ class CreateOfficesTable extends Migration
             $table->string('id',8)->primary();
             $table->string('name',50);
             $table->string('identification_code',30);
+            $table->mediumInteger('subdivision_id')->unsigned();
+            $table->foreign('subdivision_id')->references('id')->on('subdivisions');
             $table->timestamps();
         });
     }

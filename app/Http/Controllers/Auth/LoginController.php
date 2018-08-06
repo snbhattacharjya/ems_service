@@ -23,7 +23,7 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $http = new \GuzzleHttp\Client;
-        dd($request);
+
         try
         {
             $response = $http->post('http://127.0.0.1:8000/oauth/token', [
