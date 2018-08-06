@@ -7,79 +7,28 @@ use Illuminate\Http\Request;
 
 class OfficeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function getAllOffices()
     {
-        //
+        return Office::all();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'name' => 'required|string|max:50',
+            'identification_code' => 'required|string|max:50',
+            'subdivision_id' => 'required',
+        ]);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Office  $office
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Office $office)
-    {
-        //
-    }
+        $office =new Office;
+        $office->id = $request->id;
+        $office->name = $request->name;
+        $office->identification_code = $request->identification_code;
+        $office->subdivision_id = $request->subdivision_id;
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Office  $office
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Office $office)
-    {
-        //
-    }
+        $office->save();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Office  $office
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Office $office)
-    {
-        //
-    }
+        return response()->json($office);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Office  $office
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Office $office)
-    {
-        //
     }
 }
