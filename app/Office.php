@@ -8,6 +8,8 @@ class Office extends Model
 {
     protected $table = 'offices';
 
+    public $incrementing = false;
+
     protected $fillable = [ 'id', 'name', 'identification_code', 'subdivision_id',
 
     ];

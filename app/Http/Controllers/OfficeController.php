@@ -15,6 +15,7 @@ class OfficeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'id' => 'required|unique:offices',
             'name' => 'required|string|max:50',
             'identification_code' => 'required|string|max:50',
             'subdivision_id' => 'required',
