@@ -14,9 +14,9 @@ class CreateBlockMunisTable extends Migration
     public function up()
     {
         Schema::create('block_munis', function (Blueprint $table) {
-            $table->mediumInteger('id')->unsigned()->primary();
+            $table->string('id',9)->primary();
             $table->string('name',50)->unique();
-            $table->mediumInteger('subdivision_id')->unsigned();
+            $table->string('subdivision_id',7);
             $table->foreign('subdivision_id')->references('id')->on('subdivisions');
             $table->timestamps();
         });

@@ -14,9 +14,9 @@ class CreateAssemblyConstituenciesTable extends Migration
     public function up()
     {
         Schema::create('assembly_constituencies', function (Blueprint $table) {
-            $table->mediumInteger('id')->unsigned()->primary();
+            $table->string('id',3)->primary();
             $table->string('name',50)->unique();
-            $table->mediumInteger('subdivision_id')->unsigned();
+            $table->string('subdivision_id',7);
             $table->foreign('subdivision_id')->references('id')->on('subdivisions');
             $table->timestamps();
         });

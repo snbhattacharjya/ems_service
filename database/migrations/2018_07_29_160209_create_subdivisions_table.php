@@ -14,9 +14,9 @@ class CreateSubdivisionsTable extends Migration
     public function up()
     {
         Schema::create('subdivisions', function (Blueprint $table) {
-            $table->mediumInteger('id')->unsigned()->primary();
+            $table->string('id',7)->primary();
             $table->string('name',50)->unique();
-            $table->mediumInteger('district_id')->unsigned();
+            $table->string('district_id',5);
             $table->foreign('district_id')->references('id')->on('districts');
             $table->timestamps();
         });

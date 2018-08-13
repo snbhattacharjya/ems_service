@@ -14,9 +14,9 @@ class CreateParliamentaryConstituenciesTable extends Migration
     public function up()
     {
         Schema::create('parliamentary_constituencies', function (Blueprint $table) {
-            $table->mediumInteger('id')->unsigned()->primary();
+            $table->string('id',3)->primary();
             $table->string('name',50)->unique();
-            $table->mediumInteger('state_id')->unsigned();
+            $table->string('state_id',2);
             $table->foreign('state_id')->references('id')->on('states');
             $table->timestamps();
         });
