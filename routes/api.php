@@ -22,6 +22,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/offices', 'OfficeController@getAllOffices');
 Route::post('/office', 'OfficeController@store');
 
+//Personnel Routes
+
+Route::post('/personnel', 'PersonnelController@store');
+
+//Subdivision Routes
+Route::get('/subdivisions', 'SubdivisionController@getSubdivisions');
 Route::get('/test','Auth\RegisterController@test');
 Route::post('/register','Auth\RegisterController@register');
 Route::post('/login','Auth\LoginController@login');

@@ -17,4 +17,14 @@ class Office extends Model
     protected $hidden = [ 'created_at', 'updated_at',
 
     ];
+
+    public function subdivision()
+    {
+        return $this->belongsTo('App\Subdivision');
+    }
+
+    public function personnel()
+    {
+        return $this->hasMany('App\Personnel');
+    }
 }
