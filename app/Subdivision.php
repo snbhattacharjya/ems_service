@@ -8,7 +8,7 @@ class Subdivision extends Model
 {
     protected $table = 'subdivisions';
 
-    public $incrementing = 'false';
+    public $incrementing = false;
 
     protected $hidden = ['created_at','updated_at'];
 
