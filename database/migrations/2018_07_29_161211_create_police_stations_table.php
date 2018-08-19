@@ -14,7 +14,7 @@ class CreatePoliceStationsTable extends Migration
     public function up()
     {
         Schema::create('police_stations', function (Blueprint $table) {
-            $table->string('id',9)->priamry();
+            $table->string('id',9)->primary();
             $table->string('name',50)->unique();
             $table->string('subdivision_id',7);
             $table->foreign('subdivision_id')->references('id')->on('subdivisions');
