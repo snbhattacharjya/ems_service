@@ -31,7 +31,7 @@ class AlterPersonnelTable extends Migration
             $table->string('qualification_id',2)->after('mobile');
             $table->foreign('qualification_id')->references('id')->on('qualifications');
 
-            $table->string('language_id',2)->after('qualification_id');
+            $table->tinyInteger('language_id')->unsigned()->after('qualification_id');
             $table->foreign('language_id')->references('id')->on('languages');
 
             $table->string('epic',25)->after('language_id');
@@ -60,9 +60,9 @@ class AlterPersonnelTable extends Migration
             $table->foreign('district_id')->references('id')->on('districts');
 
             $table->string('subdivision_id',7)->after('district_id');
-            $table->foreign('subdivsion_id')->references('id')->on('subdivisions');
+            $table->foreign('subdivision_id')->references('id')->on('subdivisions');
 
-            $table->string('image_path')>nullable()->after('subdivision_id');
+            $table->string('image_path')->nullable()->after('subdivision_id');
 
         });
     }
