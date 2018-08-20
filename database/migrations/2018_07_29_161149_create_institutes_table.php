@@ -15,7 +15,7 @@ class CreateInstitutesTable extends Migration
     {
         Schema::create('institutes', function (Blueprint $table) {
             $table->string('id',2)->primary();
-            $table->string('name',50)->unique();
+            $table->string('name',60)->unique();
             $table->timestamps();
         });
     }

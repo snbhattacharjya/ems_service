@@ -16,8 +16,12 @@ class CreateAssemblyConstituenciesTable extends Migration
         Schema::create('assembly_constituencies', function (Blueprint $table) {
             $table->string('id',3)->primary();
             $table->string('name',50)->unique();
+            $table->string('district_id',5);
+            $table->foreign('district_id')->references('id')->on('districts');
             $table->string('subdivision_id',7);
             $table->foreign('subdivision_id')->references('id')->on('subdivisions');
+            $table->string('pc_id',7);
+            $table->foreign('pc_id')->references('id')->on('parliamentary_constituencies');
             $table->timestamps();
         });
     }
