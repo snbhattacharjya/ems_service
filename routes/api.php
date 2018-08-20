@@ -23,11 +23,26 @@ Route::get('/offices', 'OfficeController@getAllOffices');
 Route::post('/office', 'OfficeController@store');
 
 //Personnel Routes
-
 Route::post('/personnel', 'PersonnelController@store');
 
 //Subdivision Routes
 Route::get('/subdivisions', 'SubdivisionController@getSubdivisions');
-Route::get('/test','Auth\RegisterController@test');
-Route::post('/register','Auth\RegisterController@register');
-Route::post('/login','Auth\LoginController@login');
+
+//BlockMuni Routes
+Route::get('/blockmunis', 'BlockMuniController@getBlockMunis');
+
+//Police Station Routes
+Route::get('/policestations', 'PoliceStationController@getPoliceStations');
+
+//Category Routes
+Route::get('/categories', 'CategoryController@getCategories');
+
+//Institute Routes
+Route::get('/institutes', 'InstituteController@getInstitutes');
+
+//Assembly Routes
+Route::get('/assemblies', 'AssemblyConstituencyController@getAssemblies');
+
+//PC Routes
+Route::get('/pcs', 'ParliamentaryConstituencyController@getPcs');
+

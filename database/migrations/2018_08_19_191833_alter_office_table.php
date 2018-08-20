@@ -16,8 +16,7 @@ class AlterOfficeTable extends Migration
         Schema::table('offices', function (Blueprint $table) {
             $table->string('officer_designation',50)->after('identification_code');
             $table->string('address1',50)->after('officer_designation');
-            $table->string('address2',50)->after('address1');
-            $table->string('post_office',50)->after('address2');
+            $table->string('post_office',50)->after('address1');
             $table->string('pin',6)->after('post_office');
 
             $table->string('block_muni_id',9)->after('pin');

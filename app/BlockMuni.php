@@ -6,5 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BlockMuni extends Model
 {
-    //
+    protected $table = 'block_munis';
+
+    public $incrementing = false;
 }
