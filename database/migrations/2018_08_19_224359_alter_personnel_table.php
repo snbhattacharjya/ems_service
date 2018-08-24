@@ -62,6 +62,9 @@ class AlterPersonnelTable extends Migration
             $table->string('subdivision_id',7)->after('district_id');
             $table->foreign('subdivision_id')->references('id')->on('subdivisions');
 
+            $table->string('branch_ifsc',11)->after('subdivision_id');
+            $table->string('bank_account_no',15)->after('branch_ifsc');
+
             $table->string('image_path')->nullable()->after('subdivision_id');
 
         });

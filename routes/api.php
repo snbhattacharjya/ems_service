@@ -18,7 +18,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 //Office Routes
-
 Route::get('/offices', 'OfficeController@getAllOffices');
 Route::post('/office', 'OfficeController@store');
 
@@ -45,4 +44,10 @@ Route::get('/assemblies', 'AssemblyConstituencyController@getAssemblies');
 
 //PC Routes
 Route::get('/pcs', 'ParliamentaryConstituencyController@getPcs');
+
+//Qualification Routes
+Route::get('/qualifications', 'QualificationController@getQualifications');
+
+//Language Routes
+Route::get('/languages', 'LanguageController@getLanguages');
 
