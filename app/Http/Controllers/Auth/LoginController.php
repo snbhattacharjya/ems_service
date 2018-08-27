@@ -26,12 +26,12 @@ class LoginController extends Controller
 
         try
         {
-            $response = $http->post('http://127.0.0.1:8000/oauth/token', [
+            $response = $http->post(config('services.passport.login_endpoint'), [
                 'form_params' => [
                     'grant_type' => 'password',
-                    'client_id' => 2,
-                    'client_secret' => 'lknMsWdnVxRytFPuzLAS2bcK1KqTPdKuqRleJAMA',
-                    'username' => $request->email,
+                    'client_id' => config('services.passport.client_id'),
+                    'client_secret' => config('services.passport.client_secret'),
+                    'username' => $request->username,
                     'password' => $request->password,
                     'scope' => '',
                 ],

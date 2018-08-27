@@ -45,6 +45,8 @@ class RegisterController extends Controller
             'is_active' => 1,
             'change_password' => 1,
         ]);
+
+        //return response()->json('Ok',200);
     }
 
     public function test(){
