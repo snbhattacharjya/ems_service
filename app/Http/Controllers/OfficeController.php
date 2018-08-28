@@ -65,7 +65,7 @@ class OfficeController extends Controller
 
         $office->save();
 
-        return response()->json($office,201);
+        return response()->json($office->id,201);
 
     }
 }
