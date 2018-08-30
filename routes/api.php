@@ -23,10 +23,15 @@ Route::post('/login', 'Auth\LoginController@Login');
 
 //Office Routes
 Route::get('/offices', 'OfficeController@getAllOffices');
+Route::get('/office/{id}', 'OfficeController@getOfficeById');
 Route::post('/office', 'OfficeController@store');
+Route::post('/office/update', 'OfficeController@update');
 
 //Personnel Routes
 Route::post('/personnel', 'PersonnelController@store');
+Route::get('/personnel/{id}', 'PersonnelController@getPersonnelById');
+Route::get('/personnel', 'PersonnelController@getAllPersonnel');
+Route::post('/personnel/update', 'PersonnelController@update');
 
 //Subdivision Routes
 Route::get('/subdivisions', 'SubdivisionController@getSubdivisions');

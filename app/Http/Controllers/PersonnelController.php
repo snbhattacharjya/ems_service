@@ -8,18 +8,27 @@ use Illuminate\Support\Facades\DB;
 
 class PersonnelController extends Controller
 {
+    public function getAllPersonnel()
+    {
+        return Personnel::all();
+    }
+
+    public function getPersonnelById(Request $request)
+    {
+        return Personnel::where('id' , $request->id)->get();
+    }
     public function store(Request $request)
     {
 
-        // $request->validate([
-        //     'officer_name' => 'required|string|max:50',
-        //     'designation' => 'required|string|max:50',
-        //     'office_id' => 'required|max:8',
-        //     'aadhaar' => 'digits:12',
-        //     'present_address' => 'required|max:100',
-        //     'permanent_address' => 'required|max:100',
+         $request->validate([
+             'officer_name' => 'required|string|max:50',
+             'designation' => 'required|string|max:50',
+             'office_id' => 'required|max:8',
+             'aadhaar' => 'digits:12',
+             'present_address' => 'required|max:100',
+             'permanent_address' => 'required|max:100',
 
-        // ]);
+         ]);
 
         $id = DB::select('SELECT MAX(CAST(SUBSTR(id,-5) AS UNSIGNED)) AS MaxID FROM personnel WHERE subdivision_id = ?',[substr($request->office_id,0,4)]);
 
