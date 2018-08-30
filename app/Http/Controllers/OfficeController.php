@@ -23,7 +23,24 @@ class OfficeController extends Controller
         $request->validate([
             'office_name' => 'required|string|max:50',
             'identification_code' => 'required|string|max:50',
+            'officer_designation' => 'required|string|max:50',
+            'office_address' => 'required|string|max:50',
+            'post_office' => 'required|string|max:50',
+            'pin' => 'required|digits:6',
+            'block_muni_id' => 'required',
+            'police_station_id' => 'required',
+            'ac_id' => 'required',
+            'pc_id' => 'required',
             'subdivision_id' => 'required',
+            'category_id' => 'required',
+            'institute_id' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required|numeric',
+            'mobile' => 'required|digits:10',
+            'fax' => 'max:15',
+            'total_staff' => 'required|numeric',
+            'male_staff' => 'required|numeric',
+            'female_staff' => 'required|numeric',
         ]);
 
         $id = DB::select('SELECT MAX(CAST(SUBSTR(id,-4) AS UNSIGNED)) AS MaxID FROM offices WHERE subdivision_id = ?',[$request->subdivision_id]);
@@ -78,7 +95,24 @@ class OfficeController extends Controller
         $request->validate([
             'office_name' => 'required|string|max:50',
             'identification_code' => 'required|string|max:50',
+            'officer_designation' => 'required|string|max:50',
+            'office_address' => 'required|string|max:50',
+            'post_office' => 'required|string|max:50',
+            'pin' => 'required|digits:6',
+            'block_muni_id' => 'required',
+            'police_station_id' => 'required',
+            'ac_id' => 'required',
+            'pc_id' => 'required',
             'subdivision_id' => 'required',
+            'category_id' => 'required',
+            'institute_id' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required|numeric',
+            'mobile' => 'required|digits:10',
+            'fax' => 'max:15',
+            'total_staff' => 'required|numeric',
+            'male_staff' => 'required|numeric',
+            'female_staff' => 'required|numeric',
         ]);
 
         $office =Office::find($request->office_id);
