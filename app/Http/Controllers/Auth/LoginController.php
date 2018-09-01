@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
+use DB;
+use Auth;
+use Cookie;
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
@@ -18,41 +21,63 @@ class LoginController extends Controller
     | redirecting them to your home screen. The controller uses a trait
     | to conveniently provide its functionality to your applications.
     |
+    | Ref- https://gist.github.com/vielhuber/f5467684da8a75071e18add9884dfef9
     */
-
     public function login(Request $request)
     {
-        $http = new \GuzzleHttp\Client;
-
-        try
-        {
-            $response = $http->post(config('services.passport.login_endpoint'), [
-                'form_params' => [
-                    'grant_type' => 'password',
-                    'client_id' => config('services.passport.client_id'),
-                    'client_secret' => config('services.passport.client_secret'),
-                    'username' => $request->username,
-                    'password' => $request->password,
-                    'scope' => '',
-                ],
-            ]);
-
-            return $response->getBody();
-        } catch (\GuzzleHttp\Exception\BadResponseException $e) {
-            if ($e->getCode() === 400) {
-                return response()->json('Invalid Request. Please enter a username or a password.', $e->getCode());
-            } else if ($e->getCode() === 401) {
-                return response()->json('Your credentials are incorrect. Please try again', $e->getCode());
-            }
-            return response()->json('Something went wrong on the server.', $e->getCode());
-        }
+        return $this->proxy([
+            'grant_type' => 'password',
+            'username' => $request->username,
+            'password' => $request->password
+        ]);
     }
+    public function refresh(Request $request)
+    {
+        return $this->proxy([
+            'grant_type' => 'refresh_token',
+            'refresh_token' => $request->cookie('refreshToken')
+        ]);
+    }
+    public function proxy($params)
+    {
+        $http = new Client();
 
-    public function logout(Request $request){
-        auth()->user()->tokens->each(function ($token, $key) {
-            $token->delete();
-        });
 
-        return response()->json('Logged out successfully', 200);
+        $response = $http->post(config('services.passport.login_endpoint'), [
+            'form_params' => array_merge($params, [
+                'client_id' => config('services.passport.client_id'),
+                'client_secret' => config('services.passport.client_secret'),
+                'scope' => '*',
+            ]),
+            'http_errors' => false
+        ]);
+        if ($response->getStatusCode() != 200)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'something went wrong',
+            ], $response->getStatusCode());
+        }
+        $data = json_decode((string)$response->getBody());
+        // attach a refresh token to the response via HttpOnly cookie
+        return response([
+            'access_token' => $data->access_token,
+            'expires_in' => $data->expires_in
+        ])->cookie(
+            'refreshToken',
+            $data->refresh_token,
+            (24*60*60*10), // 10 days
+            null,
+            null,
+            false,
+            true // HttpOnly
+        );
+    }
+    public function logout(Request $request)
+    {
+        $accessToken = auth('api')->user()->token();
+        DB::table('oauth_refresh_tokens')->where('access_token_id', $accessToken->id)->update(['revoked' => true]);
+        $accessToken->revoke();
+        return response(null, 204)->cookie(Cookie::forget('refreshToken'));
     }
 }
