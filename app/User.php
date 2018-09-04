@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name','user_id', 'email', 'password', 'mobile', 'designation', 'aadhaar', 'level', 'area', 'is_active', 'change_password',
+        'name', 'email', 'password', 'mobile', 'designation', 'aadhaar', 'level', 'area', 'is_active', 'change_password',
     ];
 
     /**
@@ -29,6 +29,6 @@ class User extends Authenticatable
     ];
     //By Sumit 01-09-2018
     public function findForPassport($identifier) {
-        return $this->orWhere('email', $identifier)->orWhere('user_id', $identifier)->first();
+        return $this->orWhere('email', $identifier)->orWhere('username', $identifier)->first();
     }
 }

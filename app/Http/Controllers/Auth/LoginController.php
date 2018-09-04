@@ -50,35 +50,29 @@ class LoginController extends Controller
             ]),
             'http_errors' => false
         ]);
-
-        if ($response->getStatusCode() === 400) {
+        if ($response->getStatusCode() == 200){
+                $data = json_decode((string)$response->getBody());
+                // attach a refresh token to the response via HttpOnly cookie
+                return response([
+                    'access_token' => $data->access_token,
+                    'expires_in' => $data->expires_in
+                ])->cookie(
+                    'refreshToken',
+                    $data->refresh_token,
+                    (24*60*60*10), // 10 days
+                    null,
+                    null,
+                    false,
+                    true // HttpOnly
+                );
+        }
+        else if ($response->getStatusCode() === 400) {
             return response()->json('Invalid Request. Please enter a username or a password.', $response->getStatusCode());
         } else if ($response->getStatusCode() === 401) {
             return response()->json('Your credentials are incorrect. Please try again', $response->getStatusCode());
+        }else{
+            return response()->json('Something went wrong on the server.', $response->getStatusCode());
         }
-        return response()->json('Something went wrong on the server.', $response->getStatusCode());
-
-        /*if ($response->getStatusCode() != 200)
-        {
-            return response()->json([
-                'success' => false,
-                'message' => 'something went wrong',
-            ], $response->getStatusCode());
-        }*/
-        $data = json_decode((string)$response->getBody());
-        // attach a refresh token to the response via HttpOnly cookie
-        return response([
-            'access_token' => $data->access_token,
-            'expires_in' => $data->expires_in
-        ])->cookie(
-            'refreshToken',
-            $data->refresh_token,
-            (24*60*60*10), // 10 days
-            null,
-            null,
-            false,
-            true // HttpOnly
-        );
     }
     public function logout(Request $request)
     {
