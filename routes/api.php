@@ -11,10 +11,10 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware('auth:api')->get('/user','PermissionController@getPermission');
+/*Route::middleware('auth:api')->get('/user', function (Request $request) {
     return auth('api')->user();
-});
+});*/
 //Register Routes
 Route::post('/register', 'Auth\RegisterController@register');
 //Login Routes

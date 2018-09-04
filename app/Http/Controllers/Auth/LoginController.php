@@ -42,7 +42,6 @@ class LoginController extends Controller
     {
         $http = new Client();
 
-
         $response = $http->post(config('services.passport.login_endpoint'), [
             'form_params' => array_merge($params, [
                 'client_id' => config('services.passport.client_id'),
@@ -51,13 +50,21 @@ class LoginController extends Controller
             ]),
             'http_errors' => false
         ]);
-        if ($response->getStatusCode() != 200)
+
+        if ($response->getStatusCode() === 400) {
+            return response()->json('Invalid Request. Please enter a username or a password.', $response->getStatusCode());
+        } else if ($response->getStatusCode() === 401) {
+            return response()->json('Your credentials are incorrect. Please try again', $response->getStatusCode());
+        }
+        return response()->json('Something went wrong on the server.', $response->getStatusCode());
+
+        /*if ($response->getStatusCode() != 200)
         {
             return response()->json([
                 'success' => false,
                 'message' => 'something went wrong',
             ], $response->getStatusCode());
-        }
+        }*/
         $data = json_decode((string)$response->getBody());
         // attach a refresh token to the response via HttpOnly cookie
         return response([
