@@ -53,6 +53,7 @@ class LoginController extends Controller
     public function logout(Request $request){
         auth('api')->user()->tokens->each(function ($token, $key) {
             $token->delete();
+            DB::table('oauth_refresh_tokens')->where('access_token_id', $token->id)->delete();
         });
 
         return response()->json('Logged out successfully', 200);
