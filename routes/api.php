@@ -22,6 +22,8 @@ Route::post('/login', 'Auth\LoginController@login');
 //Logout Routes
 Route::get('/logout', 'Auth\LoginController@logout');
 
+Route::group([ 'middleware' => 'auth:api'], function()
+{
 //Office Routes
 Route::get('/offices', 'OfficeController@getAllOffices');
 Route::get('/office/{id}', 'OfficeController@getOfficeById');
@@ -60,4 +62,6 @@ Route::get('/qualifications', 'QualificationController@getQualifications');
 
 //Language Routes
 Route::get('/languages', 'LanguageController@getLanguages');
+
+});
 

@@ -76,9 +76,10 @@ class LoginController extends Controller
     }
     public function logout(Request $request)
     {
+        //return response()->json(auth('api')->user());
         $accessToken = auth('api')->user()->token();
-        DB::table('oauth_refresh_tokens')->where('access_token_id', $accessToken->id)->update(['revoked' => true]);
-        $accessToken->revoke();
-        return response(null, 204)->cookie(Cookie::forget('refreshToken'));
+        DB::table('oauth_refresh_tokens')->where('access_token_id', $accessToken->id)->delete();
+        $accessToken->delete();
+        return response()->json('Succesfully loged out',204)->cookie(Cookie::forget('refreshToken'));
     }
 }

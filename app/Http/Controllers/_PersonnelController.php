@@ -1,49 +1,29 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Personnel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class PersonnelController extends Controller
 {
-
-
-    public function __construct()
-    {
-        $this->userID=auth('api')->user()->user_id;
-        $this->level=auth('api')->user()->level;
-        $this->district=auth('api')->user()->area;
-    }
-
-
-
-
-
     public function getAllPersonnel()
     {
-        if($this->level===10){
-            return Personnel::where('office_id' , $this->userID)->get();
-        }
-        else{
-            return Personnel::where('district_id',$this->district)->get();
-        }
-
+        return Personnel::all();
     }
 
     public function getPersonnelById(Request $request)
     {
-
         return Personnel::where('id' , $request->id)->get();
-
     }
     public function store(Request $request)
     {
 
-
          $request->validate([
              'officer_name' => 'required|string|max:50',
              'designation' => 'required|string|max:50',
+             'office_id' => 'required|numeric',
              'aadhaar' => 'digits:12',
              'present_address' => 'required|string|max:100',
              'permanent_address' => 'required|string|max:100',
@@ -74,16 +54,16 @@ class PersonnelController extends Controller
 
 
          ]);
-		if($this->level===10){$officeid=$this->userID;}else{$officeid=$request->office_id; }
-        $id = DB::select('SELECT MAX(CAST(SUBSTR(id,-5) AS UNSIGNED)) AS MaxID FROM personnel WHERE subdivision_id = ?',[substr($officeid,0,4)]);
+
+        $id = DB::select('SELECT MAX(CAST(SUBSTR(id,-5) AS UNSIGNED)) AS MaxID FROM personnel WHERE subdivision_id = ?',[substr($request->office_id,0,4)]);
 
         $id = $id[0]->MaxID;
 
         if(is_null($id)){
-            $id = substr($officeid,0,4).'00001';
+            $id = substr($request->office_id,0,4).'00001';
         }
         else{
-            $id = substr($officeid,0,4).str_pad($id+1,5,"0",STR_PAD_LEFT);
+            $id = substr($request->office_id,0,4).str_pad($id+1,5,"0",STR_PAD_LEFT);
         }
 
         $request = array_add($request,'id',$id);
@@ -93,13 +73,7 @@ class PersonnelController extends Controller
 
         $personnel =new personnel;
         $personnel->id = $request->id;
-		if($this->level===10){
-			$personnel->office_id = $this->userID;
-		}else{
         $personnel->office_id = $request->office_id;
-
-		}
-
         $personnel->name = $request->officer_name;
         $personnel->designation = $request->designation;
         $personnel->aadhaar = $request->aadhaar;
@@ -133,26 +107,21 @@ class PersonnelController extends Controller
         $personnel->branch_ifsc = $request->branch_ifsc;
         $personnel->bank_account_no = $request->bank_account_no;
 
-        $personnel->district_id = substr($officeid,0,2);
-        $personnel->subdivision_id = substr($officeid,0,4);
+        $personnel->district_id = substr($request->office_id,0,2);
+        $personnel->subdivision_id = substr($request->office_id,0,4);
 
         $personnel->save();
 
-        return response()->json($personnel->id,201);
+        return response()->json($personnel,201);
 
     }
     public function update(Request $request)
     {
 
-	 if($this->level===10 && $request->id != $this->userID){
-			return response()->json('Invalid Office',401);
-
-		}else{
-
-
          $request->validate([
              'officer_name' => 'required|string|max:50',
              'designation' => 'required|string|max:50',
+             'office_id' => 'required|numeric',
              'aadhaar' => 'digits:12',
              'present_address' => 'required|string|max:100',
              'permanent_address' => 'required|string|max:100',
@@ -186,12 +155,7 @@ class PersonnelController extends Controller
 
         $personnel =Personnel::find($request->id);
         $personnel->id = $request->id;
-        if($this->level===10){
-			$personnel->office_id = $this->userID;
-		}else{
         $personnel->office_id = $request->office_id;
-
-		}
         $personnel->name = $request->officer_name;
         $personnel->designation = $request->designation;
         $personnel->aadhaar = $request->aadhaar;
@@ -224,19 +188,13 @@ class PersonnelController extends Controller
 
         $personnel->branch_ifsc = $request->branch_ifsc;
         $personnel->bank_account_no = $request->bank_account_no;
-        if($this->level===10){
-			$personnel->district_id = substr($this->userID,0,2);
-			$personnel->subdivision_id = substr($this->userID,0,4);
-		}else{
+
         $personnel->district_id = substr($request->office_id,0,2);
         $personnel->subdivision_id = substr($request->office_id,0,4);
-		}
 
         $personnel->save();
 
         return response()->json($personnel->id,201);
-
-    }
 
     }
 }
