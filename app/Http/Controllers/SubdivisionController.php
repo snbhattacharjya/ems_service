@@ -8,6 +8,6 @@ use Illuminate\Http\Request;
 class SubdivisionController extends Controller
 {
     public function getSubdivisions(){
-        return Subdivision::all();
+        return Subdivision::where('district_id' , $this->district)->get();
     }
 }

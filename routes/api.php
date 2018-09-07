@@ -20,10 +20,18 @@ Route::post('/register', 'Auth\RegisterController@register');
 //Login Routes
 Route::post('/login', 'Auth\LoginController@login');
 //Logout Routes
-Route::get('/logout', 'Auth\LoginController@logout');
+Route::get('/logout', 'Auth\LoginController@logout')->middleware('auth:api');
 
 Route::group([ 'middleware' => 'auth:api'], function()
 {
+
+//Add User
+    Route::get('/alluser', 'UserController@getallUsers');
+    Route::get('/creationlevel', 'UserController@getUserCreation');
+	Route::get('/sublevel/{id}', 'UserController@getUsercreationSubLevel');
+	Route::post('/createuser', 'UserController@createUser');//For Save TO data
+
+
 //Office Routes
 Route::get('/offices', 'OfficeController@getAllOffices');
 Route::get('/office/{id}', 'OfficeController@getOfficeById');
