@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\UserLevel;
 use Illuminate\Http\Request;
-
+use \Illuminate\Http\Response;
 class UserLevelController extends Controller
 {
     /**

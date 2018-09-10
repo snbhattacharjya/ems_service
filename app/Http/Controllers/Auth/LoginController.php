@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-
+use \Illuminate\Http\Response;
 class LoginController extends Controller
 {
     /*

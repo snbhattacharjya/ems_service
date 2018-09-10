@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\State;
 use Illuminate\Http\Request;
-
+use \Illuminate\Http\Response;
 class StateController extends Controller
 {
     /**

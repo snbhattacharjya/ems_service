@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Election;
 use Illuminate\Http\Request;
-
+use \Illuminate\Http\Response;
 class ElectionController extends Controller
 {
     /**

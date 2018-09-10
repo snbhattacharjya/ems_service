@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\PollingPost;
 use Illuminate\Http\Request;
-
+use \Illuminate\Http\Response;
 class PollingPostController extends Controller
 {
     /**

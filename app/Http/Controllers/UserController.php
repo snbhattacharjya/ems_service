@@ -6,6 +6,7 @@ use App\Subdivision;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use \Illuminate\Http\Response;
 //use App\Http\Controllers\AdminController;
 class UserController extends Controller
 {
@@ -48,12 +49,12 @@ class UserController extends Controller
 		$AddUser->aadhaar = $request->aadhaar;
 		$AddUser->designation = $request->designation;
 		$AddUser->level = $request->level;
+		$AddUser->sublevel = $request->sublevel;
 		$AddUser->area = $UserArea;
 		$AddUser->is_active = 1;
 		//$AddUser->created_at = now()->timestamp;
 		$AddUser->user_id = $user_id;
-		$rand=rand();
-		$AddUser->password = Hash::make($rand);
+		$AddUser->password = Hash::make($user_id);
 		$AddUser->change_password =0 ;
 		$AddUser->save();
 		$lastInsertedId=$AddUser->id; // get office id
@@ -85,6 +86,7 @@ class UserController extends Controller
 		$AddUser->aadhaar = $request->aadhaar;
 		$AddUser->designation = $request->designation;
 		$AddUser->level = $request->level;
+		$AddUser->sublevel = $request->sublevel;
 		$AddUser->area = $UserArea;
 		$AddUser->is_active = 1;
 		//$AddUser->created_at = now()->timestamp;
