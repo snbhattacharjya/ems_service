@@ -138,4 +138,12 @@ class UserController extends Controller
 		return $getDefaultMenuPermission;
 	}
 
+    public function createPassword(){
+        User::get()->each(function ($user) {
+            $user->password = bcrypt($user->password);
+            $user->save();
+        });
+        echo 'Finished';
+    }
+
 }

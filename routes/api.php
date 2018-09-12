@@ -22,6 +22,7 @@ Route::post('/login', 'Auth\LoginController@login');
 //Logout Routes
 Route::get('/logout', 'Auth\LoginController@logout')->middleware('auth:api');
 
+//Route::get('/createPassword', 'UserController@createPassword');
 Route::group([ 'middleware' => 'auth:api'], function()
 {
 

@@ -61,11 +61,11 @@ class OfficeController extends Controller
             $id = $request->subdivision_id.'0001';
         }
         else{
-            $id = $request->subdivision_id.str_pad($id+1,4,"0",STR_PAD_LEFT);
+            $id = $request->subdivision_id.str_pad($id+1,6,"0",STR_PAD_LEFT);
         }
         $request = array_add($request,'id',$id);
         $request->validate([
-            'id' => 'required|unique:offices|digits:8'
+            'id' => 'required|unique:offices|digits:10'
         ]);
         $office =new Office;
         $office->id = $request->id;
