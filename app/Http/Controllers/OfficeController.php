@@ -18,8 +18,15 @@ class OfficeController extends Controller
 	public function getAllOffices()
     {
 
-	return Office::where('district_id' , $this->district)->get();
+	 return Office::where('district_id',$this->district)->get();
+    }
 
+	public function getAllofficeBysubdivision(Request $request)
+    {
+     $subdivision_id=$request->subdivision_id;
+	 return Office::where('district_id' ,'=',$this->district)
+                   ->where('subdivision_id' ,'=', $subdivision_id)
+				   ->get();
     }
    public function getOfficeById(Request $request) //
     {

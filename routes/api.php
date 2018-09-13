@@ -27,19 +27,23 @@ Route::group([ 'middleware' => 'auth:api'], function()
 {
 
 //Add User
-    Route::get('/alluser', 'UserController@getallUsers');
-    Route::get('/creationlevel', 'UserController@getUserCreation');
-	Route::get('/sublevel/{id}', 'UserController@getUsercreationSubLevel');
-	Route::post('/createuser', 'UserController@createUser');//For Save TO data
-
+Route::get('/alluser', 'UserController@getallUsers');
+Route::get('/creationlevel', 'UserController@getUserCreation');
+Route::get('/sublevel/{id}', 'UserController@getUsercreationSubLevel');
+Route::post('/createuser', 'UserController@createUser');//For Save TO data
+Route::get('/levelsublevel', 'UserController@getUserLevelSublevel');
 
 //Office Routes
+
+Route::get('/offices/{subdivision_id}', 'OfficeController@getAllofficeBysubdivision');
 Route::get('/offices', 'OfficeController@getAllOffices');
 Route::get('/office/{id}', 'OfficeController@getOfficeById');
 Route::post('/office', 'OfficeController@store');
 Route::post('/office/update', 'OfficeController@update');
 
 //Personnel Routes
+
+Route::get('/personnelbyoffice/{officeid}', 'PersonnelController@getAllPersonnelbyoffice');
 Route::post('/personnel', 'PersonnelController@store');
 Route::get('/personnel/{id}', 'PersonnelController@getPersonnelById');
 Route::get('/personnel', 'PersonnelController@getAllPersonnel');

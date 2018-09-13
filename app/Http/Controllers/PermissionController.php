@@ -18,8 +18,7 @@ class PermissionController extends Controller
 	$arr['user']=auth('api')->user();
 	//$arr['state']='WB';
 
-	$arr['dashboard']=(new DashboardController)->getOfficeData();
-    $arr['district']=$this->getDistrict($area);
+
 	$arr['menu'][]=array('parent_menu'=>'Dashboard','group'=>'dashboard','menu_icon_name'=>'dashboard','menu_link'=>'/dashboard','submenu'=>'null');
 	$menu=DB::select('SELECT m.menu_id, m.menu_name,m.menu_link,m.menu_icon_name FROM menu m JOIN permission p ON p.menu_id = m.menu_id WHERE p.user_id ='.$userId.' and m.top_menu_id=0 ');
 	foreach($menu as $mval){
@@ -32,7 +31,8 @@ class PermissionController extends Controller
 		$menuname=strtolower(str_replace(' ', '_', $val->menu_name));
 		(array)$arr['previllege'][$menuname]=array('add'=>$val->prev_add,'edit'=>$val->prev_edit,'delete'=>$val->prev_delete,'view'=>$val->prev_view);
 	}
-
+    $arr['dashboard']=(new DashboardController)->getOfficeData();
+    $arr['district']=$this->getDistrict($area);
 	return response()->json($arr,200);
 	}
 	public function submenu($userId,$id){

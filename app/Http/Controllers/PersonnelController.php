@@ -22,14 +22,25 @@ class PersonnelController extends Controller
 
     public function getAllPersonnel()
     {
+		 
         if($this->level===10){
             return Personnel::where('office_id' , $this->userID)->get();
-        }
-        else{
-            return Personnel::where('district_id',$this->district)->get();
-        }
+
+        }else{
+			 return Personnel:: where('district_id',$this->district)->get();
+			//
+		}
 
     }
+	public function getAllPersonnelbyoffice(Request $request)
+    {
+		 $officeid=$request->officeid;
+        return Personnel:: where('district_id','=',$this->district)
+			                  ->where('office_id' ,'=',$officeid)
+				              ->get();
+       
+    }
+	
 
     public function getPersonnelById(Request $request)
     {
