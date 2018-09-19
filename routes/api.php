@@ -27,6 +27,7 @@ Route::group([ 'middleware' => 'auth:api'], function()
 {
 //Report Routes
 Route::get('/report', 'ReportController@getReport');
+Route::get('/subdivisionreport/{district_id}', 'SudivreportController@reportOnSubdivsion');
 //Add User
 Route::get('/alluser', 'UserController@getallUsers');
 Route::get('/creationlevel', 'UserController@getUserCreation');
