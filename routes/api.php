@@ -25,7 +25,8 @@ Route::get('/logout', 'Auth\LoginController@logout')->middleware('auth:api');
 //Route::get('/createPassword', 'UserController@createPassword');
 Route::group([ 'middleware' => 'auth:api'], function()
 {
-
+//Report Routes
+Route::get('/report', 'ReportController@getReport');
 //Add User
 Route::get('/alluser', 'UserController@getallUsers');
 Route::get('/creationlevel', 'UserController@getUserCreation');
