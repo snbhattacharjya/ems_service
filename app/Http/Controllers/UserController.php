@@ -58,7 +58,7 @@ class UserController extends Controller
 					  $execute=1;
 					 }
 	   }else if($request->level==='07'){//BDO(userCreationType) ->BlockMuni Code
-					 $user_id=$getStateCode.$userGenertaionLevelCode[0].$userCreationType;
+					 $user_id=$getStateCode.$UserArea.$userGenertaionLevelCode[0].$userCreationType;
 					 if (User::where('user_id', '=',$user_id)->exists()){
 					  $msg='User Already Exists';
 					  $execute=0;
@@ -94,6 +94,8 @@ class UserController extends Controller
 			$AddUser->change_password =1 ;
 			$AddUser->save();
 			$lastInsertedId=$AddUser->id; // get office id
+			 //get office id
+			$this->getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code);
             $msg ="User created succesfully with code - ".$msg;
         }
 
@@ -132,7 +134,7 @@ class UserController extends Controller
 			$AddUser->password = Hash::make($rand);
 			$AddUser->change_password =0 ;
 			$AddUser->save();
-			$lastInsertedId=$AddUser->id; // get office id
+			
 			$arr=array('ok'=>'User Created with random Password','UserId'=>$lastInsertedId,'status'=>201);
 
 		    return response()->json($arr);
@@ -224,17 +226,19 @@ class UserController extends Controller
 			$AddUser->change_password =0 ;
 			$AddUser->save();
 			$lastInsertedId=$AddUser->id; // get office id
+			if(!empty($lastInsertedId)){
 			$this->getDefaultMenuPermission_To_assignPermission($lastInsertedId);
+			}
 			$arr=array('ok'=>'User Created with random Password','UserId'=>$lastInsertedId,'status'=>201);
 
 		    return response()->json($arr);
 
            }
-	public function getDefaultMenuPermission_To_assignPermission($lastInsertedId){
-			$getDefaultMenuPermission=DB::table('default_permission')->where('user_type_code','11')->pluck('menu_id');
+	public function getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code){
+			$getDefaultMenuPermission=DB::table('default_permission')->where('user_type_code',$user_type_code)->pluck('menu_id');
 			$arr=array();
 			foreach($getDefaultMenuPermission as $permissionVal){
-			$arr[]=array('user_id'=>$lastInsertedId,'user_type_code'=>'11','menu_id'=>$permissionVal);
+			$arr[]=array('user_id'=>$lastInsertedId,'user_type_code'=>$user_type_code,'menu_id'=>$permissionVal);
 			}
 			//print_r($arr);
 		    Permission::insert($arr);
