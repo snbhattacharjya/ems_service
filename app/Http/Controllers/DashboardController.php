@@ -66,7 +66,7 @@ class DashboardController extends Controller
 				$sql="SELECT count(*)id  FROM `offices` WHERE `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
 				$office = DB::select($sql);
 				$arr['totalOffice']=$office[0]->id;
-				//************
+				
 				$sql="SELECT  count(o.id) as totalEmployee,
                       sum(CASE WHEN p.gender = 'M' THEN 1 ELSE 0 END) AS Male, 
                       sum(CASE WHEN p.gender = 'F' THEN 1 ELSE 0 END) AS Female 
@@ -104,7 +104,7 @@ class DashboardController extends Controller
 
 		}else{
 			
-			
+			return response()->json('Unauthorize Access',422);
 		}
 
 

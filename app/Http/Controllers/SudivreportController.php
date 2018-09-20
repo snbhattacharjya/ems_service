@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class SudivreportController extends Controller
 {
-    //
+    // Report Subdivision Wise
 	  public function __construct()
     {	
 	    $this->userID=auth('api')->user()->user_id;

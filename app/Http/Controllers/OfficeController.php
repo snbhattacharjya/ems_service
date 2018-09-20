@@ -17,22 +17,53 @@ class OfficeController extends Controller
 
 	public function getAllOffices()
     {
+     if($this->level===3){ //DIO
+	    return Office::where('district_id',$this->district)->get();
+	    }elseif($this->level===6){//SDO
+		 $subdivision_id=substr($this->userID,-4);
+	     return Office::where('district_id',$this->district)
+	                 ->where('subdivision_id',$subdivision_id)
+	                 ->get();
+	    }elseif($this->level===7){//BDO
+		$block_munis=substr($this->userID,-6);
+	    return Office::where('district_id',$this->district)
+	                 ->where('block_muni_id',$block_munis)
+	                 ->get();
+	    }else{
+		
+		return response()->json('Unauthorize Access',422);
+	  }
 
-	 return Office::where('district_id',$this->district)->get();
-    }
+
+   }
 
 	public function getAllofficeBysubdivision(Request $request)
     {
-     $subdivision_id=$request->subdivision_id;
-	 return Office::where('district_id' ,'=',$this->district)
+	   if($this->level===3){//DIO	
+		
+            $subdivision_id=$request->subdivision_id;
+	        return Office::where('district_id' ,'=',$this->district)
                    ->where('subdivision_id' ,'=', $subdivision_id)
 				   ->get();
+	   }elseif($this->level===6){//SDO	
+            $subdivision_id=substr($this->userID,-4);	   
+			return Office::where('district_id' ,'=',$this->district)
+                   ->where('subdivision_id' ,'=', $subdivision_id)
+				   ->get();	   
+	   }elseif($this->level===7){//BDO
+		    $block_munis=substr($this->userID,-6);	   
+			return Office::where('district_id' ,'=',$this->district)
+                   ->where('block_muni_id' ,'=', $block_munis)
+				   ->get();	
+	   }else{
+		 return response()->json('Unauthorize Access',422);  
+	   }		   
     }
    public function getOfficeById(Request $request) //
     {
         return Office::where('id' , $request->id)->get();
 
-}
+    }
     public function store(Request $request)
     {
 

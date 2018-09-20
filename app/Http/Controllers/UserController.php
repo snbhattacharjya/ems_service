@@ -17,7 +17,7 @@ class UserController extends Controller
 	}
 	public function createUser(Request $request){
 		    $request->validate([
-            'name' => 'required|string|max:20',
+            'name' => 'required|string|max:40',
 			'email' => 'required|email',
 			//'aadhaar' => 'required',
 			'level' => 'required',
@@ -105,7 +105,7 @@ class UserController extends Controller
 	public function updateUser(Request $request){
           $getStateCode=$this->getState();
 		$request->validate([
-            'name' => 'required|string|max:20',
+            'name' => 'required|string|max:40',
 			'email' => 'required|email',
            // 'mobile' => 'required|number|max:10',
 			//'aadhaar' => 'required',
@@ -197,10 +197,16 @@ class UserController extends Controller
 		  foreach($sdo as $admval){
 		 $arr[]=array('sub_user_code'=>$admval->id,'sub_user_name'=>$admval->name);
 		 }
-
-		  return (array)$arr;
+     	  return (array)$arr;
 	     }
+          if($levelparentId=='08'){
+		  (array)$ppcell=DB::select("select sub_user_code,sub_user_name from user_sub_level where user_type_code=".$levelparentId."");
 
+		  foreach($ppcell as $admval){
+		 $arr[]=array('sub_user_code'=>$admval->sub_user_code,'sub_user_name'=>$admval->sub_user_name);
+		 }
+     	  return (array)$arr;
+	     } 
 	}
 	public function getUserLevelName($user_type_code){
 			$UserLevel=DB::table('user_levels')->where('user_type_code',$user_type_code)->pluck('name');
