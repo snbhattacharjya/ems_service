@@ -28,9 +28,8 @@ class UserController extends Controller
 			$userGenertaionLevelCode=$this->getUserLevelName($user_type_code);
 			$userCreationType=$request->sub_level;
             $getStateCode=$this->getState();
-            if($request->level==='04'){
-
-                $user_id=$getStateCode.$UserArea.$userGenertaionLevelCode[0].$userCreationType;
+            if($request->level==='04'){ //DM
+				$user_id=$getStateCode.$UserArea.$userGenertaionLevelCode[0].$userCreationType;
 					 if (User::where('user_id', '=',$user_id)->exists()){
 					  $msg='User Already Exists';
 					  $execute=0;
@@ -39,7 +38,7 @@ class UserController extends Controller
 					  $execute=1;
 					 }
             }
-		elseif($request->level==='05'){//ADM
+		    elseif($request->level==='05'){//ADM
 					 $user_id=$getStateCode.$UserArea.$userGenertaionLevelCode[0].$userCreationType;
 					 if (User::where('user_id', '=',$user_id)->exists()){
 					  $msg='User Already Exists';
@@ -48,7 +47,7 @@ class UserController extends Controller
 					  $msg= $user_id;
 					  $execute=1;
 					 }
-		}else if($request->level==='06'){//SDO(userCreationType)->Subdivision Code
+		   }else if($request->level==='06'){//SDO
 				     $user_id=$getStateCode.$UserArea.$userGenertaionLevelCode[0].$userCreationType;
 					 if (User::where('user_id', '=',$user_id)->exists()){
 					  $msg='User Already Exists';
@@ -57,7 +56,7 @@ class UserController extends Controller
 					  $msg= $user_id;
 					  $execute=1;
 					 }
-	   }else if($request->level==='07'){//BDO(userCreationType) ->BlockMuni Code
+	       }else if($request->level==='07'){//BDO
 					 $user_id=$getStateCode.$UserArea.$userGenertaionLevelCode[0].$userCreationType;
 					 if (User::where('user_id', '=',$user_id)->exists()){
 					  $msg='User Already Exists';
@@ -66,14 +65,77 @@ class UserController extends Controller
 					  $msg= $user_id;
 					  $execute=1;
 					 }
-	   }elseif($request->level==='08'){//PPCELL
-			        // $user_id=$getStateCode.$userGenertaionLevelCode[0].$UserArea.$userCreationType;
-					//  $msg='User Already Exists';
-					//  $execute=0;
+	       }else if($request->level==='08'){ //ppcell(WB13DTOC01/WB13DTHC01/WB13DTDEO001/WB13DTDEO002)
+		           
+     			   if($userCreationType==='DT'){//PPCELL DISTRICT LEVEL USER CREATION
+				        $ppcell_type=$request->ppcell;
+						 if($ppcell_type!='DEO'){
+					    $user_id=$getStateCode.$UserArea.$userCreationType.$ppcell_type.'01';
+					    if(User::where('user_id', '=',$user_id)->exists()){
+					    $msg='User Already Exists';
+					    $execute=0;
+					    }else{
+					       $msg= $user_id;
+					       $execute=1;
+					      }
+						 }else{
+					    $subdiv_block_id=$ppcell_type;
+					    $user_code_like=$getStateCode.$UserArea.$userCreationType.$ppcell_type;
+				        $return=$this->getExistsSdoBdo_and_createDeo($user_code_like,$getStateCode,$UserArea,$userCreationType,$subdiv_block_id,$userGenertaionLevelCode='');
+					    $msg= $return['msg']; 
+						$execute= $return['execute']; 
+					 }
+				   }  
+                if($userCreationType==='06'){//SDO LEVEL PPCELL USER CREATION
+						  $userCreationType="SDO";
+						  $subdiv_block_id=$request->subdiv_block_id;
+						  $ppcell_type=$request->ppcell;
+						  if($ppcell_type!='DEO'){
+					      $user_id=$getStateCode.$UserArea.$userCreationType.$subdiv_block_id.$ppcell_type.'01';
+					     if(User::where('user_id', '=',$user_id)->exists()){
+					     $msg='User Already Exists';
+					     $execute=0;
+					      }else{
+					       $msg= $user_id;
+					       $execute=1;
+					      }
+						 }else{
+					      $user_code_like=$getStateCode.$UserArea.$userCreationType.$subdiv_block_id.'DEO';
+						  $userGenertaionLevelCode='DEO';
+						  $return=$this->getExistsSdoBdo_and_createDeo($user_code_like,$getStateCode,$UserArea,$userCreationType,$subdiv_block_id,$userGenertaionLevelCode);
+						  $msg= $return['msg']; 
+						  $execute= $return['execute']; 
+					     }
+                     }
 
-		}else{
-			       //  $user_id=$getStateCode.$userGenertaionLevelCode[0].$UserArea;
-		}
+				   
+
+		   }else if($request->level==='09'){ //DEO(Data Entry Operator)
+			   
+		           if($userCreationType==='07'){//BDO LEVEL USER CREATION
+						  $userCreationType='BDO'; 
+						  $subdiv_block_id=$request->subdiv_block_id;
+						  $user_code_like=$getStateCode.$UserArea.$userCreationType.$subdiv_block_id.$userGenertaionLevelCode[0];
+						  $userGenertaionLevelCode=$userGenertaionLevelCode[0];
+						  $return=$this->getExistsSdoBdo_and_createDeo($user_code_like,$getStateCode,$UserArea,$userCreationType,$subdiv_block_id,$userGenertaionLevelCode);
+						  $msg= $return['msg']; 
+						  $execute= $return['execute']; 
+                     }
+					 if($userCreationType==='06'){//SDO LEVEL USER CREATION
+						  $userCreationType='SDO'; 
+						  $subdiv_block_id=$request->subdiv_block_id;
+						  $user_code_like=$getStateCode.$UserArea.$userCreationType.$subdiv_block_id.$userGenertaionLevelCode[0];
+						  $userGenertaionLevelCode=$userGenertaionLevelCode[0];
+						  $return=$this->getExistsSdoBdo_and_createDeo($user_code_like,$getStateCode,$UserArea,$userCreationType,$subdiv_block_id,$userGenertaionLevelCode);
+						  $msg= $return['msg']; 
+						  $execute= $return['execute']; 
+                     }
+					 
+		   }else{
+			           // $user_id=$getStateCode.$userGenertaionLevelCode[0].$UserArea;
+				          $msg='Unauthorize Access'; 
+						  $execute= 0; 
+		    }
 
 		if($execute!='' and $execute==1){
 
@@ -90,12 +152,12 @@ class UserController extends Controller
 			$AddUser->created_at = now()->timestamp;
 			$AddUser->user_id = $msg;
 			$rand=rand();
-			$AddUser->password = Hash::make($user_id);
+			$AddUser->password = Hash::make($msg);
 			$AddUser->change_password =1 ;
 			$AddUser->save();
-			$lastInsertedId=$AddUser->id; // get office id
-			 //get office id
-			$this->getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code);
+			//$lastInsertedId=$AddUser->id; // get office id
+			//get office id
+			//$this->getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code);
             $msg ="User created succesfully with code - ".$msg;
         }
 
@@ -176,22 +238,22 @@ class UserController extends Controller
 
 		$levelparentId=$request->id;
 		$area=auth('api')->user()->area;
-		if($levelparentId=='05'){
+		if($levelparentId=='05'){ //ADM
 		  (array)$adm=DB::select("select sub_user_code,sub_user_name from user_sub_level where user_type_code=".$levelparentId."");
 		 foreach($adm as $admval){
 		 $arr[]=array('sub_user_code'=>$admval->sub_user_code,'sub_user_name'=>$admval->sub_user_name);
 		 }
 		  return (array)$arr;
 	     }
-		  if($levelparentId=='06'){
+		  if($levelparentId=='06'){//SDO
 			  (array)$adm=DB::select("select id,name from subdivisions where district_id=".$area."");
 
-			  foreach($adm as $admval){
+			foreach($adm as $admval){
 		 $arr[]=array('sub_user_code'=>$admval->id,'sub_user_name'=>$admval->name);
 		 }
 			  return (array)$arr;
 	     }
-		 if($levelparentId=='07'){
+		 if($levelparentId=='07'){ //BDO
 		  (array)$sdo=DB::select("select id,name,subdivision_id from block_munis where SUBSTRING(id,1,2)=".$area."");
 
 		  foreach($sdo as $admval){
@@ -199,20 +261,26 @@ class UserController extends Controller
 		 }
      	  return (array)$arr;
 	     }
-          if($levelparentId=='08'){
-		  (array)$ppcell=DB::select("select sub_user_code,sub_user_name from user_sub_level where user_type_code=".$levelparentId."");
-
-		  foreach($ppcell as $admval){
-		 $arr[]=array('sub_user_code'=>$admval->sub_user_code,'sub_user_name'=>$admval->sub_user_name);
-		 }
+          if($levelparentId=='08'){ //PPCELL
+		  $arr[]=array('sub_user_code'=>'DT','sub_user_name'=>'DISTRICT');
+		  $arr[]=array('sub_user_code'=>'06','sub_user_name'=>'SUBDIVISION');
      	  return (array)$arr;
 	     } 
+		 if($levelparentId=='09'){ //DEO
+		  $arr[]=array('sub_user_code'=>'06','sub_user_name'=>'SDO');
+		  $arr[]=array('sub_user_code'=>'07','sub_user_name'=>'BDO');
+     	  return (array)$arr;
+	     } 
+		 
 	}
 	public function getUserLevelName($user_type_code){
 			$UserLevel=DB::table('user_levels')->where('user_type_code',$user_type_code)->pluck('name');
 			return $UserLevel;
 	}
-
+   public function getUserPPcell(){
+			$UserPPcell=DB::table('user_sub_level')->where('user_type_code','08')->pluck('sub_user_name');
+			return response()->json($UserPPcell);
+	}
 
      public function diocreation(Request $request){
 	        $AddUser=new User;
@@ -261,7 +329,26 @@ class UserController extends Controller
 
 
 	}
-
+    public function getExistsSdoBdo_and_createDeo($user_code_like,$getStateCode,$UserArea,$userCreationType,$subdiv_block_id,$userGenertaionLevelCode){
+		$user= User::where('user_id', 'Like','%'.$user_code_like.'%')
+							->latest()->take(1)->get();
+			
+	    if(!empty($user[0]->user_id)){	
+		   if(substr($user[0]->user_id,-1)!=4){
+			 $user_id=substr($user[0]->user_id,-1)+1;
+			   $msg=$getStateCode.$UserArea.$userCreationType.$subdiv_block_id.$userGenertaionLevelCode.'0'.$user_id; 
+			   $execute=1;
+			}else{
+			   $msg='Unable to process';
+			   $execute=0;	
+			}
+		  
+	       }else{
+			  $msg=$getStateCode.$UserArea.$userCreationType.$subdiv_block_id.$userGenertaionLevelCode.'01';
+			  $execute=1;
+	        }					  
+		  return array('msg'=>$msg,'execute'=>$execute);
+	}
 
 
 }

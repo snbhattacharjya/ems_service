@@ -7,13 +7,14 @@ use Illuminate\Support\Facades\DB;
 class ReportController extends Controller
 {
     public function __construct()
-    {	//$this->userID=auth('api')->user()->user_id;
-       // $this->level=auth('api')->user()->level;
+    {	
+	   $this->userID=auth('api')->user()->user_id;
+       $this->level=auth('api')->user()->level;
         $this->district=auth('api')->user()->area;
     }
    public function getReport(){
 	  $arr=array();
-	 if($this->district==''){
+	 if($this->district=='' & ($this->userID="WBCEO" || $this->userID=="WBCEONODAL")){
 		//For Wb CEO
 		$sqlAvailable='SELECT d.name,p.gender,
 						SUM(CASE WHEN p.post_stat = "MO" THEN 1 ELSE 0 END) AS MO, 
@@ -33,8 +34,8 @@ class ReportController extends Controller
 						
 		$reportRequirement=DB::select($sqlRequirement);				
 		$arr['requirement']=$reportRequirement;
-		
-	 }else{// For District User
+		return response()->json($arr,200);
+	 }else if($this->district!='' & $this->level===3){// For District User
 		
 		$sqlAvailable='SELECT d.name,p.gender,
 						SUM(CASE WHEN p.post_stat = "MO" THEN 1 ELSE 0 END) AS MO, 
@@ -53,14 +54,17 @@ class ReportController extends Controller
 						inner join assembly_party ap on (ap.assembly_id=ac.id) and d.id="'.$this->district.'"
 						group by d.id,d.name';
 	 
-	     $reportRequirement=DB::select($sqlRequirement);	
+	        $reportRequirement=DB::select($sqlRequirement);	
 	       $arr['requirement']=$reportRequirement;
+	       return response()->json($arr,200);
 	 
-	 
+	 }else{
+		return response()->json("Unauthorize Access",200);   
+		 
 	 }
 	
 	//print_r($arr);
-	return response()->json($arr,200);
+	
      }	
 	
 

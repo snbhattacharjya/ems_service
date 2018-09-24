@@ -10,11 +10,12 @@ class SudivreportController extends Controller
 	  public function __construct()
     {	
 	    $this->userID=auth('api')->user()->user_id;
-        $this->level=auth('api')->user()->level;
+       $this->level=auth('api')->user()->level;
         $this->district=auth('api')->user()->area;
     }
 	
 	public function reportOnSubdivsion(Request $request){
+		
 		
 	if($this->district=='' and $request->district_id!=''){	
 	  $district_id=$request->district_id;//exit;
@@ -40,7 +41,8 @@ class SudivreportController extends Controller
 	 
 	     $reportRequirement=DB::select($sqlRequirement);	
 	     $arr['requirement']=$reportRequirement;
-	  }else{
+		 return response()->json($arr,200);
+	  }elseif($this->district!='' & $this->level===3){
 		  
 		$sqlAvailable='SELECT sd.name,p.gender,
 						SUM(CASE WHEN p.post_stat = "MO" THEN 1 ELSE 0 END) AS MO, 
@@ -65,10 +67,13 @@ class SudivreportController extends Controller
 	 
 	     $reportRequirement=DB::select($sqlRequirement);	
 	     $arr['requirement']=$reportRequirement;  
+		return response()->json($arr,200);  
+	  }else{
 		  
+		return response()->json("Unauthorize Access",200);  
 	  }
 	  
-	  return response()->json($arr,200);
+	  
 	}	
 	
 	
