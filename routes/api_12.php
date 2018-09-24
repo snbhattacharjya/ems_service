@@ -21,8 +21,8 @@ Route::post('/register', 'Auth\RegisterController@register');
 Route::post('/login', 'Auth\LoginController@login');
 //Logout Routes
 Route::get('/logout', 'Auth\LoginController@logout')->middleware('auth:api');
+Route::get('/passset', 'UserController@createPassword');
 
-//Route::get('/createPassword', 'UserController@createPassword');
 Route::group([ 'middleware' => 'auth:api'], function()
 {
 //Report Routes
@@ -34,7 +34,7 @@ Route::get('/creationlevel', 'UserController@getUserCreation');
 Route::get('/sublevel/{id}', 'UserController@getUsercreationSubLevel');
 Route::post('/createuser', 'UserController@createUser');//For Save TO data
 Route::get('/levelsublevel', 'UserController@getUserLevelSublevel');
-Route::get('/getbdo/{id}', 'UserController@getBDO');
+
 //Office Routes
 
 Route::get('/offices/{subdivision_id}', 'OfficeController@getAllofficeBysubdivision');
