@@ -102,9 +102,13 @@ class DashboardController extends Controller
 			    $arr['success']='Check Office Details';
                 $arr['status']=201;
 
+		}else if($this->userID=='WBCEO'){
+				 $arr['totalOffice']=9178;
+				 $arr['totalfemale']=23803;
+				 $arr['totalMale']=97619;
+				 $arr['totalemployee']=121422;
 		}else{
-			
-			return response()->json('Unauthorize Access',422);
+			return response()->json($this->userID,422);
 		}
 
 
