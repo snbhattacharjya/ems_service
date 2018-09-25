@@ -26,8 +26,10 @@ class UserController extends Controller
 			$UserArea=auth('api')->user()->area;
 			$user_type_code=$request->level;
 			$userGenertaionLevelCode=$this->getUserLevelName($user_type_code);
-
+             
             $getStateCode=$this->getState();
+			
+			
             if($request->level==='04'){ //DM
                 $userCreationType=$request->sub_level;
 				$user_id=$getStateCode.$UserArea.$userGenertaionLevelCode[0].$userCreationType;
@@ -120,29 +122,32 @@ class UserController extends Controller
 
 
 		   }else if($request->level==='09'){ //DEO(Data Entry Operator)
-
-		           if($userCreationType==='07'){//BDO LEVEL USER CREATION
-						  $userCreationType='BDO';
-						  $subdiv_block_id=$request->subdiv_block_id;
-						  $user_code_like=$getStateCode.$UserArea.$userCreationType.$subdiv_block_id.$userGenertaionLevelCode[0];
+			     
+			          $userCreationType=$request->sub_level;    
+			          $this->userID=auth('api')->user()->user_id;
+                       $userCreationType=substr($this->userID,4,3);//wb13SDO1301
+		           if($userCreationType==='BDO'){//BDO LEVEL USER CREATION
+						  //$userCreationType='BDO';
+						   $subdiv_block_id=substr($this->userID,-6,4);//exit;
+						  $user_code_like=$getStateCode.$UserArea.$subdiv_block_id.$userGenertaionLevelCode[0];
 						  $userGenertaionLevelCode=$userGenertaionLevelCode[0];
 						  $return=$this->getExistsSdoBdo_and_createDeo($user_code_like,$getStateCode,$UserArea,$userCreationType,$subdiv_block_id,$userGenertaionLevelCode);
 						  $msg= $return['msg'];
 						  $execute= $return['execute'];
                      }
-					 if($userCreationType==='06'){//SDO LEVEL USER CREATION
-						  $userCreationType='SDO';
-						  $subdiv_block_id=$request->subdiv_block_id;
-						  $user_code_like=$getStateCode.$UserArea.$userCreationType.$subdiv_block_id.$userGenertaionLevelCode[0];
+					 if($userCreationType==='SDO'){//SDO LEVEL USER CREATION
+						  //$userCreationType='SDO';
+						   $subdiv_block_id=substr($this->userID,4);//exit;
+						  $user_code_like=$getStateCode.$UserArea.$subdiv_block_id.$userGenertaionLevelCode[0];
 						  $userGenertaionLevelCode=$userGenertaionLevelCode[0];
 						  $return=$this->getExistsSdoBdo_and_createDeo($user_code_like,$getStateCode,$UserArea,$userCreationType,$subdiv_block_id,$userGenertaionLevelCode);
 						  $msg= $return['msg'];
 						  $execute= $return['execute'];
                      }
-
+				   
 		   }else{
 			           // $user_id=$getStateCode.$userGenertaionLevelCode[0].$UserArea;
-				          $msg='Unauthorize Access';
+				          $msg='Choose Parrent Level';
 						  $execute= 0;
 		    }
 
@@ -236,7 +241,9 @@ class UserController extends Controller
 
 	public function getUserCreation(){
 			$id=auth('api')->user()->level;
+		
 			$response=$this->getUsercreationLevel($id);
+			
 			return response()->json($response);
 	}
 	public function getUsercreationLevel($id){
@@ -277,11 +284,11 @@ class UserController extends Controller
 	     }
 		 if($levelparentId=='09'){ //DEO
 		   $UserArea=auth('api')->user()->area;
-		   if($UserArea=='6'){
+		  
 		   $arr[]=array('sub_user_code'=>'06','sub_user_name'=>'SDO');
-		   }else{
+		   
 		   $arr[]=array('sub_user_code'=>'07','sub_user_name'=>'BDO');
-		   }
+		  
      	  return (array)$arr;
 	     }
 
@@ -349,7 +356,7 @@ class UserController extends Controller
 	    if(!empty($user[0]->user_id)){
 		   if(substr($user[0]->user_id,-1)!=4){
 			 $user_id=substr($user[0]->user_id,-1)+1;
-			   $msg=$getStateCode.$UserArea.$userCreationType.$subdiv_block_id.$userGenertaionLevelCode.'0'.$user_id;
+			   $msg=$getStateCode.$UserArea.$subdiv_block_id.$userGenertaionLevelCode.'0'.$user_id;
 			   $execute=1;
 			}else{
 			   $msg='Unable to process';
@@ -357,7 +364,7 @@ class UserController extends Controller
 			}
 
 	       }else{
-			  $msg=$getStateCode.$UserArea.$userCreationType.$subdiv_block_id.$userGenertaionLevelCode.'01';
+			  $msg=$getStateCode.$UserArea.$subdiv_block_id.$userGenertaionLevelCode.'01';
 			  $execute=1;
 	        }
 		  return array('msg'=>$msg,'execute'=>$execute);
