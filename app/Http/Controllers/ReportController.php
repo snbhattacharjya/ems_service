@@ -16,47 +16,82 @@ class ReportController extends Controller
 	  $arr=array();
 	 if($this->district=='' & ($this->userID="WBCEO" || $this->userID=="WBCEONODAL")){
 		//For Wb CEO
-		$sqlAvailable='SELECT d.name,p.gender,
-						SUM(CASE WHEN p.post_stat = "MO" THEN 1 ELSE 0 END) AS MO, 
-						SUM(CASE WHEN p.post_stat = "P1" THEN 1 ELSE 0 END) AS P1, 
-						SUM(CASE WHEN p.post_stat = "P2" THEN 1 ELSE 0 END) AS P2,
-						SUM(CASE WHEN p.post_stat = "P3" THEN 1 ELSE 0 END) AS P3, 
-						SUM(CASE WHEN p.post_stat = "PR" THEN 1 ELSE 0 END) AS PR
-						FROM personnel p inner join districts d on d.id=p.district_id 
-						group by p.district_id,d.name,p.gender';
+		$sqlAvailable='SELECT d.name,
+                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1 ELSE 0 END) AS MO_M, 
+                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" THEN 1 ELSE 0 END) AS P1_M, 
+                    SUM(CASE WHEN p.post_stat = "P2" and p.gender="M" THEN 1 ELSE 0 END) AS P2_M,
+                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="M" THEN 1 ELSE 0 END) AS P3_M, 
+                    SUM(CASE WHEN p.post_stat = "PR" and p.gender="M" THEN 1 ELSE 0 END) AS PR_M,
+                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="F"  THEN 1 ELSE 0 END) AS MO_F, 
+                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" THEN 1 ELSE 0 END) AS P1_F, 
+                    SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" THEN 1 ELSE 0 END) AS P2_F,
+                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" THEN 1 ELSE 0 END) AS P3_F, 
+                    SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" THEN 1 ELSE 0 END) AS PR_F
+                    FROM personnel p inner join districts d on d.id=p.district_id 
+                    group by p.district_id,d.name';
 		
-		$reportAvailable=DB::select($sqlAvailable);
-		$arr['available']=$reportAvailable;
+		
+		
+		(array)$reportAvailable=DB::select($sqlAvailable);
+		//$arr['available']=$reportAvailable;
 		$sqlRequirement='SELECT d.name,sum(ap.party_count) as party from districts d 
 						inner join assembly_constituencies ac on (ac.district_id=d.id)
 						inner join assembly_party ap on (ap.assembly_id=ac.id) 
 						group by d.id,d.name';
 						
-		$reportRequirement=DB::select($sqlRequirement);				
-		$arr['requirement']=$reportRequirement;
-		return response()->json($arr,200);
+		(array)$reportRequirement=DB::select($sqlRequirement);	
+		//$arr['requirement']=$reportRequirement;
+		 foreach($reportAvailable as $report){
+			 foreach($reportRequirement as $requerment){
+			   if($requerment->name==$report->name){
+				 
+				   $report->party=$requerment->party;
+			   }
+			  
+			 }
+		   }
+		return response()->json($reportAvailable,200);
 	 }else if($this->district!='' & $this->level===3){// For District User
 		
-		$sqlAvailable='SELECT d.name,p.gender,
-						SUM(CASE WHEN p.post_stat = "MO" THEN 1 ELSE 0 END) AS MO, 
-						SUM(CASE WHEN p.post_stat = "P1" THEN 1 ELSE 0 END) AS P1, 
-						SUM(CASE WHEN p.post_stat = "P2" THEN 1 ELSE 0 END) AS P2,
-						SUM(CASE WHEN p.post_stat = "P3" THEN 1 ELSE 0 END) AS P3, 
-						SUM(CASE WHEN p.post_stat = "PR" THEN 1 ELSE 0 END) AS PR
-						FROM personnel p inner join districts d on d.id=p.district_id 
-						and d.id="'.$this->district.'" group by p.district_id,d.name,p.gender';
+		$sqlAvailable='SELECT d.name,
+                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1 ELSE 0 END) AS MO_M, 
+                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" THEN 1 ELSE 0 END) AS P1_M, 
+                    SUM(CASE WHEN p.post_stat = "P2" and p.gender="M" THEN 1 ELSE 0 END) AS P2_M,
+                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="M" THEN 1 ELSE 0 END) AS P3_M, 
+                    SUM(CASE WHEN p.post_stat = "PR" and p.gender="M" THEN 1 ELSE 0 END) AS PR_M,
+                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="F"  THEN 1 ELSE 0 END) AS MO_F, 
+                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" THEN 1 ELSE 0 END) AS P1_F, 
+                    SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" THEN 1 ELSE 0 END) AS P2_F,
+                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" THEN 1 ELSE 0 END) AS P3_F, 
+                    SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" THEN 1 ELSE 0 END) AS PR_F
+                    FROM personnel p inner join districts d on  d.id="'.$this->district.'" 
+                    group by d.name';
 						
-		$reportAvailable=DB::select($sqlAvailable);	
-        $arr['available']=$reportAvailable;		
+		  (array)$reportAvailable=DB::select($sqlAvailable);	
+           //$arr['available']=$reportAvailable;		
 	 
-	     $sqlRequirement='SELECT d.name,sum(ap.party_count) as party from districts d 
+	       $sqlRequirement='SELECT d.name,sum(ap.party_count) as party from districts d 
 						inner join assembly_constituencies ac on (ac.district_id=d.id)
 						inner join assembly_party ap on (ap.assembly_id=ac.id) and d.id="'.$this->district.'"
 						group by d.id,d.name';
 	 
-	        $reportRequirement=DB::select($sqlRequirement);	
-	       $arr['requirement']=$reportRequirement;
-	       return response()->json($arr,200);
+	       (array)$reportRequirement=DB::select($sqlRequirement);	
+	        //$arr['requirement']=$reportRequirement;
+		   
+		   
+		   
+		   (array)$reportRequirement=DB::select($sqlRequirement);	
+		//$arr['requirement']=$reportRequirement;
+		 foreach($reportAvailable as $report){
+			 foreach($reportRequirement as $requerment){
+			   if($requerment->name==$report->name){
+				 
+				   $report->party=$requerment->party;
+			   }
+			  
+			 }
+		   }
+		return response()->json($reportAvailable,200);
 	 
 	 }else{
 		return response()->json("Unauthorize Access",200);   

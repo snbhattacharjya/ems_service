@@ -20,7 +20,7 @@ class PermissionController extends Controller
 
 
 	$arr['menu'][]=array('parent_menu'=>'Dashboard','group'=>'dashboard','menu_icon_name'=>'dashboard','menu_link'=>'/dashboard','submenu'=>'null');
-	$menu=DB::select('SELECT m.menu_id, m.menu_name,m.menu_link,m.menu_icon_name FROM menu m JOIN permission p ON p.menu_id = m.menu_id WHERE p.user_id ='.$userId.' and m.top_menu_id=0 ');
+	$menu=DB::select('SELECT m.menu_id, m.menu_name,m.menu_link,m.menu_icon_name FROM menu m JOIN permission p ON p.menu_id = m.menu_id WHERE p.user_id ='.$userId.' and m.top_menu_id=0 order by menu_order asc');
 	foreach($menu as $mval){
 		 $menuname=$mval->menu_name;
 		 $menuslug=strtolower(str_replace(' ', '_', $mval->menu_name));
