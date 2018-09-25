@@ -20,17 +20,22 @@ class SudivreportController extends Controller
 	if($this->district=='' and $request->district_id!=''){	
 	  $district_id=$request->district_id;//exit;
 		
-         $sqlAvailable='SELECT sd.name,p.gender,
-						SUM(CASE WHEN p.post_stat = "MO" THEN 1 ELSE 0 END) AS MO, 
-						SUM(CASE WHEN p.post_stat = "P1" THEN 1 ELSE 0 END) AS P1, 
-						SUM(CASE WHEN p.post_stat = "P2" THEN 1 ELSE 0 END) AS P2,
-						SUM(CASE WHEN p.post_stat = "P3" THEN 1 ELSE 0 END) AS P3, 
-						SUM(CASE WHEN p.post_stat = "PR" THEN 1 ELSE 0 END) AS PR
+         $sqlAvailable='SELECT sd.name,
+						SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1 ELSE 0 END) AS MO_M, 
+                       SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" THEN 1 ELSE 0 END) AS P1_M, 
+                       SUM(CASE WHEN p.post_stat = "P2" and p.gender="M" THEN 1 ELSE 0 END) AS P2_M,
+                      SUM(CASE WHEN p.post_stat = "P3" and p.gender="M" THEN 1 ELSE 0 END) AS P3_M, 
+                      SUM(CASE WHEN p.post_stat = "PR" and p.gender="M" THEN 1 ELSE 0 END) AS PR_M,
+                      SUM(CASE WHEN p.post_stat = "MO" and p.gender="F"  THEN 1 ELSE 0 END) AS MO_F, 
+                      SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" THEN 1 ELSE 0 END) AS P1_F, 
+                      SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" THEN 1 ELSE 0 END) AS P2_F,
+                      SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" THEN 1 ELSE 0 END) AS P3_F, 
+                      SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" THEN 1 ELSE 0 END) AS PR_F
 						FROM personnel p inner join subdivisions sd on sd.id=p.subdivision_id and sd.district_id="'.$district_id.'"
-					    group by p.subdivision_id,sd.name,p.gender';
+					    group by p.subdivision_id,sd.name';
 						
-		$reportAvailable=DB::select($sqlAvailable);	
-        $arr['available']=$reportAvailable;		
+		(array)$reportAvailable=DB::select($sqlAvailable);	
+        //$arr['available']=$reportAvailable;		
 	 
 	     $sqlRequirement='SELECT d.name,sum(ap.party_count) as party from subdivisions d 
                           inner join assembly_constituencies ac on (ac.district_id=d.district_id) 
@@ -39,24 +44,44 @@ class SudivreportController extends Controller
 						  and d.district_id="'.$district_id.'"
                           group by d.id,d.name';
 	 
-	     $reportRequirement=DB::select($sqlRequirement);	
-	     $arr['requirement']=$reportRequirement;
-		 return response()->json($arr,200);
+	    (array) $reportRequirement=DB::select($sqlRequirement);	
+	     //$arr['requirement']=$reportRequirement;
+		 
+		 
+		 (array)$reportRequirement=DB::select($sqlRequirement);	
+		//$arr['requirement']=$reportRequirement;
+		 foreach($reportAvailable as $report){
+			 foreach($reportRequirement as $requerment){
+			   if($requerment->name==$report->name){
+				 
+				   $report->party=$requerment->party;
+			   }
+			  
+			 }
+		   }
+		return response()->json($reportAvailable,200);
+		 
+		 
 	  }elseif($this->district!='' & $this->level===3){
 		  
-		$sqlAvailable='SELECT sd.name,p.gender,
-						SUM(CASE WHEN p.post_stat = "MO" THEN 1 ELSE 0 END) AS MO, 
-						SUM(CASE WHEN p.post_stat = "P1" THEN 1 ELSE 0 END) AS P1, 
-						SUM(CASE WHEN p.post_stat = "P2" THEN 1 ELSE 0 END) AS P2,
-						SUM(CASE WHEN p.post_stat = "P3" THEN 1 ELSE 0 END) AS P3, 
-						SUM(CASE WHEN p.post_stat = "PR" THEN 1 ELSE 0 END) AS PR
+		$sqlAvailable='SELECT sd.name,
+						SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1 ELSE 0 END) AS MO_M, 
+                       SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" THEN 1 ELSE 0 END) AS P1_M, 
+                       SUM(CASE WHEN p.post_stat = "P2" and p.gender="M" THEN 1 ELSE 0 END) AS P2_M,
+                      SUM(CASE WHEN p.post_stat = "P3" and p.gender="M" THEN 1 ELSE 0 END) AS P3_M, 
+                      SUM(CASE WHEN p.post_stat = "PR" and p.gender="M" THEN 1 ELSE 0 END) AS PR_M,
+                      SUM(CASE WHEN p.post_stat = "MO" and p.gender="F"  THEN 1 ELSE 0 END) AS MO_F, 
+                      SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" THEN 1 ELSE 0 END) AS P1_F, 
+                      SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" THEN 1 ELSE 0 END) AS P2_F,
+                      SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" THEN 1 ELSE 0 END) AS P3_F, 
+                      SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" THEN 1 ELSE 0 END) AS PR_F
 						FROM personnel p inner join subdivisions sd on sd.id=p.subdivision_id and sd.district_id="'.$this->district.'"
-					    group by p.subdivision_id,sd.name,p.gender';
+					    group by p.subdivision_id,sd.name';
 						
 						//echo $sqlAvailable;
 						
-		$reportAvailable=DB::select($sqlAvailable);	
-        $arr['available']=$reportAvailable;		
+		(array)$reportAvailable=DB::select($sqlAvailable);	
+        //$arr['available']=$reportAvailable;		
 	 
 	     $sqlRequirement=' SELECT d.name,sum(ap.party_count) as party from subdivisions d 
                            inner join assembly_constituencies ac on (ac.district_id=d.district_id) 
@@ -65,9 +90,22 @@ class SudivreportController extends Controller
 						   and d.district_id="'.$this->district.'"
                            group by d.id,d.name';
 	 
-	     $reportRequirement=DB::select($sqlRequirement);	
-	     $arr['requirement']=$reportRequirement;  
-		return response()->json($arr,200);  
+	    
+
+        (array)$reportRequirement=DB::select($sqlRequirement);	
+		//$arr['requirement']=$reportRequirement;
+		 foreach($reportAvailable as $report){
+			 foreach($reportRequirement as $requerment){
+			   if($requerment->name==$report->name){
+				 
+				   $report->party=$requerment->party;
+			   }
+			  
+			 }
+		   }
+		return response()->json($reportAvailable,200);
+		 
+	   
 	  }else{
 		  
 		return response()->json("Unauthorize Access",200);  

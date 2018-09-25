@@ -217,10 +217,10 @@ class UserController extends Controller
 			if($level===3){
 				$canNotsee=[1,2,3];
 			}elseif($level===6){//SDO
-				//$canNotsee=[1,2,3,4,5,7,8,9,10];
+				$canNotsee=[1,2,3,4,5,6,7,8,10,11];
 				//can see all his sub level
 			}elseif($level===7){//BDO
-				//$canNotsee=[1,2,3,4,5,6,8,9,10];
+				$canNotsee=[1,2,3,4,5,6,7,8,10,11];
 				//can see all his sub level
 			}elseif($level===8){//PPCELL
 				//$canNotsee=[1,2,3,4,5,6,7,9,10];
@@ -229,7 +229,7 @@ class UserController extends Controller
 
 			}
 			$list=User::where('area',$area)
-					  ->whereNotIn('level',[1,2,3])
+					  ->whereNotIn('level',$canNotsee)
 					  ->get();
 		   return response()->json($list);
    }
@@ -276,8 +276,12 @@ class UserController extends Controller
      	  return (array)$arr;
 	     }
 		 if($levelparentId=='09'){ //DEO
-		  $arr[]=array('sub_user_code'=>'06','sub_user_name'=>'SDO');
-		  $arr[]=array('sub_user_code'=>'07','sub_user_name'=>'BDO');
+		   $UserArea=auth('api')->user()->area;
+		   if($UserArea=='6'){
+		   $arr[]=array('sub_user_code'=>'06','sub_user_name'=>'SDO');
+		   }else{
+		   $arr[]=array('sub_user_code'=>'07','sub_user_name'=>'BDO');
+		   }
      	  return (array)$arr;
 	     }
 
