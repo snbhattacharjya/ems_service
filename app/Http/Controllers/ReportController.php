@@ -16,7 +16,7 @@ class ReportController extends Controller
 	  $arr=array();
 	 if($this->district=='' & ($this->userID="WBCEO" || $this->userID=="WBCEONODAL")){
 		//For Wb CEO
-		$sqlAvailable='SELECT d.name,
+		$sqlAvailable='SELECT d.name,p.district_id,
                     SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1 ELSE 0 END) AS MO_M, 
                     SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" THEN 1 ELSE 0 END) AS P1_M, 
                     SUM(CASE WHEN p.post_stat = "P2" and p.gender="M" THEN 1 ELSE 0 END) AS P2_M,
@@ -28,7 +28,7 @@ class ReportController extends Controller
                     SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" THEN 1 ELSE 0 END) AS P3_F, 
                     SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" THEN 1 ELSE 0 END) AS PR_F
                     FROM personnel p inner join districts d on d.id=p.district_id 
-                    group by p.district_id,d.name';
+                    group by p.district_id,d.name order by p.district_id ';
 		
 		
 		
@@ -65,7 +65,7 @@ class ReportController extends Controller
                     SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" THEN 1 ELSE 0 END) AS P3_F, 
                     SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" THEN 1 ELSE 0 END) AS PR_F
                     FROM personnel p inner join districts d on  d.id="'.$this->district.'" 
-                    group by d.name';
+                    group by d.name ';
 						
 		  (array)$reportAvailable=DB::select($sqlAvailable);	
            //$arr['available']=$reportAvailable;		
