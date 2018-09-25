@@ -68,7 +68,7 @@ class ReportController extends Controller
                     SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" THEN 1 ELSE 0 END) AS P2_F,
                     SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" THEN 1 ELSE 0 END) AS P3_F, 
                     SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" THEN 1 ELSE 0 END) AS PR_F
-                    FROM personnel p inner join districts d on  d.id=p.district_id where d.id="'.$this->district.'" 
+                    FROM personnel p inner join districts d on  d.id=p.district_id where p.district_id="'.$this->district.'" 
                     group by d.name';
 						
 		  (array)$reportAvailable=DB::select($sqlAvailable);	
@@ -89,7 +89,7 @@ class ReportController extends Controller
 		 foreach($reportAvailable as $report){
 			 foreach($reportRequirement as $requerment){
 			   if($requerment->name==$report->name){
-				 
+				   $report->district_id=$this->district;
 				   $report->party=$requerment->party;
 			   }
 			  
