@@ -97,9 +97,9 @@ class ReportController extends Controller
 			   if($requerment->name==$report->name){
 				   $report->district_id=$this->district;
 				  if(!$requerment->male_party_count || $requerment->male_party_count==''){
-					  $report->female_party=$requerment->male_party_count;
+					  $report->male_party=$requerment->male_party_count;
 				  }else{
-					  $report->female_party=$requerment->male_party_count;
+					  $report->male_party=$requerment->male_party_count;
 				  }
 				 if(!$requerment->female_party_count || $requerment->female_party_count==''){
 					  $report->female_party=$requerment->female_party_count;
