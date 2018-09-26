@@ -26,9 +26,11 @@ class PersonnelController extends Controller
         if($this->level===10){
             return Personnel::where('office_id' , $this->userID)->get();
 
-        }else{
+        }else if($this->level===3 || $this->level===12){
 			 return Personnel:: where('district_id',$this->district)->get();
 			//
+		}else{
+			 return response()->json('Unauthorize Access',401);
 		}
 
     }
