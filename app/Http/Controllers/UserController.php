@@ -169,9 +169,9 @@ class UserController extends Controller
 			$AddUser->password = Hash::make($msg);
 			$AddUser->change_password =1 ;
 			$AddUser->save();
-			//$lastInsertedId=$AddUser->id; // get office id
+			$lastInsertedId=$AddUser->id; // get office id
 			//get office id
-			//$this->getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code);
+			$this->getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code);
             $msg ="User created succesfully with code - ".$msg;
         }
 
@@ -304,12 +304,13 @@ class UserController extends Controller
 
      public function diocreation(Request $request){
 	        $AddUser=new User;
+			$user_type_code='03';
 			$AddUser->name = $request->name;
 			$AddUser->email = $request->email;
 			$AddUser->mobile = $request->mobile;
 			$AddUser->aadhaar = $request->aadhaar;
 			$AddUser->designation = $request->designation;
-			$AddUser->level =11;
+			$AddUser->level =12;
 			//$AddUser->sublevel = $request->sublevel;
 			$AddUser->area = $request->area;
 			$AddUser->is_active = 1;
@@ -321,9 +322,13 @@ class UserController extends Controller
 			$AddUser->save();
 			$lastInsertedId=$AddUser->id; // get office id
 			if(!empty($lastInsertedId)){
-			$this->getDefaultMenuPermission_To_assignPermission($lastInsertedId);
-			}
+			
+			$this->getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code);
 			$arr=array('ok'=>'User Created with random Password','UserId'=>$lastInsertedId,'status'=>201);
+			}else{
+			$arr=array('ok'=>'ERROR','status'=>401);	
+			}
+			
 
 		    return response()->json($arr);
 

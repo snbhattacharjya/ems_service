@@ -37,7 +37,7 @@ class SudivreportController extends Controller
 		(array)$reportAvailable=DB::select($sqlAvailable);	
         //$arr['available']=$reportAvailable;		
 	 
-	     $sqlRequirement='SELECT d.name,sum(ap.party_count) as party from subdivisions d 
+	     $sqlRequirement='SELECT d.name,sum(ap.male_party_count) as male_party_count,sum(ap.female_party_count) as female_party_count from subdivisions d 
                           inner join assembly_constituencies ac on (ac.district_id=d.district_id) 
 						  and ac.subdivision_id=d.id
                           inner join assembly_party ap on (ap.assembly_id=ac.id) 
@@ -53,11 +53,16 @@ class SudivreportController extends Controller
 		 foreach($reportAvailable as $report){
 			 foreach($reportRequirement as $requerment){
 			   if($requerment->name==$report->name){
-				    if($requerment->party==''){
-				    $report->party=0;
-					}else{
-				   $report->party=$requerment->party;
-					}
+				  if(!$requerment->male_party_count || $requerment->male_party_count==''){
+					  $report->male_party=$requerment->male_party_count;
+				  }else{
+					  $report->male_party=$requerment->male_party_count;
+				  }
+				 if(!$requerment->female_party_count || $requerment->female_party_count==''){
+					  $report->femail_party=$requerment->female_party_count;
+				  }else{
+					  $report->femail_party=$requerment->female_party_count;
+				  }  
 			   }
 			  
 			 }
@@ -86,7 +91,7 @@ class SudivreportController extends Controller
 		(array)$reportAvailable=DB::select($sqlAvailable);	
         //$arr['available']=$reportAvailable;		
 	 
-	     $sqlRequirement=' SELECT d.name,sum(ap.party_count) as party from subdivisions d 
+	     $sqlRequirement=' SELECT d.name,sum(ap.male_party_count) as male_party_count,sum(ap.female_party_count) as female_party_count from subdivisions d 
                            inner join assembly_constituencies ac on (ac.district_id=d.district_id) 
 						   and ac.subdivision_id=d.id
                            inner join assembly_party ap on (ap.assembly_id=ac.id) 
@@ -97,16 +102,24 @@ class SudivreportController extends Controller
 
         (array)$reportRequirement=DB::select($sqlRequirement);	
 		//$arr['requirement']=$reportRequirement;
-		 foreach($reportAvailable as $report){
+		foreach($reportAvailable as $report){
 			 foreach($reportRequirement as $requerment){
 			   if($requerment->name==$report->name){
-				 
-				  
-				   $report->party=$requerment->party;
+				   $report->district_id=$this->district;
+				  if(!$requerment->male_party_count || $requerment->male_party_count==''){
+					  $report->male_party=$requerment->male_party_count;
+				  }else{
+					  $report->male_party=$requerment->male_party_count;
+				  }
+				 if(!$requerment->female_party_count || $requerment->female_party_count==''){
+					  $report->femail_party=$requerment->female_party_count;
+				  }else{
+					  $report->femail_party=$requerment->female_party_count;
+				  }  
 			   }
 			  
 			 }
-		   }
+		   } 
 		return response()->json($reportAvailable,200);
 		 
 	   
