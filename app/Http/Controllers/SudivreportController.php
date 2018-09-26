@@ -13,13 +13,16 @@ class SudivreportController extends Controller
        $this->level=auth('api')->user()->level;
         $this->district=auth('api')->user()->area;
     }
-	
+	public function getDistrictName($district){
+			$stateCode=DB::table('districts')->where('id',$district)->pluck('name');
+			return $stateCode[0];
+	}
 	public function reportOnSubdivsion(Request $request){
 		
 		
 	if($this->district=='' and $request->district_id!=''){	
 	  $district_id=$request->district_id;//exit;
-		
+		 $arr['district']=$this->getDistrictName($district_id);
          $sqlAvailable='SELECT sd.name,p.subdivision_id,
 						SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1 ELSE 0 END) AS MO_M, 
                        SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" THEN 1 ELSE 0 END) AS P1_M, 
@@ -71,7 +74,7 @@ class SudivreportController extends Controller
 		 
 		 
 	  }elseif($this->district!='' & $this->level===3){
-		  
+		 $arr['district']=$this->getDistrictName($this->district);
 		$sqlAvailable='SELECT sd.name,p.subdivision_id,
 						SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1 ELSE 0 END) AS MO_M, 
                        SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" THEN 1 ELSE 0 END) AS P1_M, 

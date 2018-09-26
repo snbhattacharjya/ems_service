@@ -26,8 +26,8 @@ Route::get('/logout', 'Auth\LoginController@logout')->middleware('auth:api');
 Route::group([ 'middleware' => 'auth:api'], function()
 {
 //Report Routes
-
-Route::get('/assemblyreport', 'ReportassembleController@getAssmblyReport');
+Route::get('/getdistrict', 'ReportassembleController@getAllDistrict');
+Route::get('/assemblyreport/{district_id}', 'ReportassembleController@getAssmblyReport');
 Route::get('/report', 'ReportController@getReport');
 Route::get('/subdivisionreport/{district_id}', 'SudivreportController@reportOnSubdivsion');
 //Add User

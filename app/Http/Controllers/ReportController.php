@@ -12,6 +12,8 @@ class ReportController extends Controller
        $this->level=auth('api')->user()->level;
         $this->district=auth('api')->user()->area;
     }
+	
+	
    public function getReport(){
 	  $arr=array();
 	 if($this->district=='' & ($this->userID="WBCEO" || $this->userID=="WBCEONODAL")){
