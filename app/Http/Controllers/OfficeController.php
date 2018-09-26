@@ -17,7 +17,7 @@ class OfficeController extends Controller
 
 	public function getAllOffices()
     {
-     if($this->level===3){ //DIO
+     if($this->level===3 || $this->level===12){ //DIO and DEO
 	    return Office::where('district_id',$this->district)->get();
 	    }elseif($this->level===6){//SDO
 		 $subdivision_id=substr($this->userID,-4);
@@ -39,7 +39,7 @@ class OfficeController extends Controller
 
 	public function getAllofficeBysubdivision(Request $request)
     {
-	   if($this->level===3){//DIO	
+	   if($this->level===3 || $this->level===12){//DIO	and DEO
 		
             $subdivision_id=$request->subdivision_id;
 	        return Office::where('district_id' ,'=',$this->district)

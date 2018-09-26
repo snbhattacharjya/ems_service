@@ -219,8 +219,8 @@ class UserController extends Controller
     public function getallUsers(){
 			$area=auth('api')->user()->area;
 			$level=auth('api')->user()->level;
-			if($level===3){
-				$canNotsee=[1,2,3];
+			if($level===3 || $level===12){
+				$canNotsee=[1,2,3,12];
 			}elseif($level===6){//SDO
 				$canNotsee=[1,2,3,4,5,6,7,8,10,11];
 				//can see all his sub level
@@ -241,6 +241,9 @@ class UserController extends Controller
 
 	public function getUserCreation(){
 			$id=auth('api')->user()->level;
+			if($id==3 || $id==12){
+				$id=3;
+			}
 		
 			$response=$this->getUsercreationLevel($id);
 			
