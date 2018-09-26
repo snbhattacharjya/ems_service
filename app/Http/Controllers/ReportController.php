@@ -15,7 +15,7 @@ class ReportController extends Controller
    public function getReport(){
 	  $arr=array();
 	 if($this->district=='' & ($this->userID="WBCEO" || $this->userID=="WBCEONODAL")){
-		//For Wb CEO
+	//echo 'For Wb CEO';exit;
 		$sqlAvailable='SELECT d.name,p.district_id,
                     SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1 ELSE 0 END) AS MO_M, 
                     SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" THEN 1 ELSE 0 END) AS P1_M, 
@@ -33,23 +33,29 @@ class ReportController extends Controller
 		
 		
 		(array)$reportAvailable=DB::select($sqlAvailable);
-		//$arr['available']=$reportAvailable;
-		$sqlRequirement='SELECT d.name,sum(ap.party_count) as party from districts d 
+		$arr['available']=$reportAvailable;
+		
+		$sqlRequirement='SELECT d.name,sum(ap.male_party_count) as male_party_count,sum(ap.female_party_count) as female_party_count from districts d 
 						inner join assembly_constituencies ac on (ac.district_id=d.id)
 						inner join assembly_party ap on (ap.assembly_id=ac.id) 
 						group by d.id,d.name';
 						
 		(array)$reportRequirement=DB::select($sqlRequirement);	
+		
 		//$arr['requirement']=$reportRequirement;
 		 foreach($reportAvailable as $report){
 			 foreach($reportRequirement as $requerment){
 			   if($requerment->name==$report->name){
-				  if(!$requerment->party || $requerment->party==''){
-					  $report->party=$requerment->party;
+				  if(!$requerment->male_party_count || $requerment->male_party_count==''){
+					  $report->male_party=$requerment->male_party_count;
 				  }else{
-					  $report->party=$requerment->party;
+					  $report->male_party=$requerment->male_party_count;
 				  }
-				   
+				 if(!$requerment->female_party_count || $requerment->female_party_count==''){
+					  $report->femail_party=$requerment->female_party_count;
+				  }else{
+					  $report->femail_party=$requerment->female_party_count;
+				  }  
 			   }
 			  
 			 }
@@ -73,8 +79,8 @@ class ReportController extends Controller
 						
 		  (array)$reportAvailable=DB::select($sqlAvailable);	
            //$arr['available']=$reportAvailable;		
-	 
-	       $sqlRequirement='SELECT d.name,sum(ap.party_count) as party from districts d 
+	
+	       $sqlRequirement='SELECT d.name,sum(ap.male_party_count) as male_party_count,sum(ap.female_party_count) as female_party_count from districts d 
 						inner join assembly_constituencies ac on (ac.district_id=d.id)
 						inner join assembly_party ap on (ap.assembly_id=ac.id) and d.id="'.$this->district.'"
 						group by d.id,d.name';
@@ -82,20 +88,27 @@ class ReportController extends Controller
 	       (array)$reportRequirement=DB::select($sqlRequirement);	
 	        //$arr['requirement']=$reportRequirement;
 		   
-		   
-		   
-		   (array)$reportRequirement=DB::select($sqlRequirement);	
-		//$arr['requirement']=$reportRequirement;
-		 foreach($reportAvailable as $report){
+		
+			 
+			foreach($reportAvailable as $report){
 			 foreach($reportRequirement as $requerment){
 			   if($requerment->name==$report->name){
 				   $report->district_id=$this->district;
-				   $report->party=$requerment->party;
+				  if(!$requerment->male_party_count || $requerment->male_party_count==''){
+					  $report->male_party=$requerment->male_party_count;
+				  }else{
+					  $report->male_party=$requerment->male_party_count;
+				  }
+				 if(!$requerment->female_party_count || $requerment->female_party_count==''){
+					  $report->femail_party=$requerment->female_party_count;
+				  }else{
+					  $report->femail_party=$requerment->female_party_count;
+				  }  
 			   }
 			  
 			 }
-		   }
-		return response()->json($reportAvailable,200);
+		   } 
+		 return response()->json($reportAvailable,200);
 	 
 	 }else{
 		return response()->json("Unauthorize Access",200);   

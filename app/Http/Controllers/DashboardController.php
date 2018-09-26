@@ -17,7 +17,7 @@ class DashboardController extends Controller
 	public function getOfficeData(){//get Dashboard Content
 	        $arr=array();
 			//echo $this->level;
-	    if($this->level===3 || $this->level===5 || $this->level===4){
+	    if($this->level===3 || $this->level===5 || $this->level===4 || $this->level===12){
 			
 			
 				  
