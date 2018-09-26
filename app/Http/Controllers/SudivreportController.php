@@ -59,9 +59,9 @@ class SudivreportController extends Controller
 					  $report->male_party=$requerment->male_party_count;
 				  }
 				 if(!$requerment->female_party_count || $requerment->female_party_count==''){
-					  $report->femail_party=$requerment->female_party_count;
+					  $report->female_party=$requerment->female_party_count;
 				  }else{
-					  $report->femail_party=$requerment->female_party_count;
+					  $report->female_party=$requerment->female_party_count;
 				  }  
 			   }
 			  
@@ -112,9 +112,9 @@ class SudivreportController extends Controller
 					  $report->male_party=$requerment->male_party_count;
 				  }
 				 if(!$requerment->female_party_count || $requerment->female_party_count==''){
-					  $report->femail_party=$requerment->female_party_count;
+					  $report->female_party=$requerment->female_party_count;
 				  }else{
-					  $report->femail_party=$requerment->female_party_count;
+					  $report->female_party=$requerment->female_party_count;
 				  }  
 			   }
 			  
