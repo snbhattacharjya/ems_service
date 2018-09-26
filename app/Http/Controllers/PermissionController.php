@@ -33,6 +33,7 @@ class PermissionController extends Controller
 	}
     $arr['dashboard']=(new DashboardController)->getOfficeData();
     $arr['district']=$this->getDistrict($area);
+	$arr['election']=$this->getElection();
 	return response()->json($arr,200);
 	}
 	public function submenu($userId,$id){
@@ -52,5 +53,9 @@ class PermissionController extends Controller
 	public function getDistrict($districtID){
 	 $district= District::where('id',$districtID)->get();
 	 return $district;
+   }
+   public function getElection(){
+	 $election= DB::select("select name,year from elections");
+	 return $election;
    }
 }
