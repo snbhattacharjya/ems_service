@@ -13,13 +13,16 @@ class SudivreportController extends Controller
        $this->level=auth('api')->user()->level;
         $this->district=auth('api')->user()->area;
     }
-	
+	public function getDistrictName($district){
+			$stateCode=DB::table('districts')->where('id',$district)->pluck('name');
+			return $stateCode[0];
+	}
 	public function reportOnSubdivsion(Request $request){
 		
 		
 	if($this->district=='' and $request->district_id!=''){	
 	  $district_id=$request->district_id;//exit;
-		
+		 $arr['district']=$this->getDistrictName($district_id);
          $sqlAvailable='SELECT sd.name,p.subdivision_id,
 						SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1 ELSE 0 END) AS MO_M, 
                        SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" THEN 1 ELSE 0 END) AS P1_M, 
@@ -34,8 +37,9 @@ class SudivreportController extends Controller
 						FROM personnel p inner join subdivisions sd on sd.id=p.subdivision_id and sd.district_id="'.$district_id.'"
 					    group by p.subdivision_id,sd.name';
 						
-		(array)$reportAvailable=DB::select($sqlAvailable);	
-        //$arr['available']=$reportAvailable;		
+		(array)$reportAvailable['available']=DB::select($sqlAvailable);	
+		       $reportAvailable['district']=$this->getDistrictName($district_id);
+       
 	 
 	     $sqlRequirement='SELECT d.name,sum(ap.male_party_count) as male_party_count,sum(ap.female_party_count) as female_party_count from subdivisions d 
                           inner join assembly_constituencies ac on (ac.district_id=d.district_id) 
@@ -50,7 +54,7 @@ class SudivreportController extends Controller
 		 
 		 (array)$reportRequirement=DB::select($sqlRequirement);	
 		//$arr['requirement']=$reportRequirement;
-		 foreach($reportAvailable as $report){
+		 foreach($reportAvailable['available'] as $report){
 			 foreach($reportRequirement as $requerment){
 			   if($requerment->name==$report->name){
 				  if(!$requerment->male_party_count || $requerment->male_party_count==''){
@@ -71,7 +75,7 @@ class SudivreportController extends Controller
 		 
 		 
 	  }elseif($this->district!='' & $this->level===3){
-		  
+		
 		$sqlAvailable='SELECT sd.name,p.subdivision_id,
 						SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1 ELSE 0 END) AS MO_M, 
                        SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" THEN 1 ELSE 0 END) AS P1_M, 
@@ -88,9 +92,9 @@ class SudivreportController extends Controller
 						
 						//echo $sqlAvailable;
 						
-		(array)$reportAvailable=DB::select($sqlAvailable);	
+		(array)$reportAvailable['available']=DB::select($sqlAvailable);	
         //$arr['available']=$reportAvailable;		
-	 
+	         $reportAvailable['district']=$this->getDistrictName($this->district);
 	     $sqlRequirement=' SELECT d.name,sum(ap.male_party_count) as male_party_count,sum(ap.female_party_count) as female_party_count from subdivisions d 
                            inner join assembly_constituencies ac on (ac.district_id=d.district_id) 
 						   and ac.subdivision_id=d.id
@@ -102,7 +106,7 @@ class SudivreportController extends Controller
 
         (array)$reportRequirement=DB::select($sqlRequirement);	
 		//$arr['requirement']=$reportRequirement;
-		foreach($reportAvailable as $report){
+		foreach($reportAvailable['available'] as $report){
 			 foreach($reportRequirement as $requerment){
 			   if($requerment->name==$report->name){
 				   $report->district_id=$this->district;

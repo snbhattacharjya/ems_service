@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 use app\District;
 use Illuminate\Http\Request;
@@ -13,108 +12,49 @@ class ReportassembleController extends Controller
        $this->level=auth('api')->user()->level;
         $this->district=auth('api')->user()->area;
     }
-   public function getAssmblyReport(){
+	public function getDistrictName($district){
+			$stateCode=DB::table('districts')->where('id',$district)->pluck('name');
+			return $stateCode[0];
+	}
+	public function getAllDistrict(){
+			$getAll=DB::select('SELECT id,name FROM `districts` ORDER BY `id` ASC');
+			return $getAll;
+	}
+	
+	
+   public function getAssmblyReport(Request $request){
 	  $arr=array();
-	 if($this->district=='' & ($this->userID="WBCEO" || $this->userID=="WBCEONODAL")){
-	//echo 'For Wb CEO';exit;
-		$sqlAvailable='SELECT d.name,p.district_id,
-                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1 ELSE 0 END) AS MO_M, 
-                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" THEN 1 ELSE 0 END) AS P1_M, 
-                    SUM(CASE WHEN p.post_stat = "P2" and p.gender="M" THEN 1 ELSE 0 END) AS P2_M,
-                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="M" THEN 1 ELSE 0 END) AS P3_M, 
-                    SUM(CASE WHEN p.post_stat = "PR" and p.gender="M" THEN 1 ELSE 0 END) AS PR_M,
-                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="F"  THEN 1 ELSE 0 END) AS MO_F, 
-                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" THEN 1 ELSE 0 END) AS P1_F, 
-                    SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" THEN 1 ELSE 0 END) AS P2_F,
-                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" THEN 1 ELSE 0 END) AS P3_F, 
-                    SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" THEN 1 ELSE 0 END) AS PR_F
-                    FROM personnel p inner join districts d on d.id=p.district_id 
-                    group by p.district_id,d.name order by p.district_id ';
+	 if($this->district=='' & ($this->userID=="WBCEO" || $this->userID=="WBCEONODAL")){
+	      $arr['district']=$this->getDistrictName($request->district_id);
+		  $sqlAvailable='SELECT ac.id,ac.name,ap.male_party_count as male_party_count,
+		                ap.female_party_count as female_party_count from 
+						assembly_constituencies ac inner join assembly_party ap on (ap.assembly_id=ac.id) 
+						where ac.district_id="'.$request->district_id.'" order by ac.id asc';
+					//echo $sqlAvailable;exit;
+		  $reportAvailable=DB::select($sqlAvailable);
+		  $arr['available']=$reportAvailable;
+		   
+		  return response()->json($arr,200);
+	 }else if($this->district!='' & $this->level===3){
+		 $arr['district']=$this->getDistrictName($this->district);
+		  $sqlAvailable='SELECT ac.id,ac.name,ap.male_party_count as male_party_count,
+		                ap.female_party_count as female_party_count from 
+						assembly_constituencies ac inner join assembly_party ap on (ap.assembly_id=ac.id) 
+						where ac.district_id="'.$this->district.'" order by ac.id asc';
 		
 		
 		
 		(array)$reportAvailable=DB::select($sqlAvailable);
 		$arr['available']=$reportAvailable;
-		
-		$sqlRequirement='SELECT d.name,sum(ap.male_party_count) as male_party_count,sum(ap.female_party_count) as female_party_count from districts d 
-						inner join assembly_constituencies ac on (ac.district_id=d.id)
-						inner join assembly_party ap on (ap.assembly_id=ac.id) 
-						group by d.id,d.name';
-						
-		(array)$reportRequirement=DB::select($sqlRequirement);	
-		
-		//$arr['requirement']=$reportRequirement;
-		 foreach($reportAvailable as $report){
-			 foreach($reportRequirement as $requerment){
-			   if($requerment->name==$report->name){
-				  if(!$requerment->male_party_count || $requerment->male_party_count==''){
-					  $report->male_party=$requerment->male_party_count;
-				  }else{
-					  $report->male_party=$requerment->male_party_count;
-				  }
-				 if(!$requerment->female_party_count || $requerment->female_party_count==''){
-					  $report->female_party=$requerment->female_party_count;
-				  }else{
-					  $report->female_party=$requerment->female_party_count;
-				  }  
-			   }
-			  
-			 }
-		   }
-		return response()->json($reportAvailable,200);
-	 }else if($this->district!='' & $this->level===3){// For District User
-		
-		 $sqlAvailable='SELECT d.name,
-                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1 ELSE 0 END) AS MO_M, 
-                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" THEN 1 ELSE 0 END) AS P1_M, 
-                    SUM(CASE WHEN p.post_stat = "P2" and p.gender="M" THEN 1 ELSE 0 END) AS P2_M,
-                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="M" THEN 1 ELSE 0 END) AS P3_M, 
-                    SUM(CASE WHEN p.post_stat = "PR" and p.gender="M" THEN 1 ELSE 0 END) AS PR_M,
-                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="F"  THEN 1 ELSE 0 END) AS MO_F, 
-                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" THEN 1 ELSE 0 END) AS P1_F, 
-                    SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" THEN 1 ELSE 0 END) AS P2_F,
-                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" THEN 1 ELSE 0 END) AS P3_F, 
-                    SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" THEN 1 ELSE 0 END) AS PR_F
-                    FROM personnel p inner join districts d on  d.id=p.district_id where p.district_id="'.$this->district.'" 
-                    group by d.name';
-						
-		  (array)$reportAvailable=DB::select($sqlAvailable);	
-           //$arr['available']=$reportAvailable;		
-	
-	       $sqlRequirement='SELECT d.name,sum(ap.male_party_count) as male_party_count,sum(ap.female_party_count) as female_party_count from districts d 
-						inner join assembly_constituencies ac on (ac.district_id=d.id)
-						inner join assembly_party ap on (ap.assembly_id=ac.id) and d.id="'.$this->district.'"
-						group by d.id,d.name';
-	 
-	       (array)$reportRequirement=DB::select($sqlRequirement);	
-	        //$arr['requirement']=$reportRequirement;
 		   
-		
-			 
-			foreach($reportAvailable as $report){
-			 foreach($reportRequirement as $requerment){
-			   if($requerment->name==$report->name){
-				   $report->district_id=$this->district;
-				  if(!$requerment->male_party_count || $requerment->male_party_count==''){
-					  $report->male_party=$requerment->male_party_count;
-				  }else{
-					  $report->male_party=$requerment->male_party_count;
-				  }
-				 if(!$requerment->female_party_count || $requerment->female_party_count==''){
-					  $report->female_party=$requerment->female_party_count;
-				  }else{
-					  $report->female_party=$requerment->female_party_count;
-				  }  
-			   }
-			  
-			 }
-		   } 
-		 return response()->json($reportAvailable,200);
-	 
+		return response()->json($reportAvailable,200);
+		 
 	 }else{
 		return response()->json("Unauthorize Access",200);   
 		 
 	 }
+   }
 	
-	
+
+
 }
