@@ -10,11 +10,11 @@ class Office extends Model
 
     public $incrementing = false;
 
-    protected $fillable = [ 'id', 'name', 'identification_code', 'subdivision_id',
+    protected $fillable = [ 'id', 'name', 'identification_code', 'subdivision_id', 'updated_at',
 
     ];
 
-    protected $hidden = [ 'created_at', 'updated_at',
+    protected $hidden = [ 'created_at',
 
     ];
 
