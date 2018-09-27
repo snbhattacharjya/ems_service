@@ -386,5 +386,28 @@ class UserController extends Controller
        }
        return $arr;
     }
-
+	
+	public function changePassword(Request $request){
+		$oldPassword=$request->old_password;
+		$UserPassword=auth('api')->user()->password;
+		$UserId=auth('api')->user()->user_id;
+		
+		if($UserPassword==bcrypt($oldPassword)){
+		 $newPassword=$request->new_password;
+		 User::where('id',$UserId)
+		     ->where('password',bcrypt($oldPassword))
+			 ->update(['password'=>bcrypt($newPassword));
+		 	return response()->json('Password Has Been Changed',201);
+		}else{
+		    return response()->json('You Have Entered Wrong Password',401);	
+		}
+		
+	}
+  public function createPassword(){
+        User::where('area','20')->get()->each(function($user) {
+            $user->password = bcrypt($user->user_id);
+            $user->save();
+        });
+        echo 'Finished';
+    }
 }
