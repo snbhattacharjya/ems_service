@@ -67,7 +67,7 @@ class PersonnelController extends Controller
              'grade_pay' => 'required|numeric',
              'emp_group' => 'required',
              'working_status' => 'required',
-             'email' => 'required|email',
+             
              
              'mobile' => 'required|digits:10',
              'qualification_id' => 'required',
@@ -178,8 +178,6 @@ class PersonnelController extends Controller
              'grade_pay' => 'required|numeric',
              'emp_group' => 'required',
              'working_status' => 'required',
-             'email' => 'required|email',
-             
              'mobile' => 'required|digits:10',
              'qualification_id' => 'required',
              'language_id' => 'required',
