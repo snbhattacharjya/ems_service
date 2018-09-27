@@ -83,7 +83,7 @@ class PersonnelController extends Controller
              'block_muni_temp_id' => 'required',
              'branch_ifsc' => 'required',
              'bank_account_no' => 'required|numeric',
-
+             'agree' => 'required|numeric', 
 
 
          ]);
@@ -148,6 +148,8 @@ class PersonnelController extends Controller
 
         $personnel->district_id = substr($officeid,0,2);
         $personnel->subdivision_id = substr($officeid,0,4);
+		$personnel->agree =1;
+		$personnel->created_at =date('Y-m-d H:i:s');
 
         $personnel->save();
 
@@ -192,7 +194,7 @@ class PersonnelController extends Controller
              'block_muni_temp_id' => 'required',
              'branch_ifsc' => 'required',
              'bank_account_no' => 'required|numeric',
-
+             'agree' => 'required|numeric'
 
 
          ]);
@@ -244,9 +246,9 @@ class PersonnelController extends Controller
         $personnel->district_id = substr($request->office_id,0,2);
         $personnel->subdivision_id = substr($request->office_id,0,4);
 		}
-
+         $personnel->agree = 1;
         $personnel->save();
-
+        $personnel->updated_at =date('Y-m-d H:i:s');
         return response()->json($personnel->id,201);
 
     }
