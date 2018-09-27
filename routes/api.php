@@ -37,6 +37,7 @@ Route::get('/sublevel/{id}', 'UserController@getUsercreationSubLevel');
 Route::post('/createuser', 'UserController@createUser');//For Save TO data
 Route::get('/levelsublevel', 'UserController@getUserLevelSublevel');
 Route::get('/getbdo/{id}', 'UserController@getBDO');
+Route::get('/changepassword', 'UserController@changePassword');
 //Office Routes
 
 Route::get('/offices/{subdivision_id}', 'OfficeController@getAllofficeBysubdivision');
