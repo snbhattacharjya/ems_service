@@ -89,7 +89,7 @@ class OfficeController extends Controller
             'total_staff' => 'required|numeric',
             'male_staff' => 'required|numeric',
             'female_staff' => 'required|numeric',
-			'agree' => 'boolean|numeric'
+			'agree' => 'required|boolean'
         ]);
 
         $id = DB::select('SELECT MAX(CAST(SUBSTR(id,-4) AS UNSIGNED)) AS MaxID FROM offices WHERE subdivision_id = ?',[$request->subdivision_id]);
@@ -182,7 +182,7 @@ class OfficeController extends Controller
             'total_staff' => 'required|numeric',
             'male_staff' => 'required|numeric',
             'female_staff' => 'required|numeric',
-			'agree' => 'boolean|numeric'
+			'agree' => 'required|boolean'
         ]);
 
         $office =Office::find($request->office_id);
