@@ -26,10 +26,10 @@ class UserController extends Controller
 			$UserArea=auth('api')->user()->area;
 			$user_type_code=$request->level;
 			$userGenertaionLevelCode=$this->getUserLevelName($user_type_code);
-             
+
             $getStateCode=$this->getState();
-			
-			
+
+
             if($request->level==='04'){ //DM
                 $userCreationType=$request->sub_level;
 				$user_id=$getStateCode.$UserArea.$userGenertaionLevelCode[0].$userCreationType;
@@ -122,8 +122,8 @@ class UserController extends Controller
 
 
 		   }else if($request->level==='09'){ //DEO(Data Entry Operator)
-			     
-			          $userCreationType=$request->sub_level;    
+
+			          $userCreationType=$request->sub_level;
 			          $this->userID=auth('api')->user()->user_id;
                        $userCreationType=substr($this->userID,4,3);//wb13SDO1301
 		           if($userCreationType==='BDO'){//BDO LEVEL USER CREATION
@@ -144,7 +144,7 @@ class UserController extends Controller
 						  $msg= $return['msg'];
 						  $execute= $return['execute'];
                      }
-				   
+
 		   }else{
 			           // $user_id=$getStateCode.$userGenertaionLevelCode[0].$UserArea;
 				          $msg='Choose Parrent Level';
@@ -244,9 +244,9 @@ class UserController extends Controller
 			if($id==3 || $id==12){
 				$id=3;
 			}
-		
+
 			$response=$this->getUsercreationLevel($id);
-			
+
 			return response()->json($response);
 	}
 	public function getUsercreationLevel($id){
@@ -287,11 +287,11 @@ class UserController extends Controller
 	     }
 		 if($levelparentId=='09'){ //DEO
 		   $UserArea=auth('api')->user()->area;
-		  
+
 		   $arr[]=array('sub_user_code'=>'06','sub_user_name'=>'SDO');
-		   
+
 		   $arr[]=array('sub_user_code'=>'07','sub_user_name'=>'BDO');
-		  
+
      	  return (array)$arr;
 	     }
 
@@ -325,13 +325,13 @@ class UserController extends Controller
 			$AddUser->save();
 			$lastInsertedId=$AddUser->id; // get office id
 			if(!empty($lastInsertedId)){
-			
+
 			$this->getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code);
 			$arr=array('ok'=>'User Created with random Password','UserId'=>$lastInsertedId,'status'=>201);
 			}else{
-			$arr=array('ok'=>'ERROR','status'=>401);	
+			$arr=array('ok'=>'ERROR','status'=>401);
 			}
-			
+
 
 		    return response()->json($arr);
 
@@ -386,22 +386,22 @@ class UserController extends Controller
        }
        return $arr;
     }
-	
+
 	public function changePassword(Request $request){
 		$oldPassword=$request->old_password;
 		$UserPassword=auth('api')->user()->password;
 		$UserId=auth('api')->user()->user_id;
-		
+
 		if($UserPassword==bcrypt($oldPassword)){
 		 $newPassword=$request->new_password;
-		 User::where('id',$UserId)
+		 User::where('user_id',$UserId)
 		     ->where('password',bcrypt($oldPassword))
 			 ->update(['password'=>bcrypt($newPassword)]);
 		 	return response()->json('Password Has Been Changed',201);
 		}else{
-		    return response()->json('You Have Entered Wrong Password',401);	
+		    return response()->json('You Have Entered Wrong Password',401);
 		}
-		
+
 	}
   public function createPassword(){
 	  //echo 'hi';exit;
