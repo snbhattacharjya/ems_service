@@ -130,7 +130,7 @@ class OfficeController extends Controller
         $office->male_staff =  $request->male_staff;
         $office->female_staff =  $request->female_staff;
 		$office->created_at = date('Y-m-d H:i:s');
-		if($office->agree==true){
+		if($request->agree==true){
 		$office->agree = 1;
 		}else{
 			$office->agree = 0;
@@ -211,7 +211,7 @@ class OfficeController extends Controller
         $office->male_staff =  $request->male_staff;
         $office->female_staff =  $request->female_staff;
 		$office->updated_at = date('Y-m-d H:i:s');
-		if($office->agree==true){
+		if($request->agree==true){
 		$office->agree = 1;
 		}else{
 			$office->agree = 0;
