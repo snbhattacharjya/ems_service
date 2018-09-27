@@ -83,4 +83,4 @@ Route::get('/languages', 'LanguageController@getLanguages');
 
 });
 
-//Route::post('/deo', 'UserController@diocreation');
+Route::post('/deo', 'UserController@diocreation');

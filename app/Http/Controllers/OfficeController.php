@@ -129,6 +129,12 @@ class OfficeController extends Controller
         $office->total_staff =  $request->total_staff;
         $office->male_staff =  $request->male_staff;
         $office->female_staff =  $request->female_staff;
+		$office->created_at = date('Y-m-d H:i:s');
+		if($office->agree==true){
+		$office->agree = 1;
+		}else{
+			$office->agree = 0;
+		}
         $office->save();
 	    return response()->json($office->id,201);
 	}
@@ -204,7 +210,12 @@ class OfficeController extends Controller
         $office->total_staff =  $request->total_staff;
         $office->male_staff =  $request->male_staff;
         $office->female_staff =  $request->female_staff;
-
+		$office->updated_at = date('Y-m-d H:i:s');
+		if($office->agree==true){
+		$office->agree = 1;
+		}else{
+			$office->agree = 0;
+		}
         $office->save();
 
         return response()->json($office->id,201);

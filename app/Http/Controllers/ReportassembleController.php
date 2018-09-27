@@ -17,8 +17,14 @@ class ReportassembleController extends Controller
 			return $stateCode[0];
 	}
 	public function getAllDistrict(){
+		     if($this->userID=='WBCEO' || $this->userID=='WBCEONODAL'){
 			$getAll=DB::select('SELECT id,name FROM `districts` ORDER BY `id` ASC');
 			return $getAll;
+			 }else{
+				 
+			 $getAll=DB::select('SELECT id,name FROM `districts` where id='.$this->district.'');
+			return $getAll;	 
+			 }
 	}
 	
 	
@@ -35,19 +41,19 @@ class ReportassembleController extends Controller
 		  $arr['available']=$reportAvailable;
 		   
 		  return response()->json($arr,200);
-	 }else if($this->district!='' & $this->level===3){
+	 }else if($this->district!='' & $this->level===3 & $this->district===$request->district_id){
 		 $arr['district']=$this->getDistrictName($this->district);
 		  $sqlAvailable='SELECT ac.id,ac.name,ap.male_party_count as male_party_count,
 		                ap.female_party_count as female_party_count from 
 						assembly_constituencies ac inner join assembly_party ap on (ap.assembly_id=ac.id) 
-						where ac.district_id="'.$this->district.'" order by ac.id asc';
+						where ac.district_id="'.$request->district_id.'" order by ac.id asc';
 		
 		
 		
 		(array)$reportAvailable=DB::select($sqlAvailable);
 		$arr['available']=$reportAvailable;
 		   
-		return response()->json($reportAvailable,200);
+		return response()->json($arr,200);
 		 
 	 }else{
 		return response()->json("Unauthorize Access",200);   
