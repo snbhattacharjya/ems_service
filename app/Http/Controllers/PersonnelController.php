@@ -68,7 +68,7 @@ class PersonnelController extends Controller
              'emp_group' => 'required',
              'working_status' => 'required',
              'email' => 'required|email',
-             'phone' => 'required|numeric',
+             
              'mobile' => 'required|digits:10',
              'qualification_id' => 'required',
              'language_id' => 'required',
@@ -179,7 +179,7 @@ class PersonnelController extends Controller
              'emp_group' => 'required',
              'working_status' => 'required',
              'email' => 'required|email',
-             'phone' => 'required|numeric',
+             
              'mobile' => 'required|digits:10',
              'qualification_id' => 'required',
              'language_id' => 'required',

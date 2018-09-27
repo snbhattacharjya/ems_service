@@ -176,7 +176,6 @@ class OfficeController extends Controller
             'category_id' => 'required',
             'institute_id' => 'required',
             'email' => 'required|email',
-            'phone' => 'required|numeric',
             'mobile' => 'required|digits:10',
             'fax' => 'max:15',
             'total_staff' => 'required|numeric',
