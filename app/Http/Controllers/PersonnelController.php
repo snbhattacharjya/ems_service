@@ -57,7 +57,7 @@ class PersonnelController extends Controller
          $request->validate([
              'officer_name' => 'required|string|max:50',
              'designation' => 'required|string|max:50',
-             'aadhaar' => 'digits:12',
+             
              'present_address' => 'required|string|max:100',
              'permanent_address' => 'required|string|max:100',
              'dob' => 'required|date',
@@ -83,7 +83,7 @@ class PersonnelController extends Controller
              'block_muni_temp_id' => 'required',
              'branch_ifsc' => 'required',
              'bank_account_no' => 'required|numeric',
-             'agree' => 'required|numeric', 
+             'agree' => 'boolean|numeric'
 
 
          ]);
@@ -168,7 +168,7 @@ class PersonnelController extends Controller
          $request->validate([
              'officer_name' => 'required|string|max:50',
              'designation' => 'required|string|max:50',
-             'aadhaar' => 'digits:12',
+             
              'present_address' => 'required|string|max:100',
              'permanent_address' => 'required|string|max:100',
              'dob' => 'required|date',
@@ -192,7 +192,7 @@ class PersonnelController extends Controller
              'block_muni_temp_id' => 'required',
              'branch_ifsc' => 'required',
              'bank_account_no' => 'required|numeric',
-             'agree' => 'required|numeric'
+             'agree' => 'boolean|numeric'
 
 
          ]);
