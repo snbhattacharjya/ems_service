@@ -396,7 +396,7 @@ class UserController extends Controller
 		 $newPassword=$request->new_password;
 		 User::where('id',$UserId)
 		     ->where('password',bcrypt($oldPassword))
-			 ->update(['password'=>bcrypt($newPassword));
+			 ->update(['password'=>bcrypt($newPassword)]);
 		 	return response()->json('Password Has Been Changed',201);
 		}else{
 		    return response()->json('You Have Entered Wrong Password',401);	
@@ -404,7 +404,9 @@ class UserController extends Controller
 		
 	}
   public function createPassword(){
-        User::where('area','20')->get()->each(function($user) {
+	  //echo 'hi';exit;
+        User::where('area','21')
+		     ->where('level','10')->get()->each(function($user) {
             $user->password = bcrypt($user->user_id);
             $user->save();
         });
