@@ -41,7 +41,7 @@ class ReportassembleController extends Controller
 		  $arr['available']=$reportAvailable;
 		   
 		  return response()->json($arr,200);
-	 }else if($this->district!='' & $this->level===3 & $this->district===$request->district_id){
+	 }else if($this->district!='' & ($this->level===3 || $this->level===4 || $this->level===12) & $this->district===$request->district_id){
 		 $arr['district']=$this->getDistrictName($this->district);
 		  $sqlAvailable='SELECT ac.id,ac.name,ap.male_party_count as male_party_count,
 		                ap.female_party_count as female_party_count from 

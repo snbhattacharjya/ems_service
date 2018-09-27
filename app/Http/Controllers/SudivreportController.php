@@ -74,7 +74,7 @@ class SudivreportController extends Controller
 		return response()->json($reportAvailable,200);
 		 
 		 
-	  }elseif($this->district!='' & $this->level===3){
+	  }elseif($this->district!='' & ($this->level===3 || $this->level===4 || $this->level===12)){
 		
 		$sqlAvailable='SELECT sd.name,p.subdivision_id,
 						SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1 ELSE 0 END) AS MO_M, 

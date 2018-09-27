@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Subdivision;
+use App\BlockMuni;
 use Illuminate\Http\Request;
 use \Illuminate\Http\Response;
 class SubdivisionController extends Controller
@@ -22,9 +23,8 @@ class SubdivisionController extends Controller
 		                    ->where('id',$subdivision_id)
 							->get();	
 		}elseif($this->level===7){//BDO 
-		    $block_munis=substr($this->userID,-6,4);
-			return Subdivision::where('district_id' , $this->district)
-                                 ->where('id' , $block_munis)
+		    $block_munis=substr($this->userID,-6,6);
+			return BlockMuni::where('id' , $block_munis)
 							     ->get(); 			
 		}else{
 			return response()->json('Unauthorize Access',422);
