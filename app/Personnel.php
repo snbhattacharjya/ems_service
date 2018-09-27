@@ -8,9 +8,9 @@ class Personnel extends Model
 {
     protected $table = 'personnel';
 
-    protected $fillable = ['id','name','designation','office_id'];
+    protected $fillable = ['id','name','designation','office_id','updated_at'];
 
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $hidden = ['created_at'];
 
     public $incrementing = false;
 
