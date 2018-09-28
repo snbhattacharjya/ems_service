@@ -389,7 +389,6 @@ class UserController extends Controller
 
 	public function changePassword(Request $request){
 		$oldPassword=$request->old_password;
-		$UserPassword=auth('api')->user()->password;
 		$UserId=auth('api')->user()->user_id;
         $UserPassword=DB::table('users')->where('user_id',$UserId)->pluck('password');
 		if($UserPassword[0]==bcrypt($oldPassword)){
