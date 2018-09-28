@@ -80,6 +80,9 @@ Route::get('/qualifications', 'QualificationController@getQualifications');
 
 //Language Routes
 Route::get('/languages', 'LanguageController@getLanguages');
+//PP Category
+Route::get('/setrule', 'categorization\PoststatController@getSubdivision');
+Route::post('/officebysubdivision', 'categorization\PoststatController@getOfficeBySubCat');
 
 });
 
