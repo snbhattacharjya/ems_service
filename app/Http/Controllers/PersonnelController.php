@@ -145,7 +145,7 @@ class PersonnelController extends Controller
 
         $personnel->branch_ifsc = $request->branch_ifsc;
         $personnel->bank_account_no = $request->bank_account_no;
-
+        $personnel->remark_id = $request->remark_id;
         $personnel->district_id = substr($officeid,0,2);
         $personnel->subdivision_id = substr($officeid,0,4);
 		
@@ -159,10 +159,7 @@ class PersonnelController extends Controller
     public function update(Request $request)
     {
 
-	 if($this->level===10 && $request->id != $this->userID){
-			return response()->json('Invalid Office',401);
-
-		}else{
+	 
 
 
          $request->validate([
@@ -237,6 +234,7 @@ class PersonnelController extends Controller
 
         $personnel->branch_ifsc = $request->branch_ifsc;
         $personnel->bank_account_no = $request->bank_account_no;
+        $personnel->remark_id = $request->remark_id;
         if($this->level===10){
 			$personnel->district_id = substr($this->userID,0,2);
 			$personnel->subdivision_id = substr($this->userID,0,4);
@@ -249,7 +247,12 @@ class PersonnelController extends Controller
         $personnel->updated_at =date('Y-m-d H:i:s');
         return response()->json($personnel->id,201);
 
-    }
+   
 
     }
+    public function getRemarks(){
+		
+		$remarks=DB::select('SELECT id,name FROM `remarks`');
+		 return response()->json($remarks,201);
+	}
 }
