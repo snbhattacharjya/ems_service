@@ -16,11 +16,12 @@ class PermissionController extends Controller
 	$area=auth('api')->user()->area;
 	$arr=array();
 	$arr['user']=auth('api')->user();
+	
 	//$arr['state']='WB';
 
 
 	$arr['menu'][]=array('parent_menu'=>'Dashboard','group'=>'dashboard','menu_icon_name'=>'dashboard','menu_link'=>'/dashboard','submenu'=>'null');
-	$menu=DB::select('SELECT m.menu_id, m.menu_name,m.menu_link,m.menu_icon_name FROM menu m JOIN permission p ON p.menu_id = m.menu_id WHERE p.user_id ='.$userId.' and m.top_menu_id=0 order by menu_order asc');
+	$menu=DB::select('SELECT m.menu_id, m.menu_name,m.menu_link,m.menu_icon_name FROM menu m JOIN permission p ON p.menu_id = m.menu_id WHERE p.user_id ='.$userId.' and m.top_menu_id=0  order by menu_order asc ');
 	foreach($menu as $mval){
 		 $menuname=$mval->menu_name;
 		 $menuslug=strtolower(str_replace(' ', '_', $mval->menu_name));
@@ -32,7 +33,7 @@ class PermissionController extends Controller
 		(array)$arr['previllege'][$menuname]=array('add'=>$val->prev_add,'edit'=>$val->prev_edit,'delete'=>$val->prev_delete,'view'=>$val->prev_view);
 	}
     $arr['dashboard']=(new DashboardController)->getOfficeData();
-    $arr['district']=$this->getDistrict($area);
+    $arr['user']['district']=$this->getDistrict($area);
 	$arr['election']=$this->getElection();
 	return response()->json($arr,200);
 	}
@@ -51,7 +52,7 @@ class PermissionController extends Controller
 	}
 
 	public function getDistrict($districtID){
-	 $district= District::where('id',$districtID)->get();
+	 $district= District::where('id',$districtID)->pluck('name');
 	 return $district;
    }
    public function getElection(){

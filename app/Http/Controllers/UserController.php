@@ -410,7 +410,7 @@ class UserController extends Controller
 
 	}
   public function createPassword(){
-	  User::where('area','21')
+	  User::where('area','23')
 		     ->where('level','10')->get()->each(function($user) {
             $user->password = bcrypt($user->user_id);
             $user->save();
