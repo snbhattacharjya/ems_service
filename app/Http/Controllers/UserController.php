@@ -388,18 +388,25 @@ class UserController extends Controller
     }
 
 	public function changePassword(Request $request){
-		$oldPassword=$request->old_password;
-		$UserId=auth('api')->user()->user_id;
+        $oldPassword=$request->old_password;
+        $newPassword=$request->new_password;
+        if($oldPassword === $newPassword){
+            return response()->json('New password must be different from old pasword',401);
+            die();
+        }
+        else{
+        $UserId=auth('api')->user()->user_id;
         $UserPassword=DB::table('users')->where('user_id',$UserId)->pluck('password');
-		if($UserPassword[0]==bcrypt($oldPassword)){
-		 $newPassword=$request->new_password;
+		if( Hash::check($oldPassword , $UserPassword[0]  ) ){
+
 		 User::where('user_id',$UserId)
-		     ->where('password',bcrypt($oldPassword))
-			 ->update(['password'=>bcrypt($newPassword)]);
+			 ->update(['password'=>Hash::make($newPassword),'change_password'=>1, 'updated_at' =>date('Y-m-d H:i:s')]);
 		 	return response()->json('Password Has Been Changed',201);
 		}else{
 		    return response()->json('You Have Entered Wrong Password',401);
 		}
+
+        }
 
 	}
   public function createPassword(){
