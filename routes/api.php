@@ -84,7 +84,10 @@ Route::get('/remarks', 'PersonnelController@getRemarks');
 //PP Category
 Route::get('/setrule', 'categorization\PoststatController@getSubdivision');
 Route::post('/officebysubdivision', 'categorization\PoststatController@getOfficeBySubCat');
+//REPORT
+
 
 });
 
 Route::post('/deo', 'UserController@diocreation');
+Route::post('/print', 'Report\ReportController@report');

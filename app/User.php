@@ -31,4 +31,10 @@ class User extends Authenticatable
     public function findForPassport($identifier) {
         return $this->orWhere('email', $identifier)->orWhere('user_id', $identifier)->first();
     }
+    public function passwgen()
+    {
+        return $this->belongsTo('App\passwordgeneration');
+    }
+
+
 }

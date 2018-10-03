@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Permission;
 use App\Privilege;
+use App\passwordgeneration;
 class UserController extends Controller
 {
 	public function getState(){
@@ -206,8 +207,8 @@ class UserController extends Controller
 			$AddUser->is_active = 1;
 			$AddUser->created_at = now();
 			$AddUser->user_id = $user_id;
-			$rand=rand();
-			$AddUser->password = Hash::make($rand);
+			$pass=$this->random_password();
+	       	$AddUser->password = Hash::make($pass);
 			$AddUser->change_password =0 ;
 			$AddUser->save();
 
@@ -258,7 +259,8 @@ class UserController extends Controller
 		$levelparentId=$request->id;
 		$area=auth('api')->user()->area;
 		if($levelparentId=='05'){ //ADM
-		  (array)$adm=DB::select("select sub_user_code,sub_user_name from user_sub_level where user_type_code=".$levelparentId."");
+		  (array)$adm=DB::select("select sub_user_code,sub_user_name from user_sub_level where user_type_code=".$levelparentId." and sub_user_code='01'");
+		  //On the 03/10/2018 only ADM pp will Be shown
 		 foreach($adm as $admval){
 		 $arr[]=array('sub_user_code'=>$admval->sub_user_code,'sub_user_name'=>$admval->sub_user_name);
 		 }
@@ -409,12 +411,31 @@ class UserController extends Controller
         }
 
 	}
+
+	function random_password( $length = 8 ) {
+		$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?";
+		$password = substr( str_shuffle( $chars ), 0, $length );
+		return $password;
+	}
+
+
+
+
+
   public function createPassword(){
-	  User::where('area','23')
-		     ->where('level','10')->get()->each(function($user) {
-            $user->password = bcrypt($user->user_id);
-            $user->save();
+		
+	  
+	  User::where('area','13')->get()->each(function($user) {
+		    $pass=rand( 10000 , 99999 );
+			$user->password = bcrypt($user->user_id);
+			//$user->passwgen()->rand_id=$user->id;
+			//$user->passwgen()->rand_password=$pass;
+			
+			$user->save();
+          
         });
         echo 'Finished';
-    }
+	}
+	
+	
 }

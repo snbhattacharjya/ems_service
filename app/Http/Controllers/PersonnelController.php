@@ -69,7 +69,7 @@ class PersonnelController extends Controller
              'working_status' => 'required',
              
              
-             'mobile' => 'required|digits:10',
+           // 'mobile' => 'required|digits:10',
              'qualification_id' => 'required',
              'language_id' => 'required',
              'epic' => 'required',
@@ -96,12 +96,12 @@ class PersonnelController extends Controller
             $id = substr($officeid,0,4).'00001';
         }
         else{
-            $id = substr($officeid,0,4).str_pad($id+1,5,"0",STR_PAD_LEFT);
+            $id = substr($officeid,0,4).str_pad($id+1,8,"0",STR_PAD_LEFT);
         }
-
+// echo $id;
         $request = array_add($request,'id',$id);
         $request->validate([
-            'id' => 'required|unique:personnel|digits:9'
+            'id' => 'required|unique:personnel|digits:11'
         ]);
 
         $personnel =new personnel;
@@ -252,7 +252,7 @@ class PersonnelController extends Controller
     }
     public function getRemarks(){
 		
-		$remarks=DB::select('SELECT id,name FROM `remarks`');
+		$remarks=DB::select('SELECT id,name FROM `remarks` order by id asc');
 		 return response()->json($remarks,201);
 	}
 }
