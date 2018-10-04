@@ -166,8 +166,8 @@ class UserController extends Controller
 			$AddUser->is_active = 1;
 			$AddUser->created_at = now()->timestamp;
 			$AddUser->user_id = $msg;
-			$rand=rand();
-			$AddUser->password = Hash::make($msg);
+			$pass=$this->random_password();
+	       	$AddUser->password = Hash::make($pass);
 			$AddUser->change_password =1 ;
 			$AddUser->save();
 			$lastInsertedId=$AddUser->id; // get office id
@@ -207,8 +207,7 @@ class UserController extends Controller
 			$AddUser->is_active = 1;
 			$AddUser->created_at = now();
 			$AddUser->user_id = $user_id;
-			$pass=$this->random_password();
-	       	$AddUser->password = Hash::make($pass);
+			
 			$AddUser->change_password =0 ;
 			$AddUser->save();
 
