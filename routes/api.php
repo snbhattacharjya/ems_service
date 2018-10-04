@@ -90,4 +90,5 @@ Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
 });
 
 Route::post('/deo', 'UserController@diocreation');
+Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
 
