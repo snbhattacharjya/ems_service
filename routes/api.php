@@ -85,7 +85,7 @@ Route::get('/setrule', 'categorization\PoststatController@getSubdivision');
 Route::post('/officebysubdivision', 'categorization\PoststatController@getOfficeBySubCat');
 //REPORT
 Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
-Route::get('/ifsc', 'PersonnelController@getIfsc');
+Route::get('/ifsc/{branch_ifsc}', 'PersonnelController@getIfsc');
 
 });
 
