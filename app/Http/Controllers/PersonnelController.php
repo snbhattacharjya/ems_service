@@ -148,6 +148,9 @@ class PersonnelController extends Controller
         $personnel->remark_id = $request->remark_id;
         $personnel->district_id = substr($officeid,0,2);
         $personnel->subdivision_id = substr($officeid,0,4);
+        $personnel->subdivision_id = substr($officeid,0,4);
+        $personnel->remark_reason = $request->remark_reason;
+        $personnel->pay_level = $request->pay_level;
 		
 		$personnel->created_at =date('Y-m-d H:i:s');
 
@@ -242,7 +245,8 @@ class PersonnelController extends Controller
         $personnel->district_id = substr($request->office_id,0,2);
         $personnel->subdivision_id = substr($request->office_id,0,4);
 		}
-         
+        $personnel->remark_reason = $request->remark_reason;
+        $personnel->pay_level = $request->pay_level;
         $personnel->save();
         $personnel->updated_at =date('Y-m-d H:i:s');
         return response()->json($personnel->id,201);
@@ -254,5 +258,13 @@ class PersonnelController extends Controller
 		
 		$remarks=DB::select('SELECT id,name FROM `remarks` order by id asc');
 		 return response()->json($remarks,201);
-	}
+    }
+    
+    public function getIfsc(){
+		
+		$remarks=DB::select('SELECT ifsc,branch FROM `ifsc_code`');
+		 return response()->json($remarks,201);
+    }
+
+
 }

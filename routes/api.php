@@ -22,7 +22,6 @@ Route::post('/login', 'Auth\LoginController@login');
 //Logout Routes
 Route::get('/logout', 'Auth\LoginController@logout')->middleware('auth:api');
 
-Route::get('/createpassword', 'UserController@createPassword');
 Route::group([ 'middleware' => 'auth:api'], function()
 {
 //Report Routes
@@ -86,9 +85,12 @@ Route::get('/setrule', 'categorization\PoststatController@getSubdivision');
 Route::post('/officebysubdivision', 'categorization\PoststatController@getOfficeBySubCat');
 //REPORT
 Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
+Route::get('/ifsc', 'PersonnelController@getIfsc');
 
 });
 
-Route::post('/deo', 'UserController@diocreation');
-Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
+//Route::post('/deo', 'UserController@diocreation');
+//Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
 
+//Route::get('/createpassword', 'UserController@createPassword');
+//Route::get('/passwordinsert', 'UserController@passwordInsert');

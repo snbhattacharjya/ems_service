@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Permission;
 use App\Privilege;
-use App\passwordgeneration;
+use App\Passwordgeneration;
 class UserController extends Controller
 {
 	public function getState(){
@@ -424,17 +424,28 @@ class UserController extends Controller
   public function createPassword(){
 		
 	  
-	  User::where('area','13')->get()->each(function($user) {
-		    $pass=rand( 10000 , 99999 );
-			$user->password = bcrypt($user->user_id);
-			//$user->passwgen()->rand_id=$user->id;
-			//$user->passwgen()->rand_password=$pass;
-			
+	  User::where('area','23')->get()->each(function($user) {
+		    $pass=$this->random_password();
+			$user->password = bcrypt($pass);
 			$user->save();
+			DB::table('user_random_password')->insert(
+				['rand_id' =>$user->user_id  , 'rand_password' => $pass,'created_at'=>now()]
+				
+			);
+			
           
-        });
+		});
+		
+
         echo 'Finished';
 	}
+
 	
+ public function passwordInsert(){
+
+	User::where('area','13')->get();
+		
+ }
+
 	
 }
