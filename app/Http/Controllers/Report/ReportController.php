@@ -60,7 +60,6 @@ class ReportController extends Controller
                 where p.office_id='.$officeid.'');
                
                $result['assembly']= DB::select('SELECT sdv.name as subdivision,actemp.name as actemp,acperm.name as acpermanent,acoffice.name as acofficename
-              
                from  personnel p join offices o on p.office_id=o.id
                join subdivisions sdv on p.subdivision_id=sdv.id
                join assembly_constituencies actemp on  p.assembly_temp_id=actemp.id
