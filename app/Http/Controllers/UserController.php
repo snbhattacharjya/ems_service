@@ -173,6 +173,10 @@ class UserController extends Controller
 			$lastInsertedId=$AddUser->id; // get office id
 			//get office id
 			$this->getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code);
+			DB::table('user_random_password')->insert(
+				['rand_id' =>$msg  , 'rand_password' => $pass,'created_at'=>now()]
+				
+			);
             $msg ="User created succesfully with code - ".$msg;
         }
 
@@ -328,6 +332,8 @@ class UserController extends Controller
 			if(!empty($lastInsertedId)){
 
 			$this->getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code);
+			
+			
 			$arr=array('ok'=>'User Created with random Password','UserId'=>$lastInsertedId,'status'=>201);
 			}else{
 			$arr=array('ok'=>'ERROR','status'=>401);
