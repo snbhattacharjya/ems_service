@@ -13,13 +13,13 @@ class ReportController extends Controller
 
 
             public function report(Request $request){
-            
+              $arr=array();
              $reportMode=$request->report;
             
             
             if($reportMode=='pp1'){
               $officeid=$request->officeId;
-             $arr=array();
+            
              $arr['result']= DB::select("select f.id as officeID,f.name,
             f.identification_code,f.officer_designation,
             f.address,f.post_office,f.pin,f.email,f.mobile,f.fax,f.total_staff,
@@ -46,29 +46,32 @@ class ReportController extends Controller
 
               return response()->json($arr,201);
             }else if($reportMode=='pp2'){
-
+              $result=array();
                 $officeid=$request->officeId;
-                $result= DB::select('SELECT p.office_id,p.name as empname,p.designation,p.present_address,p.permanent_address,p.dob,p.gender,p.scale,
+                 $result['personel']= DB::select('SELECT p.office_id,p.name as empname,p.designation,p.present_address,p.permanent_address,p.dob,p.gender,p.scale,
                 p.basic_pay,p.grade_pay,p.emp_group,p.working_status,p.email,p.phone,p.mobile,p.epic,p.part_no,p.sl_no,p.post_stat,
-                p.branch_ifsc,p.bank_account_no,q.name as qualification,ln.name as languagename,blmtemp.name as blomtemp,
-                sdv.name as subdivision,actemp.name as actemp,acperm.name as acpermanent,acoffice.name as acofficename,blmoffice.name as blmoffice,
-                blmpermanent.name as blmpermanent,rmrks.name as remark
-                from  personnel p inner join qualifications q on p.qualification_id=q.id 
-                inner join languages ln on p.language_id=ln.id
-                inner join subdivisions sdv on p.subdivision_id=sdv.id
-                inner join assembly_constituencies actemp on  p.assembly_temp_id=actemp.id
-                inner join assembly_constituencies acperm on  p.assembly_perm_id=acperm.id
-                inner join assembly_constituencies acoffice on  p.assembly_off_id=acoffice.id
-                inner join block_munis blmoffice on  p.block_muni_off_id=blmoffice.id
-                inner join block_munis blmtemp on  p.block_muni_temp_id=blmtemp.id
-                inner join block_munis blmpermanent on  p.block_muni_perm_id=blmpermanent.id
-                inner join remarks rmrks on  p.remark_id=rmrks.id
+                p.branch_ifsc,p.bank_account_no
+                from  personnel p join offices o on p.office_id=o.id where p.office_id='.$officeid.'');
+
+                $result['qualification']= DB::select('SELECT q.name as qualification,rmrks.name as remark
+                from  personnel p join offices o on p.office_id=o.id
+                join qualifications q on p.qualification_id=q.id 
+                join remarks rmrks on  p.remark_id=rmrks.id
                 where p.office_id='.$officeid.'');
+               
+               $result['assembly']= DB::select('SELECT sdv.name as subdivision,actemp.name as actemp,acperm.name as acpermanent,acoffice.name as acofficename
+              
+               from  personnel p join offices o on p.office_id=o.id
+               join subdivisions sdv on p.subdivision_id=sdv.id
+               join assembly_constituencies actemp on  p.assembly_temp_id=actemp.id
+               join assembly_constituencies acperm on  p.assembly_perm_id=acperm.id
+               join assembly_constituencies acoffice on  p.assembly_off_id=acoffice.id
+               where p.office_id='.$officeid.'');
+               
               return response()->json($result,201);
             }else{
 
-
-                
+             
             }
 
          } 

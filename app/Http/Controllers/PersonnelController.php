@@ -112,7 +112,7 @@ class PersonnelController extends Controller
         $personnel->office_id = $request->office_id;
 
 		}
-
+        
         $personnel->name = $request->officer_name;
         $personnel->designation = $request->designation;
         $personnel->aadhaar = $request->aadhaar;
@@ -263,7 +263,7 @@ class PersonnelController extends Controller
     public function getIfsc(Request $request){
         $ifsc=$request->branch_ifsc;
 		if(!empty($ifsc)){
-        $remarks=DB::select('SELECT ifsc,branch FROM `ifsc_code` where ifsc="$ifsc"');
+        $remarks=DB::select('SELECT ifsc,branch FROM `ifsc_code` where ifsc="'.$ifsc.'"');
         if(empty($remarks)){
         return response()->json('Your Bank not in WB',201);
 
@@ -278,6 +278,12 @@ class PersonnelController extends Controller
 
         }
     }
+   public function is_personnel(){
+     echo 'hi';
+
+   }
 
 
+
+ 
 }

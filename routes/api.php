@@ -16,6 +16,8 @@ Route::middleware('auth:api')->get('/user','PermissionController@getPermission')
     return auth('api')->user();
 });*/
 //Register Routes
+Route::get('/a', 'PersonnelController@is_personnel');
+
 Route::post('/register', 'Auth\RegisterController@register');
 //Login Routes
 Route::post('/login', 'Auth\LoginController@login');
@@ -94,3 +96,4 @@ Route::get('/ifsc/{branch_ifsc}', 'PersonnelController@getIfsc');
 
 //Route::get('/createpassword', 'UserController@createPassword');
 //Route::get('/passwordinsert', 'UserController@passwordInsert');
+Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
