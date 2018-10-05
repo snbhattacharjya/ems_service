@@ -34,12 +34,16 @@ class PermissionController extends Controller
 	}
     $arr['dashboard']=(new DashboardController)->getOfficeData();
     $arr['user']['district']=$this->getDistrict($area);
-    $arr['election']=$this->getElection();
+	$arr['election']=$this->getElection();
+	
+     if($level===10){
     $office=DB::select('SELECT category_id FROM offices  WHERE id ='.$arr['user']['user_id'].' ');
     //print_r($office) ;
     foreach($office as $item){
         $arr['user']['officelevel']=$item->category_id;
+	}
     }
+
 	return response()->json($arr,200);
 	}
 	public function submenu($userId,$id){
