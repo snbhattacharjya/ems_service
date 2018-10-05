@@ -6,6 +6,8 @@ use App\Office;
 use \Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Hash;
 
 class OfficeController extends Controller
 {
@@ -130,37 +132,53 @@ class OfficeController extends Controller
         $office->total_staff =  $request->total_staff;
         $office->male_staff =  $request->male_staff;
         $office->female_staff =  $request->female_staff;
-		$office->created_at = date('Y-m-d H:i:s');
-		if($request->agree==true){
+        $office->created_at = date('Y-m-d H:i:s');
+       
+		if($request->agree==1){
 		$office->agree = 1;
 		}else{
 			$office->agree = 0;
 		}
-        $office->save();
+       $office->save();
+
+       $request=array('name'=>$request->office_name,'email'=>$request->email,'mobile'=>$request->mobile,'officer_designation'=>$request->officer_designation);
+        if($office->id!=''){
+            $this->createUserFromOffice($request,$office->id);
+          }
+       
+
 	    return response()->json($office->id,201);
 	}
-   public function createUserFromOffice($data,$user_id){
-	    print_r($data);
-	    $AddUser=new User;
-		$AddUser->name = $request->name;
-		$AddUser->email = $request->email;
-		$AddUser->mobile = $request->mobile;
-		//$AddUser->aadhaar = $request->aadhaar;
-		//$AddUser->designation = $request->designation;
+   public function createUserFromOffice($request,$user_id){
+        $user_id=$user_id;
+        $district=auth('api')->user()->area;
+        $AddUser=new User;
+		$AddUser->name = $request['name'];
+		$AddUser->email = $request['email'];
+        $AddUser->mobile = $request['mobile'];
+        $AddUser->designation = $request['officer_designation'];
 		$AddUser->level = 10;
-		$AddUser->area = $UserArea;
+		$AddUser->area = $district;
 		$AddUser->is_active = 1;
-		$AddUser->created_at = now()->timestamp;
+		$AddUser->created_at = date('Y-m-d H:i:s');;
 		$AddUser->user_id = $user_id;
-		$rand=rand();
-		$AddUser->password = Hash::make($rand);
+	    $pass=(new UserController)->random_password();
+		$AddUser->password = Hash::make($pass);
 		$AddUser->change_password =0 ;
-		//$AddUser->save();
+        $AddUser->save();
+        //add permission
+        $user_increment_id=$AddUser->id;
+        if($user_increment_id!=''){
+         (new UserController)->getDefaultMenuPermission_To_assignPermission($user_increment_id,10);
+        DB::table('user_random_password')->insert(
+        ['rand_id' =>$user_id  , 'rand_password' => $pass,'created_at'=>now()]
+          );
+        }
 	  }
 
     public function update(Request $request){
-		if($this->level===10 && $request->office_id != $this->userID){
-			return response()->json('Invalid Office',401);
+		 if($this->level===10 && $request->office_id != $this->userID){
+		 	return response()->json('Invalid Office',401);
 
 		}else{
 			 $request->validate([
@@ -186,6 +204,8 @@ class OfficeController extends Controller
         ]);
 
         $office =Office::find($request->office_id);
+       // print_r($office);exit;
+
         $office->id = $request->office_id;
         $office->name = $request->office_name;
         $office->identification_code = $request->identification_code;
@@ -193,9 +213,9 @@ class OfficeController extends Controller
         $office->address =  $request->office_address;
         $office->post_office =  $request->post_office;
         $office->pin =  $request->pin;
-		if(!$this->level===10){
+		//if(!$this->level===10){
         $office->subdivision_id = $request->subdivision_id;
-		}
+		//}
         $office->district_id = $this->district;
         $office->block_muni_id =  $request->block_muni_id;
         $office->police_station_id =  $request->police_station_id;
@@ -203,7 +223,6 @@ class OfficeController extends Controller
         $office->pc_id =  $request->pc_id;
         $office->category_id =  $request->category_id;
         $office->institute_id =  $request->institute_id;
-        $office->identification_code =  $request->identification_code;
         $office->email =  $request->email;
         $office->phone =  $request->phone;
         $office->mobile =  $request->mobile;
@@ -212,17 +231,19 @@ class OfficeController extends Controller
         $office->male_staff =  $request->male_staff;
         $office->female_staff =  $request->female_staff;
 		$office->updated_at = date('Y-m-d H:i:s');
-		if($request->agree==true){
+		if($request->agree==1){
 		$office->agree = 1;
 		}else{
 			$office->agree = 0;
-		}
+        }
+        
+        //echo $request->agree;exit;
         $office->save();
 
         return response()->json($office->id,201);
 
 
-		}
+		 }
 
     }
 

@@ -22,7 +22,7 @@ class PersonnelController extends Controller
 
     public function getAllPersonnel()
     {
-
+		 
         if($this->level===10){
             return Personnel::where('office_id' , $this->userID)->get();
 
@@ -40,9 +40,9 @@ class PersonnelController extends Controller
         return Personnel:: where('district_id','=',$this->district)
 			                  ->where('office_id' ,'=',$officeid)
 				              ->get();
-
+       
     }
-
+	
 
     public function getPersonnelById(Request $request)
     {
@@ -57,7 +57,7 @@ class PersonnelController extends Controller
          $request->validate([
              'officer_name' => 'required|string|max:50',
              'designation' => 'required|string|max:50',
-
+             
              'present_address' => 'required|string|max:100',
              'permanent_address' => 'required|string|max:100',
              'dob' => 'required|date',
@@ -67,8 +67,8 @@ class PersonnelController extends Controller
              'grade_pay' => 'required|numeric',
              'emp_group' => 'required',
              'working_status' => 'required',
-
-
+             
+             
            // 'mobile' => 'required|digits:10',
              'qualification_id' => 'required',
              'language_id' => 'required',
@@ -83,7 +83,7 @@ class PersonnelController extends Controller
              'block_muni_temp_id' => 'required',
              'branch_ifsc' => 'required',
              'bank_account_no' => 'required|numeric'
-
+             
 
 
          ]);
@@ -112,7 +112,7 @@ class PersonnelController extends Controller
         $personnel->office_id = $request->office_id;
 
 		}
-
+        
         $personnel->name = $request->officer_name;
         $personnel->designation = $request->designation;
         $personnel->aadhaar = $request->aadhaar;
@@ -151,7 +151,7 @@ class PersonnelController extends Controller
         $personnel->subdivision_id = substr($officeid,0,4);
         $personnel->remark_reason = $request->remark_reason;
         $personnel->pay_level = $request->pay_level;
-
+		
 		$personnel->created_at =date('Y-m-d H:i:s');
 
         $personnel->save();
@@ -162,19 +162,20 @@ class PersonnelController extends Controller
     public function update(Request $request)
     {
 
-
+	 
 
 
          $request->validate([
              'officer_name' => 'required|string|max:50',
              'designation' => 'required|string|max:50',
-
+             
              'present_address' => 'required|string|max:100',
              'permanent_address' => 'required|string|max:100',
              'dob' => 'required|date',
              'gender' => 'required',
              'scale' => 'required',
              'basic_pay' => 'required|numeric',
+             'grade_pay' => 'required|numeric',
              'emp_group' => 'required',
              'working_status' => 'required',
              'mobile' => 'required|digits:10',
@@ -191,7 +192,7 @@ class PersonnelController extends Controller
              'block_muni_temp_id' => 'required',
              'branch_ifsc' => 'required',
              'bank_account_no' => 'required|numeric',
-
+             
 
 
          ]);
@@ -250,33 +251,39 @@ class PersonnelController extends Controller
         $personnel->updated_at =date('Y-m-d H:i:s');
         return response()->json($personnel->id,201);
 
-
+   
 
     }
     public function getRemarks(){
-
+		
 		$remarks=DB::select('SELECT id,name FROM `remarks` order by id asc');
 		 return response()->json($remarks,201);
     }
-
+    
     public function getIfsc(Request $request){
         $ifsc=$request->branch_ifsc;
 		if(!empty($ifsc)){
-        $branch=DB::select('SELECT ifsc,branch FROM `ifsc_code` where ifsc="'.$ifsc.'"');
-        if(empty($branch)){
+        $remarks=DB::select('SELECT ifsc,branch FROM `ifsc_code` where ifsc="'.$ifsc.'"');
+        if(empty($remarks)){
         return response()->json('Your Bank not in WB',201);
 
         }else{
-            return response()->json($branch,201);
+            return response()->json($remarks,201);
         }
-
-
-
+        
+       
+    
     }else{
             return response()->json('please entered',201);
 
         }
     }
+   public function is_personnel(){
+     echo 'hi';
+
+   }
 
 
+
+ 
 }
