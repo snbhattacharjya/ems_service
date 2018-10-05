@@ -66,8 +66,27 @@ class ReportController extends Controller
                join assembly_constituencies acperm on  p.assembly_perm_id=acperm.id
                join assembly_constituencies acoffice on  p.assembly_off_id=acoffice.id
                where p.office_id='.$officeid.'');
+              $arr=array();
+              $arr=$result['personel'];
+              $i=0;
+             foreach($arr as $a){
+               foreach($result['qualification'] as $q){
+                 $a->qualification=$q->qualification;
+                 $a->remark=$q->remark;
+               }
+             }
+             foreach($arr as $a){
+              foreach($result['assembly'] as $as){
+                $a->subdivision=$as->subdivision;
+                $a->actemp=$as->actemp;
+                $a->acpermanent=$as->acpermanent;
+                $a->acofficename=$as->acofficename;
+              }
+            }
+             
+
                
-              return response()->json($result,201);
+              return response()->json($arr,201);
             }else{
 
              
