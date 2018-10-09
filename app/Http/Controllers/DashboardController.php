@@ -19,8 +19,9 @@ class DashboardController extends Controller
 			//echo $this->level;
 	    if($this->level===3 || $this->level===5 || $this->level===4 || $this->level===12){
 			
-			
-				  
+			$distinct="SELECT count(DISTINCT(office_id)) as office_count FROM `personnel` where district_id='".$this->district."'";
+			$distinct_office = DB::select($distinct);
+			$arr['distinct_office']=$distinct_office[0]->office_count;	  
 			$sql="SELECT count(*)id from offices where district_id='".$this->district."'";
 			$office = DB::select($sql);
 			if(!empty($office[0]->id)){
@@ -44,6 +45,10 @@ class DashboardController extends Controller
 
 		}elseif($this->level===10){
 			
+			$distinct="SELECT count(DISTINCT(office_id)) as office_count FROM `personnel` where district_id='".$this->district."' and id='".$this->userID."'";
+			$distinct_office = DB::select($distinct);
+			$arr['distinct_office']=$distinct_office[0]->office_count;	  
+
             $sql="SELECT count(*)id from offices where district_id='".$this->district."' and id='".$this->userID."'";
             $office = DB::select($sql);
             $arr['totalOffice']=$office[0]->id;
@@ -62,7 +67,11 @@ class DashboardController extends Controller
                 $arr['status']=201;
 
 		}elseif($this->level===6){//SDO
-			    $subdivision_id=substr($this->userID,-4);
+				$subdivision_id=substr($this->userID,-4);
+				$distinct="SELECT count(DISTINCT(office_id)) as office_count FROM `personnel` where `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
+			    $distinct_office = DB::select($distinct);
+			    $arr['distinct_office']=$distinct_office[0]->office_count;	
+
 				$sql="SELECT count(*)id  FROM `offices` WHERE `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
 				$office = DB::select($sql);
 				$arr['totalOffice']=$office[0]->id;
@@ -83,7 +92,12 @@ class DashboardController extends Controller
 
 		}elseif($this->level===7){//BDO
 			
-               $block_munis=substr($this->userID,-6);
+			   $block_munis=substr($this->userID,-6);
+			   
+               $distinct="SELECT count(DISTINCT(office_id)) as office_count FROM `personnel` where `block_muni_id` = '".$block_munis."' and district_id='".$this->district."'";
+			    $distinct_office = DB::select($distinct);
+			    $arr['distinct_office']=$distinct_office[0]->office_count;	
+
 				$sql="SELECT count(*)id  FROM `offices` WHERE `block_muni_id` = '".$block_munis."' and district_id='".$this->district."'";
 				$office = DB::select($sql);
 				$arr['totalOffice']=$office[0]->id;
@@ -103,6 +117,7 @@ class DashboardController extends Controller
                 $arr['status']=201;
 
 		}else if($this->userID=='WBCEO'){
+			$arr['distinct_office']=100000;
 				 $arr['totalOffice']=9178;
 				 $arr['totalfemale']=23803;
 				 $arr['totalMale']=97619;

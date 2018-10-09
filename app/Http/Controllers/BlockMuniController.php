@@ -16,5 +16,7 @@ class BlockMuniController extends Controller
     public function getBlockMunis()
     {
 		return DB::select("select id,UPPER(name) as name,subdivision_id from block_munis where SUBSTRING(id,1,2)= ?",[$this->district]);
+   
+   
     }
 }

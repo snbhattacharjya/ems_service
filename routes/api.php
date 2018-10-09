@@ -72,6 +72,7 @@ Route::get('/institutes', 'InstituteController@getInstitutes');
 
 //Assembly Routes
 Route::get('/assemblies', 'AssemblyConstituencyController@getAssemblies');
+Route::get('/allassemblies', 'AssemblyConstituencyController@getAssembliesAll');
 
 //PC Routes
 Route::get('/pcs', 'ParliamentaryConstituencyController@getPcs');
@@ -96,4 +97,5 @@ Route::get('/ifsc/{branch_ifsc}', 'PersonnelController@getIfsc');
 
 //Route::get('/createpassword', 'UserController@createPassword');
 //Route::get('/passwordinsert', 'UserController@passwordInsert');
-Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
+//Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
+ Route::get('/generateletter', 'GenerateLetterController@generateLetter');

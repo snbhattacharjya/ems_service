@@ -213,9 +213,9 @@ class OfficeController extends Controller
         $office->address =  $request->office_address;
         $office->post_office =  $request->post_office;
         $office->pin =  $request->pin;
-		//if(!$this->level===10){
+		if($this->level!=10){
         $office->subdivision_id = $request->subdivision_id;
-		//}
+		}
         $office->district_id = $this->district;
         $office->block_muni_id =  $request->block_muni_id;
         $office->police_station_id =  $request->police_station_id;

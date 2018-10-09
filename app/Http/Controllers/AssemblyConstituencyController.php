@@ -17,4 +17,10 @@ class AssemblyConstituencyController extends Controller{
     {
         return AssemblyConstituency::where('district_id' , $this->district)->get();
     }
+    public function getAssembliesAll()
+    {
+        return AssemblyConstituency::all();
+    }
+
+
 }
