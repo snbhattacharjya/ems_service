@@ -99,11 +99,12 @@ class OfficeController extends Controller
         $id = $id[0]->MaxID;
 
         if(is_null($id)){
-            $id = $request->subdivision_id.'0001';
+            $id = $request->subdivision_id.'000001';
         }
         else{
             $id = $request->subdivision_id.str_pad($id+1,6,"0",STR_PAD_LEFT);
         }
+       // echo  $id;exit;
         $request = array_add($request,'id',$id);
         $request->validate([
             'id' => 'required|unique:offices|digits:10'
@@ -140,7 +141,7 @@ class OfficeController extends Controller
 			$office->agree = 0;
 		}
        $office->save();
-
+        //echo $office->id;
        $request=array('name'=>$request->office_name,'email'=>$request->email,'mobile'=>$request->mobile,'officer_designation'=>$request->officer_designation);
         if($office->id!=''){
             $this->createUserFromOffice($request,$office->id);

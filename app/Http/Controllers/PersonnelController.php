@@ -52,8 +52,7 @@ class PersonnelController extends Controller
     }
     public function store(Request $request)
     {
-
-
+       
          $request->validate([
              'officer_name' => 'required|string|max:50',
              'designation' => 'required|string|max:50',
@@ -64,7 +63,7 @@ class PersonnelController extends Controller
              'gender' => 'required',
              'scale' => 'required',
              'basic_pay' => 'required|numeric',
-             'grade_pay' => 'required|numeric',
+             //'grade_pay' => 'required|numeric',
              'emp_group' => 'required',
              'working_status' => 'required',
              
@@ -73,32 +72,39 @@ class PersonnelController extends Controller
              'qualification_id' => 'required',
              'language_id' => 'required',
              'epic' => 'required',
-             'part_no' => 'numeric',
-             'sl_no' => 'numeric',
+            // 'part_no' => 'numeric',
+             //'sl_no' => 'numeric',
              'assembly_temp_id' => 'required',
              'assembly_perm_id' => 'required',
              'assembly_off_id' => 'required',
-             'block_muni_temp_id' => 'required',
-             'block_muni_temp_id' => 'required',
-             'block_muni_temp_id' => 'required',
+             //'block_muni_temp_id' => 'required',
+             //'block_muni_temp_id' => 'required',
+             //'block_muni_temp_id' => 'required',
              'branch_ifsc' => 'required',
              'bank_account_no' => 'required|numeric'
              
 
 
          ]);
-		if($this->level===10){$officeid=$this->userID;}else{$officeid=$request->office_id; }
+		if($this->level===10){
+            $officeid=$this->userID;
+           
+        }else{
+            $officeid=$request->office_id;
+         }
         $id = DB::select('SELECT MAX(CAST(SUBSTR(id,-5) AS UNSIGNED)) AS MaxID FROM personnel WHERE subdivision_id = ?',[substr($officeid,0,4)]);
 
         $id = $id[0]->MaxID;
 
         if(is_null($id)){
-            $id = substr($officeid,0,4).'00001';
+            $id = substr($officeid,0,4).'0000001';
         }
         else{
-            $id = substr($officeid,0,4).str_pad($id+1,8,"0",STR_PAD_LEFT);
+            $id = substr($officeid,0,4).str_pad($id+1,7,"0",STR_PAD_LEFT);
         }
-// echo $id;
+     
+      //print_r($request->all());exit;
+         echo  $id;
         $request = array_add($request,'id',$id);
         $request->validate([
             'id' => 'required|unique:personnel|digits:11'
@@ -107,9 +113,10 @@ class PersonnelController extends Controller
         $personnel =new personnel;
         $personnel->id = $request->id;
 		if($this->level===10){
-			$personnel->office_id = $this->userID;
+            $personnel->office_id = $this->userID;
+         
 		}else{
-        $personnel->office_id = $request->office_id;
+        $personnel->office_id = $officeid;
 
 		}
         
@@ -148,14 +155,11 @@ class PersonnelController extends Controller
         $personnel->remark_id = $request->remark_id;
         $personnel->district_id = substr($officeid,0,2);
         $personnel->subdivision_id = substr($officeid,0,4);
-        $personnel->subdivision_id = substr($officeid,0,4);
         $personnel->remark_reason = $request->remark_reason;
         $personnel->pay_level = $request->pay_level;
-		
 		$personnel->created_at =date('Y-m-d H:i:s');
-
         $personnel->save();
-
+      
         return response()->json($personnel->id,201);
 
     }
@@ -175,21 +179,21 @@ class PersonnelController extends Controller
              'gender' => 'required',
              'scale' => 'required',
              'basic_pay' => 'required|numeric',
-             'grade_pay' => 'required|numeric',
+             //'grade_pay' => 'required|numeric',
              'emp_group' => 'required',
              'working_status' => 'required',
              'mobile' => 'required|digits:10',
              'qualification_id' => 'required',
              'language_id' => 'required',
              'epic' => 'required',
-             'part_no' => 'numeric',
-             'sl_no' => 'numeric',
+             //'part_no' => 'numeric',
+            // 'sl_no' => 'numeric',
              'assembly_temp_id' => 'required',
              'assembly_perm_id' => 'required',
              'assembly_off_id' => 'required',
-             'block_muni_temp_id' => 'required',
-             'block_muni_temp_id' => 'required',
-             'block_muni_temp_id' => 'required',
+            // 'block_muni_temp_id' => 'required',
+             //'block_muni_temp_id' => 'required',
+            // 'block_muni_temp_id' => 'required',
              'branch_ifsc' => 'required',
              'bank_account_no' => 'required|numeric',
              

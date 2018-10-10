@@ -98,4 +98,5 @@ Route::get('/ifsc/{branch_ifsc}', 'PersonnelController@getIfsc');
 //Route::get('/createpassword', 'UserController@createPassword');
 //Route::get('/passwordinsert', 'UserController@passwordInsert');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
- Route::get('/generateletter', 'GenerateLetterController@generateLetter');
+ //Route::get('/generateletter', 'GenerateLetterController@generateLetter');
+ //Route::get('/allassemblies', 'AssemblyConstituencyController@getAssembliesAll');

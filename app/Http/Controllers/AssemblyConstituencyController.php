@@ -19,6 +19,7 @@ class AssemblyConstituencyController extends Controller{
     }
     public function getAssembliesAll()
     {
+        
         return AssemblyConstituency::all();
     }
 

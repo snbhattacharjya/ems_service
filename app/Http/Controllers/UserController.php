@@ -215,7 +215,7 @@ class UserController extends Controller
 			$AddUser->change_password =0 ;
 			$AddUser->save();
 
-			$arr=array('ok'=>'User Created with random Password','UserId'=>$lastInsertedId,'status'=>201);
+			$arr=array('ok'=>'User Created with Updated','UserId'=>$lastInsertedId,'status'=>201);
 
 		    return response()->json($arr);
 
