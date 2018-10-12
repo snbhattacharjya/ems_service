@@ -16,7 +16,7 @@ class ReportController extends Controller
 	
    public function getReport(){
 	  $arr=array();
-	 if($this->district=='' & ($this->userID="WBCEO" || $this->userID=="WBCEONODAL")){
+	 if($this->district=='' && ($this->userID="WBCEO" || $this->userID=="WBCEONODAL")){
 	//echo 'For Wb CEO';exit;
 		$sqlAvailable='SELECT d.name,p.district_id,
                     SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1 ELSE 0 END) AS MO_M, 
@@ -63,7 +63,7 @@ class ReportController extends Controller
 			 }
 		   }
 		return response()->json($reportAvailable,200);
-	 }else if($this->district!='' & ($this->level===3 || $this->level===4|| $this->level===12)){// For District User
+	 }else if($this->district!='' && ($this->level===3 || $this->level===4|| $this->level===12)){// For District User
 		
 		 $sqlAvailable='SELECT d.name,
                     SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1 ELSE 0 END) AS MO_M, 

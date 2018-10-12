@@ -33,7 +33,7 @@ class User extends Authenticatable
     }
     public function passwgen()
     {
-        return $this->belongsTo('App\passwordgeneration');
+        return $this->belongsToMany('App\passwordgeneration');
     }
 
 

@@ -12,9 +12,9 @@ use Illuminate\Http\Request;
 |
 */
 Route::middleware('auth:api')->get('/user','PermissionController@getPermission');
-/*Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::get('/userauth', function (Request $request) {
     return auth('api')->user();
-});*/
+});
 //Register Routes
 Route::get('/a', 'PersonnelController@is_personnel');
 
@@ -89,6 +89,7 @@ Route::post('/officebysubdivision', 'categorization\PoststatController@getOffice
 //REPORT
 Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
 Route::get('/ifsc/{branch_ifsc}', 'PersonnelController@getIfsc');
+Route::get('/export/{mode}', 'Export\UserExport@userexport');
 
 });
 
@@ -100,3 +101,5 @@ Route::get('/ifsc/{branch_ifsc}', 'PersonnelController@getIfsc');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
  //Route::get('/generateletter', 'GenerateLetterController@generateLetter');
  //Route::get('/allassemblies', 'AssemblyConstituencyController@getAssembliesAll');
+ Route::get('/export/{mode}/{token}', 'Export\UserExport@userexport');
+ Route::get('/checkuser/{mode}/{token}', 'Export\UserExport@checkAuth');
