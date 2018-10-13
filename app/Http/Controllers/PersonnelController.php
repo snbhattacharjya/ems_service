@@ -52,7 +52,16 @@ class PersonnelController extends Controller
     }
     public function store(Request $request)
     {
-       
+
+        if($this->level===10){
+            $officeid=$this->userID;
+           
+        }else{
+            $officeid=$request->office_id;
+         }
+      
+
+         if($this->is_personnelOffice_countMatch($officeid)){
          $request->validate([
              'officer_name' => 'required|string|max:50',
              'designation' => 'required|string|max:50',
@@ -86,12 +95,12 @@ class PersonnelController extends Controller
 
 
          ]);
-		if($this->level===10){
-            $officeid=$this->userID;
-           
-        }else{
-            $officeid=$request->office_id;
-         }
+	
+        
+
+
+
+
         $id = DB::select('SELECT MAX(CAST(SUBSTR(id,-5) AS UNSIGNED)) AS MaxID FROM personnel WHERE subdivision_id = ?',[substr($officeid,0,4)]);
 
         $id = $id[0]->MaxID;
@@ -105,6 +114,7 @@ class PersonnelController extends Controller
      
       //print_r($request->all());exit;
         // echo  $id;
+
         $request = array_add($request,'id',$id);
         $request->validate([
             'id' => 'required|unique:personnel|digits:11'
@@ -161,7 +171,10 @@ class PersonnelController extends Controller
         $personnel->save();
       
         return response()->json($personnel->id,201);
+        }else{
 
+        return response()->json("Total Number Exceeded",401);   
+        }
     }
     public function update(Request $request)
     {
@@ -282,8 +295,28 @@ class PersonnelController extends Controller
 
         }
     }
-   public function is_personnel(){
-     echo 'hi';
+   public function is_personnelOffice_countMatch($officeId){
+    $officeStuff="SELECT total_staff as officeStuff FROM `offices`  where district_id='".$this->district."' and id='".$officeId."'";
+    $officeStuff = DB::select($officeStuff);
+    $officeStuff=$officeStuff[0]->officeStuff;	 
+    
+       $sql='SELECT  count(o.id) as totalEmployee
+						  FROM personnel p
+						  inner join offices o on (o.id=p.office_id )
+						  where o.district_id="'.$this->district.'" and p.office_id="'.$officeId.'"';	
+						
+				$office = DB::select($sql);
+				
+        $totalEmployee=$office[0]->totalEmployee;
+        if($officeStuff>=$totalEmployee){
+         return true;
+
+        }else{
+           
+            return false;
+        }        
+
+
 
    }
 

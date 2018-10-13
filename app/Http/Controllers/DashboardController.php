@@ -49,9 +49,9 @@ class DashboardController extends Controller
             $officeStuff = DB::select($officeStuff);
         	$arr['officeStuff']=$officeStuff[0]->officeStuff;	  
 
-            $sql="SELECT count(*)id from offices where district_id='".$this->district."' and id='".$this->userID."'";
-            $office = DB::select($sql);
-            $arr['totalOffice']=$office[0]->id;
+            // $sql="SELECT count(*)id from offices where district_id='".$this->district."' and id='".$this->userID."'";
+            // $office = DB::select($sql);
+            // $arr['totalOffice']=$office[0]->id;
             $sql='SELECT  count(o.id) as totalEmployee,
 						  sum(CASE WHEN p.gender = "M" THEN 1 ELSE 0 END) AS Male, 
 						  sum(CASE WHEN p.gender = "F" THEN 1 ELSE 0 END) AS Female 
