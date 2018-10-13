@@ -308,7 +308,7 @@ class PersonnelController extends Controller
 				$office = DB::select($sql);
 				
         $totalEmployee=$office[0]->totalEmployee;
-        if($officeStuff>=$totalEmployee){
+        if($officeStuff>$totalEmployee){
          return true;
 
         }else{
