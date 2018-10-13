@@ -104,7 +104,7 @@ class PersonnelController extends Controller
         }
      
       //print_r($request->all());exit;
-         echo  $id;
+        // echo  $id;
         $request = array_add($request,'id',$id);
         $request->validate([
             'id' => 'required|unique:personnel|digits:11'

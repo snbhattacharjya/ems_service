@@ -45,9 +45,9 @@ class DashboardController extends Controller
 
 		}elseif($this->level===10){
 			
-			$distinct="SELECT count(DISTINCT(office_id)) as office_count FROM `personnel` where district_id='".$this->district."' and id='".$this->userID."'";
-			$distinct_office = DB::select($distinct);
-			$arr['distinct_office']=$distinct_office[0]->office_count;	  
+			$officeStuff="SELECT total_staff as officeStuff FROM `offices`  where district_id='".$this->district."' and id='".$this->userID."'";
+            $officeStuff = DB::select($officeStuff);
+        	$arr['officeStuff']=$officeStuff[0]->officeStuff;	  
 
             $sql="SELECT count(*)id from offices where district_id='".$this->district."' and id='".$this->userID."'";
             $office = DB::select($sql);
