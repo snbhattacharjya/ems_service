@@ -20,13 +20,14 @@ class PoststatController extends Controller
 			  $arr['office_category']=Category::all();
 			  $arr['office_category'][]=array('id'=>'ALL','name'=>'All');
 			  return response()->json($arr,200);
-			
+
 			}
 	        public function getOfficeBySubCat(Request $request){
 			$district=$this->district;
-			$subdivision_id=$request->subdivision_id; 
-			$category_id[]=$request->category_id;
-			$category_clause='';
+			$subdivision_id=$request->subdivision_id;
+            $category_id=$request->category_id;
+
+            $category_clause='';
 			if(!empty($subdivision_id) and !empty($category_id)){
 				for($i = 0; $i < count($category_id); $i++){
 					if($category_id[$i] != 'ALL'){
@@ -36,60 +37,60 @@ class PoststatController extends Controller
 						break;
 					}
 				}
-			
+
 
 				$category_clause=rtrim($category_clause,',');
-			
+
 				if($category_clause == 'ALL'){
 
 					$sql="select id AS officecode,name AS officename from offices where subdivision_id='$subdivision_id' AND district_id='$district'";
-					
-					$arr['office']=DB::select($sql);
+
+                    $office=DB::select($sql);
+                    $arr['office']=(array)$office;
 					return response()->json($arr,200);
 				}else if($category_clause!='ALL'){
 					$sql="select id AS officecode,name AS officename from offices where category_id IN ($category_clause) AND subdivision_id='$subdivision_id'AND district_id='$district'  ";
-				  
-				
-					$arr['office']=DB::select($sql);
+                    $office=DB::select($sql);
+                    $arr['office']=(array)$office;
 					return response()->json($arr,200);
 
 				}else
 				{
-					$arr['erorr']="Please select all option";	 
-					return response()->json($arr,200);	
+					$arr['erorr']="Please select all option";
+					return response()->json($arr,200);
 
 				}
 
-		
+
 
 			}
 
 
-		
+
 		  }
 
 		  //*************************** fetch qualification of PP using office code  *********************************//
 		  public function fetch_qualification_by_oficecode (Request $request)
-		  
+
 		  {
 			  $district=$this->district;                           ///////////////////data pass through URL: district, subdivision_id, category _id, office_id  ///////////////////
 			  $subdivision_id=$request->subdivision_id;
-			  $category_id[]=$request->category_id;
-			  $office_id[]=$request->office_id;
+			  $category_id=$request->category_id;
+			  $office_id=$request->office_id;
 
 			  $category_clause='';
 			  if(!empty($subdivision_id) and !empty($category_id)){
 				  for($i = 0; $i < count($category_id); $i++){
 					  if($category_id[$i] != 'ALL')
 					  $category_clause.=$category_id[$i].",";
-			  
+
 					  else{
 						  $category_clause='ALL';
 						  break;
 					  }
 				  }
 				}
-			  
+
 				  $category_clause=rtrim($category_clause,',');
 
 				  $office_clause='';
@@ -100,7 +101,7 @@ class PoststatController extends Controller
 		            $office_clause='ALL';
 		        break;
 			   }
-			   
+
 				}
 				$office_clause=rtrim($office_clause,',');
 				$clause="";
@@ -114,7 +115,7 @@ class PoststatController extends Controller
                 if($office_clause != 'ALL')
 	            $clause=$clause."AND offices.id IN ($office_clause)";
 
-				$sql="select id AS QualificationCode, name AS QualificationName FROM qualifications Where qualifications.id In(SELECT DISTINCT (qualification_id)FROM personnel INNER JOIN offices ON personnel.office_id=offices.id WHERE $clause)ORDER BY qualifications.id";		
+				$sql="select id AS QualificationCode, name AS QualificationName FROM qualifications Where qualifications.id In(SELECT DISTINCT (qualification_id)FROM personnel INNER JOIN offices ON personnel.office_id=offices.id WHERE $clause)ORDER BY qualifications.id";
 				//echo('<pre>');
 				//dd($sql);
 				$arr['office']=DB::select($sql);
@@ -122,11 +123,11 @@ class PoststatController extends Controller
 
 
 
-			  
+
 		  }
 
 		//************************************* Fetch Designation of office perssonel by clause   *********************/
-		
+
 		public function fetch_designation_of_pp(Request $request)
 		{
 
@@ -135,29 +136,29 @@ class PoststatController extends Controller
 			//$category_id=explode(",",$request->category_id);
 			$category_id=explode(",",$request->category_id);
 			//dd($category_id);
-			$office_id[]=$request->office_id;
-			$qualification_id[]=$request->qualification_id;
-			$grade_pay[]=$request->grade_pay;
-			$basic_pay[]=$request->basic_pay;
+			$office_id=$request->office_id;
+			$qualification_id=$request->qualification_id;
+			$grade_pay=$request->grade_pay;
+			$basic_pay=$request->basic_pay;
 		//	dd($basic_pay
 		//);
-			
+
 			$basic_pay1=$basic_pay[0];
 			$grade_pay1=$grade_pay[0];
 			$actual_grade_pay=explode(",",$grade_pay1);
 			//dd($actual_grade_pay[1]);
 			$actual_basic_pay=explode(",",$basic_pay1);
-			
+
 			$not_qualification=$request->not_qualification;
 
 
-			
+
 			$category_clause='';
 			if(!empty($subdivision_id) and !empty($category_id)){
 				for($i = 0; $i < count($category_id); $i++){
 					if($category_id[$i] != 'ALL')
 					$category_clause.=$category_id[$i].",";
-			
+
 					else{
 						$category_clause='ALL';
 						break;
@@ -165,7 +166,7 @@ class PoststatController extends Controller
 				}
 			  }
 
-			  
+
 			  $category_clause=rtrim($category_clause,',');
 
 			  $office_clause='';
@@ -177,7 +178,7 @@ class PoststatController extends Controller
 				$office_clause='ALL';
 			break;
 		      }
-		   
+
 			}
 			$office_clause=rtrim($office_clause,',');
 
@@ -191,14 +192,14 @@ class PoststatController extends Controller
 		         $qualification_clause='ALL';
 		         break;
 		  }
-			  
+
          }
 
 		$qualification_clause=rtrim($qualification_clause,',');
-		
+
 		$clause="";
 		$clause.=" personnel.basic_pay BETWEEN $actual_basic_pay[0] AND $actual_basic_pay[1]";
-		
+
 
 		$clause.=" AND personnel.grade_pay BETWEEN $actual_grade_pay[0] AND $actual_grade_pay[1]";
 
@@ -229,7 +230,7 @@ class PoststatController extends Controller
 		}
 
 
-	//************************************* fetch remarks of PP by condions *****************************************//	
+	//************************************* fetch remarks of PP by condions *****************************************//
 
 	 public function fetch_remarks_by_condition(Request $request)
 	 {
@@ -252,8 +253,8 @@ class PoststatController extends Controller
 		$not_designation=$request->not_designation;
 		$basic_pay1=$basic_pay[0];
 		$grade_pay1=$grade_pay[0];
-		
-		
+
+
 		$actual_grade_pay=explode(",",$grade_pay1);
 		//dd($actual_grade_pay[1]);
 		$actual_basic_pay=explode(",",$basic_pay1);
@@ -263,7 +264,7 @@ class PoststatController extends Controller
 				for($i = 0; $i < count($category_id); $i++){
 					if($category_id[$i] != 'ALL')
 					$category_clause.=$category_id[$i].",";
-			
+
 					else{
 						$category_clause='ALL';
 						break;
@@ -280,11 +281,11 @@ class PoststatController extends Controller
 				   $office_clause='ALL';
 			   break;
 			  }
-			  
+
 			   }
 			   $office_clause=rtrim($office_clause,',');
 
-			   
+
 			$qualification_clause='';
            for($i = 0; $i < count($qualification_id); $i++){
 	       if($qualification_id[$i] != 'ALL')
@@ -293,15 +294,15 @@ class PoststatController extends Controller
 		         $qualification_clause='ALL';
 		         break;
 			  }
-			  
+
          }
 
 		$qualification_clause=rtrim($qualification_clause,',');
 
 		if(strlen($qualification_clause) > 50)
 		{
-		$arr['erorr']="Qualification length can not be greater than 50";	 
-		return response()->json($arr,200);	
+		$arr['erorr']="Qualification length can not be greater than 50";
+		return response()->json($arr,200);
 		}
 
 
@@ -320,12 +321,12 @@ class PoststatController extends Controller
 
        if(strlen($designation_clause) > 200)
       {
-       $arr['erorr']="designation length can not be greater than 200";	 
-       return response()->json($arr,200);	
+       $arr['erorr']="designation length can not be greater than 200";
+       return response()->json($arr,200);
       }
         $clause="";
 		$clause.=" personnel.basic_pay BETWEEN $actual_basic_pay[0] AND $actual_basic_pay[1]";
-		
+
 
 		$clause.=" AND personnel.grade_pay BETWEEN $actual_grade_pay[0] AND $actual_grade_pay[1]";
 		if($qualification_clause != 'ALL' && $not_qualification == 0){
@@ -335,7 +336,7 @@ class PoststatController extends Controller
 			$clause.=" AND personnel.qualification_id NOT IN ($qualification_clause)";
 		}
 
-		
+
 	if($designation_clause != 'ALL' && $not_designation == 0)
 	 {
 	$clause.=" AND personnel.designation IN ($designation_clause)";
@@ -367,11 +368,11 @@ class PoststatController extends Controller
 	 }
   //Load PP Post Status
    public function loadPostStat(){
-   
+
    $post_stat_query="SELECT post_stat AS PostCode, poststatus AS PostName FROM pp_poststat ORDER BY post_stat";
    $arr['poststatus']=DB::select($post_stat_query);
    return response()->json($arr,200);
-   
+
 
 }
 
