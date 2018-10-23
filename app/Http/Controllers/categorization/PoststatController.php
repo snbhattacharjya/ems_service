@@ -367,24 +367,149 @@ class PoststatController extends Controller
 	 }
   //Load PP Post Status
    public function loadPostStat(){
-   
    $post_stat_query="SELECT post_stat AS PostCode, poststatus AS PostName FROM pp_poststat ORDER BY post_stat";
    $arr['poststatus']=DB::select($post_stat_query);
    return response()->json($arr,200);
-   
+   }
+ 
+   public function saveRule(Request $request){
+        	$subdiv=$request->subdivision_id;
+			$govt=$request->category_id;
+			$officecd=$request->office_id;
+			$basic_pay=explode(';',$request->basic_pay);
+			$grade_pay=explode(';',$request->grade_pay);
+			$qualification=$request->qualification_id;
+			$not_qualification=$request->not_qualification;
+			$desg=$request->designation;
+			$not_designation=$request->not_designation;
+			$gender=$request->gender;
+			$age=$request->age;
+			$remarks=$request->remarks;
+			$not_remarks=$request->not_remarks;
+			$post_stat_from=$request->post_stat_from;
+			$post_stat_to=$request->post_stat_to;
+	
+			$govt_clause='';
+			for($i = 0; $i < count($govt); $i++){
+				if($govt[$i] != 'ALL')
+					$govt_clause.="'".$govt[$i]."',";
+				else{
+					$govt_clause='ALL';
+					break;
+				}
+			}
+	
+	$govt_clause=rtrim($govt_clause,',');
+	
+	$officecd_clause='';
+	for($i = 0; $i < count($officecd); $i++){
+		if($officecd[$i] != 'ALL')
+			$officecd_clause.="'".$officecd[$i]."',";
+		else{
+			$officecd_clause='ALL';
+			break;
+		}
+	}
+	
+	$officecd_clause=rtrim($officecd_clause,',');
+	
+	if(strlen($officecd_clause) > 200){
+		$arr['erorr']="Error in Saving Rule !!! Maximum Fifteen (15) Offices can be selected at One Time";	 
+		return response()->json($arr,401);	
+      }
+	$qualification_clause='';
+	for($i = 0; $i < count($qualification); $i++){
+		if($qualification[$i] != 'ALL')
+			$qualification_clause.="'".$qualification[$i]."',";
+		else{
+			$qualification_clause='ALL';
+			break;
+		}
+	}
+	
+	$qualification_clause=rtrim($qualification_clause,',');
+	if(strlen($qualification_clause) > 50){
+		$arr['erorr']="Error in Saving Rule !!! Qualification Selection is too long";	 
+		return response()->json($arr,401);	
+	
+	}
+	if($not_qualification == 1 && $qualification_clause == 'ALL'){
+        $arr['erorr']="Error in Qulification Selection!!!";	 
+		return response()->json($arr,401);
+	}
+	
+	
+	$desg_clause='';
+	for($i = 0; $i < count($desg); $i++){
+		if($desg[$i] != 'ALL')
+			$desg_clause.="'".$desg[$i]."',";
+		else{
+			$desg_clause='ALL';
+			break;
+		}
+	}
+	
+	$desg_clause=rtrim($desg_clause,',');
+	if(strlen($desg_clause) > 200){
+		$arr['erorr']="Error in Saving Rule !!! Designation Selection is too long";	 
+		return response()->json($arr,401);
+	}
 
-}
+	if($not_designation == 1 && $desg_clause == 'ALL'){
+		$arr['erorr']="Error in Designation Selection!!!";	 
+		return response()->json($arr,401);
+	}
+	$remarks_clause='';
+	for($i = 0; $i < count($remarks); $i++){
+		if($remarks[$i] != 'ALL')
+			$remarks_clause.="'".$remarks[$i]."',";
+		else{
+			$remarks_clause='ALL';
+			break;
+		}
+	}
+	
+	$remarks_clause=rtrim($remarks_clause,',');
+	if(strlen($remarks_clause) > 50){
+		$arr['erorr']="Error in Saving Rule !!! Remarks Selection is too long";	 
+		return response()->json($arr,401);
+	 }
+	if($not_remarks == 1 && $remarks_clause == 'ALL'){
+		$arr['erorr']="Error in Remarks Selection!!!";	 
+		return response()->json($arr,401);
+	}
+	$basic_pay_clause=$basic_pay[0].'-'.$basic_pay[1];
+	$grade_pay_clause=$grade_pay[0].'-'.$grade_pay[1];
 
+    $id = DB::select('SELECT MAX(RuleID) AS MaxID FROM pp_post_rules');
 
+		$id = $id[0]->MaxID;
+        if(is_null($id)){
+	    $rule_id=1;
+        }else{
+	     $rule_id = $rule_id + 1;
+	  }
+	  DB::table('pp_post_rules')->insert(
+		['RuleID' => $rule_id, 
+		 'Subdivision' => $subdiv',
+		 OfficeCategory' => $govt, 
+		 'Office' =>$officecd,
+		 'BasicPay' => $basic_pay_clause, 
+		 'GradePay' =>$grade_pay_clause,
+		 'Qualification' => $qualification, 
+		 'NotQualification' =>$not_qualification,
+		 'Designation' => $designation, 
+		 'NotDesignation' => $not_designation,
+		 'Remarks' => $remarks, 
+		 'NotRemarks' => $not_remarks,
+		 'Gender' => $gender, 
+		 'Age' => $age,
+		 'PostStatFrom' => $post_stat_from, 
+		 'PostStatTo' => $post_stat_to]
+	);  
 
-
-
-
-
-
-
-
-
+	return response()->json('Save Successfully',201);
+    }
 
 
 
