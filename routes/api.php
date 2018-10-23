@@ -83,23 +83,28 @@ Route::get('/qualifications', 'QualificationController@getQualifications');
 //Language Routes
 Route::get('/languages', 'LanguageController@getLanguages');
 Route::get('/remarks', 'PersonnelController@getRemarks');
-//PP Category
-Route::get('/setrule', 'categorization\PoststatController@getSubdivision');
-Route::post('/officebysubdivision', 'categorization\PoststatController@getOfficeBySubCat');
+
 //REPORT
 Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
 Route::get('/ifsc/{branch_ifsc}', 'PersonnelController@getIfsc');
 Route::get('/export/{mode}', 'Export\UserExport@userexport');
+//PP Category
+Route::get('/setrule', 'categorization\PoststatController@getSubdivision');
+Route::post('/officebysubdivision', 'categorization\PoststatController@getOfficeBySubCat');
+Route::get('/subdivisioncat', 'categorization\PoststatController@getSubdivisionCat');
+Route::get('/postStat', 'categorization\PoststatController@loadPostStat');
+Route::post('/fetch_qualification_by_oficecode', 'categorization\PoststatController@fetch_qualification_by_oficecode');
+Route::post('/fetch_designation_of_pp', 'categorization\PoststatController@fetch_designation_of_pp');
+Route::post('/fetch_remarks_by_condition', 'categorization\PoststatController@fetch_remarks_by_condition');
 
 });
 
 //Route::post('/deo', 'UserController@diocreation');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
-
 //Route::get('/createpassword', 'UserController@createPassword');
 //Route::get('/passwordinsert', 'UserController@passwordInsert');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
- //Route::get('/generateletter', 'GenerateLetterController@generateLetter');
- //Route::get('/allassemblies', 'AssemblyConstituencyController@getAssembliesAll');
+//Route::get('/generateletter', 'GenerateLetterController@generateLetter');
+//Route::get('/allassemblies', 'AssemblyConstituencyController@getAssembliesAll');
  Route::get('/export/{mode}/{token}', 'Export\UserExport@userexport');
  Route::get('/checkuser/{mode}/{token}', 'Export\UserExport@checkAuth');
