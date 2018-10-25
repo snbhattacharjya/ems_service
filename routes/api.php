@@ -98,6 +98,7 @@ Route::post('/fetch_designation_of_pp', 'categorization\PoststatController@fetch
 Route::post('/fetch_remarks_by_condition', 'categorization\PoststatController@fetch_remarks_by_condition');
 //Rule Listing
 Route::post('/rules', 'categorization\PoststatController@ruleList');
+Route::get('/grantrules', 'categorization\PoststatController@grantRule');
 });
 
 //Route::post('/deo', 'UserController@diocreation');

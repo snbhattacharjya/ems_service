@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\SubdivisionController;
 use App\Http\Controllers\OfficeController;
 use App\Category;
+use App\Pppostrules;
 use Illuminate\Support\Facades\DB;
 class PoststatController extends Controller
 {
@@ -507,15 +508,27 @@ return response()->json('Save Successfully',201);
 }
 
 public function ruleList(){
-
-	$sql="SELECT RuleID, PostStatFrom, PostStatTo, Subdivision, OfficeCategory, Office, BasicPay, GradePay, Qualification, NotQualification, Designation, NotDesignation, Remarks, NotRemarks, Gender, Age, RecordsAffected, AppliedDate, RecordsRevoked, RevokedDate FROM pp_post_rules ORDER BY RuleID";
+	$district=$this->district;
+	$sql="SELECT RuleID, PostStatFrom, PostStatTo, Subdivision, OfficeCategory, Office, BasicPay, GradePay, Qualification, NotQualification, Designation, NotDesignation, Remarks, NotRemarks, Gender, Age, RecordsAffected, AppliedDate, RecordsRevoked, RevokedDate FROM pp_post_rules where District='$district'  ORDER BY RuleID";
 	$arr['rules']=collect(DB::select($sql))->toArray();
 	return response()->json($arr,200);
 }
 
+public function grantRule(Request $request){
+	$ruleId=1;
+	$ruleId=$request->RuleID;
+	$district=13;
+	$district=$this->district;
+	$grantRule=Pppostrules::where('RuleID',$ruleId)
+	            ->where('District',$district);
 
 
+}
 
+public function revokeRule(){
+
+
+}
 
 
 
