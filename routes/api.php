@@ -89,7 +89,7 @@ Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
 Route::get('/ifsc/{branch_ifsc}', 'PersonnelController@getIfsc');
 Route::get('/export/{mode}', 'Export\UserExport@userexport');
 //PP Category
-Route::get('/setrule', 'categorization\PoststatController@getSubdivision');
+Route::post('/setrule', 'categorization\PoststatController@saveRule');
 Route::post('/officebysubdivision', 'categorization\PoststatController@getOfficeBySubCat');
 Route::get('/subdivisioncat', 'categorization\PoststatController@getSubdivisionCat');
 Route::get('/postStat', 'categorization\PoststatController@loadPostStat');

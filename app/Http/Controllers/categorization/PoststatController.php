@@ -24,7 +24,7 @@ class PoststatController extends Controller
 			}
 	        public function getOfficeBySubCat(Request $request){
 			$district=$this->district;
-			$subdivision_id=$request->subdivision_id;
+			$subdivision_id='ALL';
             $category_id=$request->category_id;
 
             $category_clause='';
@@ -43,15 +43,15 @@ class PoststatController extends Controller
 
 				if($category_clause == 'ALL'){
 
-					$sql="select id AS officecode,name AS officename from offices where subdivision_id='$subdivision_id' AND district_id='$district'";
+					$sql="select id AS officecode,name AS officename from offices where  district_id='$district'";
 
                     $office=DB::select($sql);
-                    $arr['office']=(array)$office;
+                    $arr['office']=collect($office)->toArray();
 					return response()->json($arr,200);
 				}else if($category_clause!='ALL'){
-					$sql="select id AS officecode,name AS officename from offices where category_id IN ($category_clause) AND subdivision_id='$subdivision_id'AND district_id='$district'  ";
+					$sql="select id AS officecode,name AS officename from offices where category_id IN ($category_clause) AND district_id='$district'  ";
                     $office=DB::select($sql);
-                    $arr['office']=(array)$office;
+                    $arr['office']=collect($office)->toArray();
 					return response()->json($arr,200);
 
 				}else
@@ -74,7 +74,7 @@ class PoststatController extends Controller
 
 		  {
 			  $district=$this->district;                           ///////////////////data pass through URL: district, subdivision_id, category _id, office_id  ///////////////////
-			  $subdivision_id=$request->subdivision_id;
+			  $subdivision_id='ALL';
 			  $category_id=$request->category_id;
 			  $office_id=$request->office_id;
 
@@ -108,8 +108,8 @@ class PoststatController extends Controller
 
 				if($district != 'ALL')
 	            $clause=$clause."personnel.district_id='".$district."'";
-				if($subdivision_id != 'ALL')
-	            $clause=$clause."AND personnel.subdivision_id='".$subdivision_id."'";
+				// if($subdivision_id != 'ALL')
+	            // $clause=$clause."AND personnel.subdivision_id='".$subdivision_id."'";
                 if($category_clause != 'ALL')
 	            $clause=$clause."AND offices.category_id IN ($category_clause)";
                 if($office_clause != 'ALL')
@@ -118,7 +118,7 @@ class PoststatController extends Controller
 				$sql="select id AS QualificationCode, name AS QualificationName FROM qualifications Where qualifications.id In(SELECT DISTINCT (qualification_id)FROM personnel INNER JOIN offices ON personnel.office_id=offices.id WHERE $clause)ORDER BY qualifications.id";
 				//echo('<pre>');
 				//dd($sql);
-				$arr['office']=DB::select($sql);
+				$arr['qualification']=collect(DB::select($sql))->toArray();
 				return response()->json($arr,200);
 
 
@@ -132,24 +132,15 @@ class PoststatController extends Controller
 		{
 
 			$district=$this->district;                  //********data pass through URL: district, subdivision_id, category _id, office_id ,basicpay,gradepay,qualification,not qualification ********////////////////////
-			$subdivision_id=$request->subdivision_id;
-			//$category_id=explode(",",$request->category_id);
-			$category_id=explode(",",$request->category_id);
-			//dd($category_id);
+			$subdivision_id='ALL';
+
+			$category_id=$request->category_id;
+
 			$office_id=$request->office_id;
 			$qualification_id=$request->qualification_id;
-			$grade_pay=$request->grade_pay;
-			$basic_pay=$request->basic_pay;
-		//	dd($basic_pay
-		//);
-
-			$basic_pay1=$basic_pay[0];
-			$grade_pay1=$grade_pay[0];
-			$actual_grade_pay=explode(",",$grade_pay1);
-			//dd($actual_grade_pay[1]);
-			$actual_basic_pay=explode(",",$basic_pay1);
-
-			$not_qualification=$request->not_qualification;
+			$actual_grade_pay=$grade_pay=$request->grade_pay;
+			$actual_basic_pay=$basic_pay=$request->basic_pay;
+		    $not_qualification=$request->not_qualification;
 
 
 
@@ -212,8 +203,8 @@ class PoststatController extends Controller
 
 		if($district != 'ALL')
 	     $clause=$clause." AND personnel.district_id='".$district."'";
-		if($subdivision_id != 'ALL')
-	    $clause=$clause." AND personnel.subdivision_id='".$subdivision_id."'";
+		// if($subdivision_id != 'ALL')
+	    // $clause=$clause." AND personnel.subdivision_id='".$subdivision_id."'";
         if($category_clause != 'ALL')
 	    $clause=$clause." AND offices.category_id IN ($category_clause)";
         if($office_clause != 'ALL')
@@ -223,7 +214,7 @@ class PoststatController extends Controller
 	   $sql="SELECT DISTINCT(designation) AS Designation FROM personnel INNER JOIN offices ON personnel.office_id=offices.id WHERE $clause ORDER BY offices.officer_designation";
 
 
-	   $arr['designation_pp']=DB::select($sql);
+	   $arr['designation']=collect(DB::select($sql))->toArray();
 	   return response()->json($arr,200);
 
 
@@ -236,7 +227,7 @@ class PoststatController extends Controller
 	 {
 
 		$district=$this->district;                  //********data pass through URL: district, subdivision_id, category _id, office_id ,basicpay,gradepay,qualification,not qualification ********////////////////////
-		$subdivision_id=$request->subdivision_id;
+		$subdivision_id='ALL';
 		$category_id=explode(",",$request->category_id);
 
 		$office_id=explode(",",$request->office_id);
@@ -353,8 +344,8 @@ class PoststatController extends Controller
 
 	if($district != 'ALL')
 	  $clause=$clause." AND personnel.district_id='".$district."'";
-    if($subdivision_id != 'ALL')
-      $clause=$clause." AND personnel.subdivision_id='".$subdivision_id."'";
+    // if($subdivision_id != 'ALL')
+    //   $clause=$clause." AND personnel.subdivision_id='".$subdivision_id."'";
     if($category_clause != 'ALL')
       $clause=$clause." AND offices.category_id IN ($category_clause)";
     if($office_clause != 'ALL')
@@ -374,6 +365,152 @@ class PoststatController extends Controller
    return response()->json($arr,200);
 
 
+ }
+
+ public function saveRule(Request $request){
+    $subdiv='ALL';
+    $govt=$request->category_id;
+    $officecd=$request->office_id;
+    $basic_pay=$request->basic_pay;
+    $grade_pay=$request->grade_pay;
+    $qualification=$request->qualification_id;
+    $not_qualification=$request->not_qualification;
+    $desg=$request->designation;
+    $not_designation=$request->not_designation;
+    $gender=$request->gender;
+    $age=$request->age;
+    $remarks=$request->remarks;
+    $not_remarks=$request->not_remarks;
+    $post_stat_from=$request->post_stat_from;
+    $post_stat_to=$request->post_stat_to;
+
+    $govt_clause='';
+    for($i = 0; $i < count($govt); $i++){
+        if($govt[$i] != 'ALL')
+            $govt_clause.="'".$govt[$i]."',";
+        else{
+            $govt_clause='ALL';
+            break;
+        }
+    }
+
+$govt_clause=rtrim($govt_clause,',');
+
+
+$officecd_clause='';
+for($i = 0; $i < count($officecd); $i++){
+if($officecd[$i] != 'ALL')
+    $officecd_clause.="'".$officecd[$i]."',";
+else{
+    $officecd_clause='ALL';
+    break;
+}
+}
+
+$officecd_clause=rtrim($officecd_clause,',');
+
+if(strlen($officecd_clause) > 200){
+$arr['erorr']="Error in Saving Rule !!! Maximum Fifteen (15) Offices can be selected at One Time";
+return response()->json($arr,401);
+}
+$qualification_clause='';
+for($i = 0; $i < count($qualification); $i++){
+if($qualification[$i] != 'ALL')
+    $qualification_clause.="'".$qualification[$i]."',";
+else{
+    $qualification_clause='ALL';
+    break;
+}
+}
+
+$qualification_clause=rtrim($qualification_clause,',');
+if(strlen($qualification_clause) > 50){
+$arr['erorr']="Error in Saving Rule !!! Qualification Selection is too long";
+return response()->json($arr,401);
+
+}
+if($not_qualification == 1 && $qualification_clause == 'ALL'){
+$arr['erorr']="Error in Qulification Selection!!!";
+return response()->json($arr,401);
+}
+
+
+$desg_clause='';
+for($i = 0; $i < count($desg); $i++){
+if($desg[$i] != 'ALL')
+    $desg_clause.="'".$desg[$i]."',";
+else{
+    $desg_clause='ALL';
+    break;
+}
+}
+
+$desg_clause=rtrim($desg_clause,',');
+if(strlen($desg_clause) > 200){
+$arr['erorr']="Error in Saving Rule !!! Designation Selection is too long";
+return response()->json($arr,401);
+}
+
+if($not_designation == 1 && $desg_clause == 'ALL'){
+$arr['erorr']="Error in Designation Selection!!!";
+return response()->json($arr,401);
+}
+
+$remarks_clause='';
+if(!empty($remarks)){
+for($i = 0; $i < count($remarks); $i++){
+if($remarks[$i] != 'ALL')
+    $remarks_clause.="'".$remarks[$i]."',";
+else{
+    $remarks_clause='ALL';
+    break;
+}
+}
+
+$remarks_clause=rtrim($remarks_clause,',');
+if(strlen($remarks_clause) > 50){
+$arr['erorr']="Error in Saving Rule !!! Remarks Selection is too long";
+return response()->json($arr,401);
+}
+if($not_remarks == 1 && $remarks_clause == 'ALL'){
+$arr['erorr']="Error in Remarks Selection!!!";
+return response()->json($arr,401);
+}
+}
+
+
+
+$basic_pay_clause=$basic_pay[0].'-'.$basic_pay[1];
+$grade_pay_clause=$grade_pay[0].'-'.$grade_pay[1];
+
+$id = DB::select('SELECT MAX(RuleID) AS MaxID FROM pp_post_rules');
+
+$id = $id[0]->MaxID;
+if(is_null($id)){
+$rule_id=1;
+}else{
+ $rule_id = $id + 1;
+}
+DB::table('pp_post_rules')->insert(
+['RuleID' =>$rule_id,
+ 'District' =>$this->district,
+ 'OfficeCategory' =>$govt_clause,
+ 'Office' => $officecd_clause,
+ 'BasicPay' =>$basic_pay_clause,
+ 'GradePay' =>$grade_pay_clause,
+ 'Qualification' =>$qualification_clause,
+ 'NotQualification' =>$not_qualification,
+ 'Designation' =>$desg_clause,
+ 'NotDesignation' =>$not_designation,
+ 'Remarks' =>$remarks_clause,
+ 'NotRemarks' =>$not_remarks,
+ 'Gender' =>$gender,
+ 'Age' =>$age,
+ 'PostStatFrom' =>$post_stat_from,
+ 'PostStatTo' =>$post_stat_to]
+);
+
+return response()->json('Save Successfully',201);
 }
 
 
