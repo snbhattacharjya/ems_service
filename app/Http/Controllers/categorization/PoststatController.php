@@ -506,7 +506,7 @@ DB::table('pp_post_rules')->insert(
 return response()->json('Save Successfully',201);
 }
 
-public function applyRule(){
+public function ruleList(){
 
 	$sql="SELECT RuleID, PostStatFrom, PostStatTo, Subdivision, OfficeCategory, Office, BasicPay, GradePay, Qualification, NotQualification, Designation, NotDesignation, Remarks, NotRemarks, Gender, Age, RecordsAffected, AppliedDate, RecordsRevoked, RevokedDate FROM pp_post_rules ORDER BY RuleID";
 	$arr['rules']=collect(DB::select($sql))->toArray();

@@ -96,7 +96,8 @@ Route::get('/postStat', 'categorization\PoststatController@loadPostStat');
 Route::post('/fetch_qualification_by_oficecode', 'categorization\PoststatController@fetch_qualification_by_oficecode');
 Route::post('/fetch_designation_of_pp', 'categorization\PoststatController@fetch_designation_of_pp');
 Route::post('/fetch_remarks_by_condition', 'categorization\PoststatController@fetch_remarks_by_condition');
-
+//Rule Listing
+Route::post('/rules', 'categorization\PoststatController@ruleList');
 });
 
 //Route::post('/deo', 'UserController@diocreation');
