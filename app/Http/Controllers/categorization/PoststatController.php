@@ -452,13 +452,13 @@ return response()->json($arr,401);
 
 $remarks_clause='';
 if($remarks=='ALL'){
-$remarks_clause='ALL';
+$remarks_clause="ALL";
 }else{
 for($i = 0; $i < count($remarks); $i++){
     $remarks_clause.="'".$remarks[$i]."',";
 
 }
-
+}
 $remarks_clause=rtrim($remarks_clause,',');
 if(strlen($remarks_clause) > 50){
 $arr['erorr']="Error in Saving Rule !!! Remarks Selection is too long";
@@ -468,7 +468,7 @@ if($not_remarks == 1 && $remarks_clause == 'ALL'){
 $arr['erorr']="Error in Remarks Selection!!!";
 return response()->json($arr,401);
 }
-}
+
 
 
 
@@ -569,7 +569,7 @@ if(!empty($grantRule)){
 		$clause.=" AND DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(personnel.dob, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(personnel.dob, '00-%m-%d')) < 60";
 
 		$today = date("Y-m-d H:i:s");
-		$grant_rule_query="UPDATE personnel INNER JOIN offices ON personnel.office_id=offices.id SET personnel.post_stat='$post_stat_to' WHERE $clause";
+		echo $grant_rule_query="UPDATE personnel INNER JOIN offices ON personnel.office_id=offices.id SET personnel.post_stat='$post_stat_to' WHERE $clause";
 
 
 		$affected =DB::update($grant_rule_query); 
