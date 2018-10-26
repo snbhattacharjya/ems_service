@@ -100,6 +100,7 @@ Route::post('/fetch_remarks_by_condition', 'categorization\PoststatController@fe
 Route::get('/rules', 'categorization\PoststatController@ruleList');
 Route::get('/grantrules/{RuleID}', 'categorization\PoststatController@grantRule');
 Route::get('/revokerule/{RuleID}', 'categorization\PoststatController@revokeRule');
+Route::get('/queryrule/{RuleID}', 'categorization\PoststatController@queryRule');
 });
 
 //Route::post('/deo', 'UserController@diocreation');
