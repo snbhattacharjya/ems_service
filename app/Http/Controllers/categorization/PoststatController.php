@@ -509,20 +509,75 @@ return response()->json('Save Successfully',201);
 
 public function ruleList(){
 	$district=$this->district;
-	$sql="SELECT RuleID, PostStatFrom, PostStatTo, Subdivision, OfficeCategory, Office, BasicPay, GradePay, Qualification, NotQualification, Designation, NotDesignation, Remarks, NotRemarks, Gender, Age, RecordsAffected, AppliedDate, RecordsRevoked, RevokedDate FROM pp_post_rules where District='$district'  ORDER BY RuleID";
-	$arr['rules']=collect(DB::select($sql))->toArray();
-	return response()->json($arr,200);
+	$sql="SELECT RuleID, PostStatFrom, PostStatTo, District, OfficeCategory, Office, BasicPay, GradePay, Qualification, NotQualification, Designation, NotDesignation, Remarks, NotRemarks, Gender, Age, RecordsAffected, AppliedDate, RecordsRevoked, RevokedDate FROM pp_post_rules where District='$district'  ORDER BY RuleID";
+    $arr['rules']=collect(DB::select($sql))->toArray();
+    return response()->json($arr,200);
 }
 
 public function grantRule(Request $request){
-	$ruleId=1;
 	$ruleId=$request->RuleID;
-	$district=13;
 	$district=$this->district;
 	$grantRule=Pppostrules::where('RuleID',$ruleId)
-	            ->where('District',$district);
+				->where('District',$district)
+				->get();
+if(!empty($grantRule)){  			
+$ruleSet=collect($grantRule)->toArray();
+$basic_pay=$ruleSet[0]['BasicPay'];
+$grade_pay=$ruleSet[0]['GradePay'];
+$qualification=$ruleSet[0]['Qualification'];
+$not_qualification=$ruleSet[0]['NotQualification'];
+$desg=$ruleSet[0]['Designation'];
+$not_designation=$ruleSet[0]['NotDesignation'];
+$remarks=$ruleSet[0]['Remarks'];
+$not_remarks=$ruleSet[0]['NotRemarks'];
+$gender=$ruleSet[0]['Gender'];
+$District=$ruleSet[0]['District'];
+$govt=$ruleSet[0]['OfficeCategory'];
+$officecd=$ruleSet[0]['Office'];
+$post_stat_from=$ruleSet[0]['PostStatFrom'];
+$post_stat_to=$ruleSet[0]['PostStatTo'];
 
+$basic_pay=explode("-",$basic_pay);
+$grade_pay=explode("-",$grade_pay);
 
+$clause="personnel.id != ''";
+$clause.=" AND personnel.basic_pay BETWEEN $basic_pay[0] AND $basic_pay[1]";
+$clause.=" AND personnel.grade_pay BETWEEN $grade_pay[0] AND $grade_pay[1]";
+
+if($qualification != 'ALL' && $not_qualification == 0)
+	$clause.=" AND personnel.qualification_id IN ($qualification)";
+if($qualification != 'ALL' && $not_qualification == 1)
+	$clause.=" AND personnel.qualification_id NOT IN ($qualification)";
+if($desg != 'ALL' && $not_designation == 0)
+	$clause.=" AND personnel.designation IN ($desg)";
+if($desg != 'ALL' && $not_designation == 1)
+	$clause.=" AND personnel.designation NOT IN ($desg)";
+if($remarks != 'ALL' && $not_remarks == 0)
+	$clause.=" AND personnel.remarks IN ($remarks)";
+if($remarks != 'ALL' && $not_remarks == 1)
+	$clause.=" AND personnel.remarks NOT IN ($remarks)";
+if($gender !='ALL')
+	$clause.=" AND personnel.gender='".$gender."'";
+if($district==$District)
+	$clause.=" AND personnel.District='".$District."'";
+if($govt != 'ALL')
+	$clause.=" AND office.govt IN ($govt)";
+if($officecd != 'ALL')
+	$clause.=" AND office.officecd IN ($officecd)";
+if($post_stat_from != 'NA')
+	$clause.="AND personnel.post_stat='".$post_stat_from."'";
+else
+	$clause.=" AND personnel.post_stat=''";
+	
+$clause.=" AND DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(personnel.dateofbirth, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(personnel.dateofbirth, '00-%m-%d')) < 60";
+
+$today = date("Y-m-d H:i:s");
+$grant_rule_query="UPDATE personnel INNER JOIN office ON personnel.officecd=office.officecd SET personnel.poststat='$post_stat_to' WHERE $clause";
+$affected =DB::update($grant_rule_query);   
+echo '<ptr>';
+print_r($affected);
+
+ }
 }
 
 public function revokeRule(){
