@@ -573,10 +573,20 @@ $clause.=" AND DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(personnel.dob, '%Y') - (DA
 
 $today = date("Y-m-d H:i:s");
 $grant_rule_query="UPDATE personnel INNER JOIN offices ON personnel.office_id=offices.id SET personnel.post_stat='$post_stat_to' WHERE $clause";
-$affected =DB::update($grant_rule_query); 
-$updateRule="UPDATE pp_post_rules SET Recordsaffected=$rows_affected, AppliedDate='$today' WHERE RuleID=$ruleId";
 
-return response()->json('Update Successfully',200);
+
+$affected =DB::update($grant_rule_query); 
+$arr=array('GrantRecordsaffected'=>$affected,'GrantAppliedDate'=>$today);
+if($affected>0){
+$updateRule="UPDATE pp_post_rules SET Recordsaffected=$affected, AppliedDate='$today' WHERE RuleID=$ruleId";
+$updateRule =DB::update($updateRule);
+
+
+return response()->json($arr,200);
+}else{
+	$arr=array('msg'=>'Can not Effected any row');
+
+}
  }
 }
 
@@ -586,75 +596,71 @@ public function revokeRule(Request $request){
 	$grantRule=Pppostrules::where('RuleID',$ruleId)
 				->where('District',$district)
 				->get();
-if(!empty($grantRule)){  			
-$ruleSet=collect($grantRule)->toArray();
-$basic_pay=$ruleSet[0]['BasicPay'];
-$grade_pay=$ruleSet[0]['GradePay'];
-$qualification=$ruleSet[0]['Qualification'];
-$not_qualification=$ruleSet[0]['NotQualification'];
-$desg=$ruleSet[0]['Designation'];
-$not_designation=$ruleSet[0]['NotDesignation'];
-$remarks=$ruleSet[0]['Remarks'];
-$not_remarks=$ruleSet[0]['NotRemarks'];
-$gender=$ruleSet[0]['Gender'];
-$District=$ruleSet[0]['District'];
-$govt=$ruleSet[0]['OfficeCategory'];
-$officecd=$ruleSet[0]['Office'];
-$post_stat_from=$ruleSet[0]['PostStatFrom'];
-$post_stat_to=$ruleSet[0]['PostStatTo'];
+			if(!empty($grantRule)){  			
+			$ruleSet=collect($grantRule)->toArray();
+			$basic_pay=$ruleSet[0]['BasicPay'];
+			$grade_pay=$ruleSet[0]['GradePay'];
+			$qualification=$ruleSet[0]['Qualification'];
+			$not_qualification=$ruleSet[0]['NotQualification'];
+			$desg=$ruleSet[0]['Designation'];
+			$not_designation=$ruleSet[0]['NotDesignation'];
+			$remarks=$ruleSet[0]['Remarks'];
+			$not_remarks=$ruleSet[0]['NotRemarks'];
+			$gender=$ruleSet[0]['Gender'];
+			$District=$ruleSet[0]['District'];
+			$govt=$ruleSet[0]['OfficeCategory'];
+			$officecd=$ruleSet[0]['Office'];
+			 $post_stat_from=$ruleSet[0]['PostStatFrom'];
+			 $post_stat_to=$ruleSet[0]['PostStatTo'];
 
-$basic_pay=explode("-",$basic_pay);
-$grade_pay=explode("-",$grade_pay);
+			$basic_pay=explode("-",$basic_pay);
+			$grade_pay=explode("-",$grade_pay);
 
-$clause="personnel.id != ''";
-$clause.=" AND personnel.basic_pay BETWEEN $basic_pay[0] AND $basic_pay[1]";
-$clause.=" AND personnel.grade_pay BETWEEN $grade_pay[0] AND $grade_pay[1]";
+			$clause="personnel.id != ''";
+			$clause.=" AND personnel.basic_pay BETWEEN $basic_pay[0] AND $basic_pay[1]";
+			$clause.=" AND personnel.grade_pay BETWEEN $grade_pay[0] AND $grade_pay[1]";
 
-if($qualification != 'ALL' && $not_qualification == 0)
-	$clause.=" AND personnel.qualification_id IN ($qualification)";
-if($qualification != 'ALL' && $not_qualification == 1)
-	$clause.=" AND personnel.qualification_id NOT IN ($qualification)";
-if($desg != 'ALL' && $not_designation == 0)
-	$clause.=" AND personnel.designation IN ($desg)";
-if($desg != 'ALL' && $not_designation == 1)
-	$clause.=" AND personnel.designation NOT IN ($desg)";
-if($remarks != 'ALL' && $not_remarks == 0)
-	$clause.=" AND personnel.remark_id IN ($remarks)";
-if($remarks != 'ALL' && $not_remarks == 1)
-	$clause.=" AND personnel.remark_id NOT IN ($remarks)";
-if($gender !='ALL')
-	$clause.=" AND personnel.gender='".$gender."'";
-if($district==$District)
-	$clause.=" AND personnel.district_id='".$District."'";
-if($govt != 'ALL')
-	$clause.=" AND offices.category_id IN ($govt)";
-if($officecd != 'ALL')
-	$clause.=" AND offices.id IN ($officecd)";
-if($post_stat_from != 'NA')
-	$clause.="AND personnel.post_stat='".$post_stat_from."'";
-else
-	$clause.=" AND personnel.post_stat=''";
-	if($post_stat_from == 'NA')
-	$post_stat_from='';	
-$clause.=" AND DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(personnel.dob, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(personnel.dob, '00-%m-%d')) < 60";
+			if($qualification != 'ALL' && $not_qualification == 0)
+				$clause.=" AND personnel.qualification_id IN ($qualification)";
+			if($qualification != 'ALL' && $not_qualification == 1)
+				$clause.=" AND personnel.qualification_id NOT IN ($qualification)";
+			if($desg != 'ALL' && $not_designation == 0)
+				$clause.=" AND personnel.designation IN ($desg)";
+			if($desg != 'ALL' && $not_designation == 1)
+				$clause.=" AND personnel.designation NOT IN ($desg)";
+			if($remarks != 'ALL' && $not_remarks == 0)
+				$clause.=" AND personnel.remark_id IN ($remarks)";
+			if($remarks != 'ALL' && $not_remarks == 1)
+				$clause.=" AND personnel.remark_id NOT IN ($remarks)";
+			if($gender !='ALL')
+				$clause.=" AND personnel.gender='".$gender."'";
+			if($district==$District)
+				$clause.=" AND personnel.district_id='".$District."'";
+			if($govt != 'ALL')
+				$clause.=" AND offices.category_id IN ($govt)";
+			if($officecd != 'ALL')
+				$clause.=" AND offices.id IN ($officecd)";
+			if($post_stat_from != 'NA')
+			$clause.="AND personnel.post_stat='".$post_stat_to."'";
+			else
+			$clause.=" AND personnel.post_stat='$post_stat_to'";
+	
+			if($post_stat_from == 'NA')
+	        $post_stat_from='';
+			$clause.=" AND DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(personnel.dob, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(personnel.dob, '00-%m-%d')) < 60";
 
-$today = date("Y-m-d H:i:s");
-$grant_rule_query="UPDATE personnel INNER JOIN offices ON personnel.office_id=offices.id SET personnel.post_stat='$post_stat_from' WHERE $clause";
-$affected =DB::update($grant_rule_query); 
-$updateRule="UPDATE pp_post_rules SET Recordsaffected=$rows_affected, AppliedDate='$today' WHERE RuleID=$ruleId";
+			$today = date("Y-m-d H:i:s");
+		    $grant_rule_query="UPDATE personnel INNER JOIN offices ON personnel.office_id=offices.id SET personnel.post_stat='$post_stat_from' WHERE $clause";
+			$affected =DB::update($grant_rule_query); 
+			$arr=array('RecordsRevoked'=>$affected,'RevokedDate'=>$today);
+				
+						$updateRule="UPDATE pp_post_rules SET RecordsRevoked=$affected, RevokedDate='$today' WHERE RuleID=$ruleId";
+						$updateRule =DB::update($updateRule);
+						return response()->json($arr,200);
+	
+                
 
-return response()->json('Update Successfully',200);
- }
+			}
 
-}
-
-
-
-
-
-
-
-
-
-
+     }
  }
