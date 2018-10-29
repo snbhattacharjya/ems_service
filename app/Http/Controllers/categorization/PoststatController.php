@@ -142,8 +142,8 @@ class PoststatController extends Controller
 			$actual_grade_pay=$grade_pay=$request->grade_pay;
 			$actual_basic_pay=$basic_pay=$request->basic_pay;
 		    $not_qualification=$request->not_qualification;
-
-
+			$pay_level=$request->pay_level;
+            
 
 			$category_clause='';
 			if(!empty($subdivision_id) and !empty($category_id)){
@@ -192,11 +192,16 @@ class PoststatController extends Controller
 		$clause="";
 		$clause.=" personnel.basic_pay BETWEEN $actual_basic_pay[0] AND $actual_basic_pay[1]";
 
-
+        if($grade_pay!=0){
 		$clause.=" AND personnel.grade_pay BETWEEN $actual_grade_pay[0] AND $actual_grade_pay[1]";
+		}
+		
+		if($pay_level!=0){
+		$clause.=" AND personnel.pay_level BETWEEN $pay_level[0] AND $pay_level[1]";
+		}
 
 		if($qualification_clause != 'ALL' && $not_qualification == 0){
-			$clause.=" AND personnel.qualification_id IN ($qualification_clause)";
+		$clause.=" AND personnel.qualification_id IN ($qualification_clause)";
 		}
 		else if($qualification_clause != 'ALL' && $not_qualification == 1){
 			$clause.=" AND personnel.qualification_id NOT IN ($qualification_clause)";
@@ -213,7 +218,7 @@ class PoststatController extends Controller
 
 
 	   $sql="SELECT DISTINCT(designation) AS Designation FROM personnel INNER JOIN offices ON personnel.office_id=offices.id WHERE $clause ORDER BY offices.officer_designation";
-
+    //echo $sql;
 
 	   $arr['designation']=collect(DB::select($sql))->toArray();
 	   return response()->json($arr,200);
@@ -243,7 +248,7 @@ class PoststatController extends Controller
 		$designation=$request->designation;
 		//dd(count($designation));
 		$not_designation=$request->not_designation;
-		
+		$pay_level=$request->pay_level;
 		    $category_clause='';
 			if(!empty($subdivision_id) and !empty($category_id)){
 				for($i = 0; $i < count($category_id); $i++){
@@ -302,8 +307,7 @@ class PoststatController extends Controller
 }
 
      $designation_clause=rtrim($designation_clause,',');
-
-
+       
        if(strlen($designation_clause) > 200)
       {
        $arr['erorr']="designation length can not be greater than 200";
@@ -312,8 +316,15 @@ class PoststatController extends Controller
         $clause="";
 		$clause.=" personnel.basic_pay BETWEEN $actual_basic_pay[0] AND $actual_basic_pay[1]";
 
+		if($grade_pay!=0){
+			$clause.=" AND personnel.grade_pay BETWEEN $actual_grade_pay[0] AND $actual_grade_pay[1]";
+			}
+			
+			if($pay_level!=0){
+			$clause.=" AND personnel.pay_level BETWEEN $pay_level[0] AND $pay_level[1]";
+			}
+	
 
-		$clause.=" AND personnel.grade_pay BETWEEN $actual_grade_pay[0] AND $actual_grade_pay[1]";
 		if($qualification_clause != 'ALL' && $not_qualification == 0){
 			$clause.=" AND personnel.qualification_id IN ($qualification_clause)";
 		}
@@ -330,7 +341,7 @@ class PoststatController extends Controller
 
 	else if($designation_clause != 'ALL' && $not_designation == 1)
 	{
-	$clause.=" AND personnel.designation NOT IN ($desg_clause)";
+	$clause.=" AND personnel.designation NOT IN ($designation_clause)";
 
 	}
 	if($gender !='ALL')
@@ -377,6 +388,9 @@ class PoststatController extends Controller
     $not_remarks=$request->not_remarks;
     $post_stat_from=$request->post_stat_from;
     $post_stat_to=$request->post_stat_to;
+	$pay_level=$request->pay_level;
+	
+
 
     $govt_clause='';
     for($i = 0; $i < count($govt); $i++){
@@ -473,8 +487,16 @@ return response()->json($arr,401);
 
 
 $basic_pay_clause=$basic_pay[0].'-'.$basic_pay[1];
-$grade_pay_clause=$grade_pay[0].'-'.$grade_pay[1];
-
+if($grade_pay!=0){
+   $grade_pay_clause=$grade_pay[0].'-'.$grade_pay[1];
+}else{
+	$grade_pay_clause=0;	
+}
+if($pay_level!=0){
+    $pay_level_clause=$pay_level[0].'-'.$pay_level[1];
+}else{
+	$pay_level_clause=0;	
+}
 $id = DB::select('SELECT MAX(RuleID) AS MaxID FROM pp_post_rules');
 
 $id = $id[0]->MaxID;
@@ -490,6 +512,7 @@ DB::table('pp_post_rules')->insert(
  'Office' => $officecd_clause,
  'BasicPay' =>$basic_pay_clause,
  'GradePay' =>$grade_pay_clause,
+ 'PayLevel' =>$pay_level_clause,
  'Qualification' =>$qualification_clause,
  'NotQualification' =>$not_qualification,
  'Designation' =>$desg_clause,
@@ -521,6 +544,7 @@ public function grantRule(Request $request){
 if(!empty($grantRule)){  			
 		$ruleSet=collect($grantRule)->toArray();
 		$basic_pay=$ruleSet[0]['BasicPay'];
+		$pay_level=$ruleSet[0]['PayLevel'];
 		$grade_pay=$ruleSet[0]['GradePay'];
 		$qualification=$ruleSet[0]['Qualification'];
 		$not_qualification=$ruleSet[0]['NotQualification'];
@@ -534,13 +558,21 @@ if(!empty($grantRule)){
 		$officecd=$ruleSet[0]['Office'];
 		$post_stat_from=$ruleSet[0]['PostStatFrom'];
 		$post_stat_to=$ruleSet[0]['PostStatTo'];
-     	$basic_pay=explode("-",$basic_pay);
-		$grade_pay=explode("-",$grade_pay);
-
+		 $basic_pay=explode("-",$basic_pay);
+		 if($grade_pay!=0){
+		   $grade_pay=explode("-",$grade_pay);
+		 }
+		 if($pay_level!=0){
+			$pay_level=explode("-",$pay_level);
+		}
 		$clause="personnel.id != ''";
 		$clause.=" AND personnel.basic_pay BETWEEN $basic_pay[0] AND $basic_pay[1]";
+		if($grade_pay!=0){
 		$clause.=" AND personnel.grade_pay BETWEEN $grade_pay[0] AND $grade_pay[1]";
-
+		}
+		if($pay_level!=0){
+			$clause.=" AND personnel.pay_level BETWEEN $pay_level[0] AND $pay_level[1]";
+		}
 		if($qualification != 'ALL' && $not_qualification == 0)
 			$clause.=" AND personnel.qualification_id IN ($qualification)";
 		if($qualification != 'ALL' && $not_qualification == 1)
@@ -595,6 +627,7 @@ public function revokeRule(Request $request){
 			$ruleSet=collect($grantRule)->toArray();
 			$basic_pay=$ruleSet[0]['BasicPay'];
 			$grade_pay=$ruleSet[0]['GradePay'];
+			$pay_level=$ruleSet[0]['PayLevel'];
 			$qualification=$ruleSet[0]['Qualification'];
 			$not_qualification=$ruleSet[0]['NotQualification'];
 			$desg=$ruleSet[0]['Designation'];
@@ -609,11 +642,21 @@ public function revokeRule(Request $request){
 			 $post_stat_to=$ruleSet[0]['PostStatTo'];
 
 			$basic_pay=explode("-",$basic_pay);
-			$grade_pay=explode("-",$grade_pay);
-
+			
+				if($grade_pay!=0){
+				$grade_pay=explode("-",$grade_pay);
+				}
+				if($pay_level!=0){
+					$pay_level=explode("-",$pay_level);
+				}
 			$clause="personnel.id != ''";
 			$clause.=" AND personnel.basic_pay BETWEEN $basic_pay[0] AND $basic_pay[1]";
-			$clause.=" AND personnel.grade_pay BETWEEN $grade_pay[0] AND $grade_pay[1]";
+			    if($grade_pay!=0){
+				$clause.=" AND personnel.grade_pay BETWEEN $grade_pay[0] AND $grade_pay[1]";
+				}
+				if($pay_level!=0){
+					$clause.=" AND personnel.pay_level BETWEEN $pay_level[0] AND $pay_level[1]";
+				}
 
 			if($qualification != 'ALL' && $not_qualification == 0)
 				$clause.=" AND personnel.qualification_id IN ($qualification)";
@@ -670,6 +713,7 @@ public function revokeRule(Request $request){
 			$ruleSet=collect($grantRule)->toArray();
 			$basic_pay=$ruleSet[0]['BasicPay'];
 			$grade_pay=$ruleSet[0]['GradePay'];
+			$pay_level=$ruleSet[0]['PayLevel'];
 			$qualification=$ruleSet[0]['Qualification'];
 			$not_qualification=$ruleSet[0]['NotQualification'];
 			$desg=$ruleSet[0]['Designation'];
@@ -684,11 +728,22 @@ public function revokeRule(Request $request){
 			$post_stat_to=$ruleSet[0]['PostStatTo'];
 	
 			$basic_pay=explode("-",$basic_pay);
-			$grade_pay=explode("-",$grade_pay);
+			
+			if($grade_pay!=0){
+				$grade_pay=explode("-",$grade_pay);
+				}
+				if($pay_level!=0){
+					$pay_level=explode("-",$pay_level);
+				}
 	
 			$clause="personnel.id != ''";
 			$clause.=" AND personnel.basic_pay BETWEEN $basic_pay[0] AND $basic_pay[1]";
-			$clause.=" AND personnel.grade_pay BETWEEN $grade_pay[0] AND $grade_pay[1]";
+			if($grade_pay!=0){
+				$clause.=" AND personnel.grade_pay BETWEEN $grade_pay[0] AND $grade_pay[1]";
+				}
+				if($pay_level!=0){
+					$clause.=" AND personnel.pay_level BETWEEN $pay_level[0] AND $pay_level[1]";
+				}
 	
 			if($qualification != 'ALL' && $not_qualification == 0)
 				$clause.=" AND personnel.qualification_id IN ($qualification)";
@@ -718,7 +773,7 @@ public function revokeRule(Request $request){
 			$clause.=" AND DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(personnel.dob, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(personnel.dob, '00-%m-%d')) < 60";
 	
 			$today = date("Y-m-d H:i:s");
-			$grant_rule_query="SELECT COUNT(personnel.id) AS PPCount from personnel INNER JOIN offices ON personnel.office_id=offices.id  WHERE $clause";
+		$grant_rule_query="SELECT COUNT(personnel.id) AS PPCount from personnel INNER JOIN offices ON personnel.office_id=offices.id  WHERE $clause";
 	
 	
 			$affected =collect(DB::select($grant_rule_query))->toArray(); 
