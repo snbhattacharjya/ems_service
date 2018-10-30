@@ -262,14 +262,15 @@ class OfficeController extends Controller
 	public function resetPassword(Request $request){
         $officeId=$request->officeId;
         $newPassword=$this->random_password();
+        $date=date('Y-m-d H:i:s');
         if($this->level==3 || $this->level==12){
             User::where('user_id', $officeId)
             ->update(['password'=>Hash::make($newPassword),'change_password'=>0, 'updated_at' =>date('Y-m-d H:i:s')]);
          if(DB::table('user_random_password')->where('rand_id', '=', $officeId)->exists()){
 
-           DB::update("update user_random_password set 	rand_password=$newPassword where rand_id= $office");
+           DB::update("update user_random_password set 	rand_password='$newPassword' , created_at='$date' where rand_id= '$officeId'");
            }else{
-            $values = array('rand_id' => $officeId,'rand_password' => $newPassword,'created_at'=>date('Y-m-d')); 
+            $values = array('rand_id' => $officeId,'rand_password' => $newPassword,'created_at'=>date('Y-m-d H:i:s')); 
             DB::table('user_random_password')->insert($values);;   
            }
         
@@ -279,6 +280,9 @@ class OfficeController extends Controller
         }
     
         }
+
+
+
     function random_password( $length = 8 ) {
 		$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_?";
 		$password = substr( str_shuffle( $chars ), 0, $length );
