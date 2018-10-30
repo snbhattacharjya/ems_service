@@ -273,7 +273,7 @@ class OfficeController extends Controller
             DB::table('user_random_password')->insert($values);;   
            }
         
-       
+           return response()->json($newPassword,201);
        
        
         }
