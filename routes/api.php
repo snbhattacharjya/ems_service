@@ -39,6 +39,7 @@ Route::post('/createuser', 'UserController@createUser');//For Save TO data
 Route::get('/levelsublevel', 'UserController@getUserLevelSublevel');
 Route::get('/getbdo/{id}', 'UserController@getBDO');
 Route::post('/changepassword', 'UserController@changePassword');
+Route::get('/resetpassword/{officeId}', 'UserController@resetPassword');
 //Office Routes
 
 Route::get('/offices/{subdivision_id}', 'OfficeController@getAllofficeBysubdivision');
@@ -108,7 +109,7 @@ Route::post('/savepoststatmanual', 'categorization\ManualPoststatSetController@p
 
 //Route::post('/deo', 'UserController@diocreation');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
-//Route::get('/createpassword', 'UserController@createPassword');
+  Route::get('/createpassword', 'UserController@createPassword');
 //Route::get('/passwordinsert', 'UserController@passwordInsert');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
 //Route::get('/generateletter', 'GenerateLetterController@generateLetter');

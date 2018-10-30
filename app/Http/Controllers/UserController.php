@@ -430,8 +430,7 @@ class UserController extends Controller
         }
 
 	}
-
-	function random_password( $length = 8 ) {
+		function random_password( $length = 8 ) {
 		$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_?";
 		$password = substr( str_shuffle( $chars ), 0, $length );
 		return $password;
@@ -444,7 +443,7 @@ class UserController extends Controller
   public function createPassword(){
 		
 	  
-	  User::where('area','23')->get()->each(function($user) {
+	  User::where('area','20')->where('level','10')->get()->each(function($user) {
 		    $pass=$this->random_password();
 			$user->password = bcrypt($pass);
 			$user->save();

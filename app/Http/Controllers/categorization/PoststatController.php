@@ -121,11 +121,7 @@ class PoststatController extends Controller
 				//dd($sql);
 				$arr['qualification']=collect(DB::select($sql))->toArray();
 				return response()->json($arr,200);
-
-
-
-
-		  }
+            }
 
 		//************************************* Fetch Designation of office perssonel by clause   *********************/
 

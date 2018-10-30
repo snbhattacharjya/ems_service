@@ -258,4 +258,32 @@ class OfficeController extends Controller
             return response()->json("Office does not exist",401);
         }
     }
+   
+	public function resetPassword(Request $request){
+        $officeId=$request->officeId;
+        $newPassword=$this->random_password();
+        if($this->level==3 || $this->level==12){
+            User::where('user_id', $officeId)
+            ->update(['password'=>Hash::make($newPassword),'change_password'=>0, 'updated_at' =>date('Y-m-d H:i:s')]);
+         if(DB::table('user_random_password')->where('rand_id', '=', $officeId)->exists()){
+
+           DB::update("update user_random_password set 	rand_password=$newPassword where rand_id= $office");
+           }else{
+            $values = array('rand_id' => $officeId,'rand_password' => $newPassword,'created_at'=>date('Y-m-d')); 
+            DB::table('user_random_password')->insert($values);;   
+           }
+        
+       
+       
+       
+        }
+    
+        }
+    function random_password( $length = 8 ) {
+		$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_?";
+		$password = substr( str_shuffle( $chars ), 0, $length );
+		return $password;
+	}
+   
+
 }
