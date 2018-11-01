@@ -99,12 +99,13 @@ class OfficeController extends Controller
         $id = $id[0]->MaxID;
 
         if(is_null($id)){
-            $id = $request->pc_id.'0001';
+            $id = $request->police_station_id.'0001';
         }
         else{
-            $id = $request->pc_id.str_pad($id+1,4,"0",STR_PAD_LEFT);
+            $id = $request->police_station_id.str_pad($id+1,4,"0",STR_PAD_LEFT);
         }
-       // echo  $id;exit;
+        
+        
         $request = array_add($request,'id',$id);
         $request->validate([
             'id' => 'required|unique:offices|digits:10'

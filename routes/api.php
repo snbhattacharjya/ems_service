@@ -65,7 +65,7 @@ Route::get('/subdivisions', 'SubdivisionController@getSubdivisions');
 Route::get('/blockmunis', 'BlockMuniController@getBlockMunis');
 
 //Police Station Routes
-Route::get('/policestations/{subdivision_id}', 'PoliceStationController@getPoliceStations');
+Route::get('/policestations', 'PoliceStationController@getPoliceStations');
 
 //Category Routes
 Route::get('/categories', 'CategoryController@getCategories');
