@@ -65,7 +65,7 @@ Route::get('/subdivisions', 'SubdivisionController@getSubdivisions');
 Route::get('/blockmunis', 'BlockMuniController@getBlockMunis');
 
 //Police Station Routes
-Route::get('/policestations', 'PoliceStationController@getPoliceStations');
+Route::get('/policestations/{subdivision_id}', 'PoliceStationController@getPoliceStations');
 
 //Category Routes
 Route::get('/categories', 'CategoryController@getCategories');
@@ -91,6 +91,8 @@ Route::get('/remarks', 'PersonnelController@getRemarks');
 Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
 Route::get('/ifsc/{branch_ifsc}', 'PersonnelController@getIfsc');
 Route::get('/export/{mode}', 'Export\UserExport@userexport');
+Route::get('/officestatus', 'Report\ReportOfficeEntryStatusController@getOfficeStatus');
+
 //PP Category
 Route::post('/setrule', 'categorization\PoststatController@saveRule');
 Route::post('/officebysubdivision', 'categorization\PoststatController@getOfficeBySubCat');
