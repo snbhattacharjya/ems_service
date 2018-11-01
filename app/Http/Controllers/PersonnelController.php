@@ -106,10 +106,10 @@ class PersonnelController extends Controller
         $id = $id[0]->MaxID;
 
         if(is_null($id)){
-            $id = substr($officeid,0,4).'0000001';
+            $id = substr($officeid,0,6).'00001';
         }
         else{
-            $id = substr($officeid,0,4).str_pad($id+1,7,"0",STR_PAD_LEFT);
+            $id = substr($officeid,0,6).str_pad($id+1,5,"0",STR_PAD_LEFT);
         }
      
       //print_r($request->all());exit;

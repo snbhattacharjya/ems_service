@@ -47,7 +47,7 @@ class UserExport extends Controller
         if(isset($this->user))
             {
                 if($request->mode=="office" && ($this->user->level===3 || $this->user->level===4|| $this->user->level===12 || $this->user->level===10)){
-                $data=User::select('offices.name','rand_id','address','post_office','pin','offices.mobile','rand_password')
+                $data=User::select('offices.name','offices.email','rand_id','address','post_office','pin','offices.mobile','rand_password')
                 ->join('user_random_password', 'rand_id', '=', 'users.user_id')
                 ->join('offices', 'offices.id', '=', 'user_random_password.rand_id')
                 ->where('level','10')
@@ -55,7 +55,7 @@ class UserExport extends Controller
                 ->get(); 
                 $csvExporter = new \Laracsv\Export();
                 $file='user'.date('Y-m-d-H-i-s').'-'.'13';
-                $csvExporter->build($data, ['name'=>'Name', 'rand_id'=>'UserId','address'=>'Address','post_office'=>'Post Office','pin'=>'Pin Code','mobile'=>'Mobile Number','rand_password'=>'Password'])->download( $file.'.csv');
+                $csvExporter->build($data, ['name'=>'Name','email'=>'Email', 'rand_id'=>'UserId','address'=>'Address','post_office'=>'Post Office','pin'=>'Pin Code','mobile'=>'Mobile Number','rand_password'=>'Password'])->download( $file.'.csv');
 
                 }elseif($request->mode=="user" && ($this->user->level===3 || $this->user->level===4|| $this->user->level===12 || $this->user->level===10)){
                 
@@ -67,7 +67,7 @@ class UserExport extends Controller
 
                 $csvExporter = new \Laracsv\Export();
                 $file='user'.date('Y-m-d-H-i-s').'-'.'13';
-                $csvExporter->build($data, ['name'=>'Name', 'user_id'=>'UserId','email'=>'Email Address','mobile'=>'Mobile Number'])->download( $file.'.csv');
+                $csvExporter->build($data, ['name'=>'Name','email'=>'Email', 'user_id'=>'UserId','email'=>'Email Address','mobile'=>'Mobile Number'])->download( $file.'.csv');
                 
                 }else{
                     return  response()->json('Error',401);

@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 */
 Route::middleware('auth:api')->get('/user','PermissionController@getPermission');
 Route::get('/userauth', function (Request $request) {
-    return auth('api')->user();
+    return auth('api')->user()->token()->id;
 });
 //Register Routes
 Route::get('/a', 'PersonnelController@is_personnel');
@@ -26,6 +26,7 @@ Route::get('/logout', 'Auth\LoginController@logout')->middleware('auth:api');
 
 Route::group([ 'middleware' => 'auth:api'], function()
 {
+  Route::post('/edituser', 'UserController@editUser');
 //Report Routes
 Route::get('/getdistrict', 'ReportassembleController@getAllDistrict');
 Route::get('/assemblyreport/{district_id}', 'ReportassembleController@getAssmblyReport');
@@ -64,7 +65,7 @@ Route::get('/subdivisions', 'SubdivisionController@getSubdivisions');
 Route::get('/blockmunis', 'BlockMuniController@getBlockMunis');
 
 //Police Station Routes
-Route::get('/policestations', 'PoliceStationController@getPoliceStations');
+Route::get('/policestations/{subdivision_id}', 'PoliceStationController@getPoliceStations');
 
 //Category Routes
 Route::get('/categories', 'CategoryController@getCategories');

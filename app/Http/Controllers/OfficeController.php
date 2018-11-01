@@ -99,10 +99,10 @@ class OfficeController extends Controller
         $id = $id[0]->MaxID;
 
         if(is_null($id)){
-            $id = $request->subdivision_id.'000001';
+            $id = $request->pc_id.'0001';
         }
         else{
-            $id = $request->subdivision_id.str_pad($id+1,6,"0",STR_PAD_LEFT);
+            $id = $request->pc_id.str_pad($id+1,4,"0",STR_PAD_LEFT);
         }
        // echo  $id;exit;
         $request = array_add($request,'id',$id);
@@ -280,8 +280,6 @@ class OfficeController extends Controller
         }
     
         }
-
-
 
     function random_password( $length = 8 ) {
 		$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_?";

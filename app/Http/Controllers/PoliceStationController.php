@@ -14,8 +14,13 @@ class PoliceStationController extends Controller
         $this->district=auth('api')->user()->area;
     }
 
-    public function getPoliceStations()
+    public function getPoliceStations(Request $request)
     {
-       return DB::select("select id,name,subdivision_id from police_stations where SUBSTRING(id,1,2)= ?",[$this->district]);
+        if($request->subdivision_id && $request->subdivision_id!=''){
+       return DB::select("select id,name,subdivision_id from police_stations where subdivision_id='' and  SUBSTRING(id,1,2)= ?",[$this->district]);
+        }else{
+            return DB::select("select id,name,subdivision_id from police_stations where  SUBSTRING(id,1,2)= ?",[$this->district]);
+        }
+   
     }
 }

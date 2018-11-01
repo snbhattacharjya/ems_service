@@ -442,8 +442,8 @@ class UserController extends Controller
 
   public function createPassword(){
 		
-	  
-	  User::where('area','20')->where('level','10')->get()->each(function($user) {
+	//User::where('area','20')->where('level','10');
+	  User::where('level','12')->get()->each(function($user) {
 		    $pass=$this->random_password();
 			$user->password = bcrypt($pass);
 			$user->save();
@@ -459,12 +459,21 @@ class UserController extends Controller
         echo 'Finished';
 	}
 
-	
+ public function editUser(Request $request){
+	    $request->validate([
+		'name' => 'required|string|max:40',
+		'email' => 'required|email',
+	   // 'mobile' => 'required|number|max:10',
+		//'aadhaar' => 'required',
+		'designation'=>'required'
+		]);
+	 $UserId=auth('api')->user()->id;
+	 User::where('id',$UserId)->update(['name' => $request->name],['email' => $request->email],['mobile' => $request->mobile],['aadhaar' => $request->aadhaar],['designation'=> $request->designation]);
+	 return response()->json('Updated Successfully',201);
+      }	
  public function passwordInsert(){
-
-	User::where('area','13')->get();
-		
- }
+	 User::where('area','13')->get();
+	 }
 
 	
 }
