@@ -79,7 +79,6 @@ if(!empty($assembly_id) && (!empty($district_id)) && ($this->district==$district
   
 
 }
-	}
-
+	
 
 }
