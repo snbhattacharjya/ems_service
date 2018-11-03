@@ -30,6 +30,7 @@ Route::group([ 'middleware' => 'auth:api'], function()
 //Report Routes
 Route::get('/getdistrict', 'ReportassembleController@getAllDistrict');
 Route::get('/assemblyreport/{district_id}', 'ReportassembleController@getAssmblyReport');
+Route::get('/updateassemblyreport/{assembly_id}/{male_party_count}/{female_party_count}/{district_id}', 'ReportassembleController@getAssmblyReport');
 Route::get('/report', 'ReportController@getReport');
 Route::get('/subdivisionreport/{district_id}', 'SudivreportController@reportOnSubdivsion');
 //Add User
@@ -91,7 +92,8 @@ Route::get('/remarks', 'PersonnelController@getRemarks');
 Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
 Route::get('/ifsc/{branch_ifsc}', 'PersonnelController@getIfsc');
 Route::get('/export/{mode}', 'Export\UserExport@userexport');
-Route::get('/officestatus', 'Report\ReportOfficeEntryStatusController@getOfficeStatus');
+Route::get('/officeentrystatus', 'Report\ReportOfficeEntryStatusController@getOfficeEntryStatus');
+
 
 //PP Category
 Route::post('/setrule', 'categorization\PoststatController@saveRule');

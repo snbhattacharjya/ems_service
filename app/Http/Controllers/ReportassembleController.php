@@ -60,7 +60,26 @@ class ReportassembleController extends Controller
 		 
 	 }
    }
+  public function updateAssmblyByReport(Request $request){
+	$assembly_id=$request->assembly_id;
+	$male_party_count=$request->male_party_count;
+	$female_party_count=$request->female_party_count;
+	$district_id=$request->district_id;
+
+if(!empty($assembly_id) && (!empty($district_id)) && ($this->district==$district_id) && ($this->level===3 || $this->level===4|| $this->level===12)){ 
+		
+	DB::table('assembly_party')->where('assembly_id',$assembly_id)
+	                           ->update(['male_party_count' => $male_party_count],['female_party_count' => $female_party_count],['updated_at' => date('Y-m-d H:i:s')]);
 	
+	return response()->json('Successfully Updated',201);                 
+}else{
+
+		return response()->json('Error',400);
+}
+  
+
+}
+	}
 
 
 }
