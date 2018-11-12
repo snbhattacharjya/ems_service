@@ -25,7 +25,7 @@ class PermissionController extends Controller
 	foreach($menu as $mval){
 		 $menuname=$mval->menu_name;
 		 $menuslug=strtolower(str_replace(' ', '_', $mval->menu_name));
-		(array)$arr['menu'][]=array('parent_menu'=>ucfirst(strtolower($menuname)),'group'=>$menuslug,'menu_link'=>$mval->menu_link,'menu_icon_name'=>$mval->menu_icon_name,'submenu'=>$this->submenu($userId,$mval->menu_id));
+		(array)$arr['menu'][]=array('parent_menu'=>$menuname,'group'=>$menuslug,'menu_link'=>$mval->menu_link,'menu_icon_name'=>$mval->menu_icon_name,'submenu'=>$this->submenu($userId,$mval->menu_id));
 	}
 	$previllege=DB::select('SELECT m.menu_name,p.menu_id, prevg.prev_add, prevg.prev_edit,prevg.prev_delete,prevg.prev_view FROM menu m JOIN permission p ON p.menu_id = m.menu_id JOIN previllege_assign prevg ON p.menu_id = prevg.menu_id WHERE m.menu_id=p.menu_id and p.user_id = prevg.user_id and p.user_id ='.$userId.' ');
 	foreach($previllege as $val){
@@ -51,7 +51,7 @@ class PermissionController extends Controller
 		if($submenu){
 			$arrsub=array();
 			foreach($submenu as $submenuVal){
-			(array)$arrsub[]=array("menu_name"=>ucfirst(strtolower($submenuVal->menu_name)),"menu_link"=>$submenuVal->menu_link,"menu_icon_name"=>$submenuVal->menu_icon_name);
+			(array)$arrsub[]=array("menu_name"=>$submenuVal->menu_name,"menu_link"=>$submenuVal->menu_link,"menu_icon_name"=>$submenuVal->menu_icon_name);
 			}
 			return $arrsub;
 		}

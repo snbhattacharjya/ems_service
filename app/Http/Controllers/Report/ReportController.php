@@ -11,7 +11,6 @@ class ReportController extends Controller
 {
             
 
-
             public function report(Request $request){
               $arr=array();
              $reportMode=$request->report;
@@ -108,6 +107,6 @@ class ReportController extends Controller
             }
 
          } 
-
+       
 
 }
