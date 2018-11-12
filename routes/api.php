@@ -30,7 +30,7 @@ Route::group([ 'middleware' => 'auth:api'], function()
 //Report Routes
 Route::get('/getdistrict', 'ReportassembleController@getAllDistrict');
 Route::get('/assemblyreport/{district_id}', 'ReportassembleController@getAssmblyReport');
-Route::post('/updateassemblyreport', 'ReportassembleController@getAssmblyReport');
+Route::post('/updateassemblyreport', 'ReportassembleController@updateAssmblyByReport');
 Route::get('/report', 'ReportController@getReport');
 Route::get('/subdivisionreport/{district_id}', 'SudivreportController@reportOnSubdivsion');
 //Add User
