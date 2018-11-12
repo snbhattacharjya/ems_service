@@ -95,7 +95,7 @@ Route::get('/export/{mode}', 'Export\UserExport@userexport');
 Route::get('/officeentrystatus', 'Report\ReportOfficeEntryStatusController@getOfficeEntryStatus');
 Route::get('/personelProgressReport', 'Report\PollingPersonelProgressController@pollingPersonelProgressReport');
 Route::get('/subdivisionwiseassemblyreport', 'SudivreportController@subdivisionWiseAssemblyReport');
-
+Route::get('/officepartialentrystatus', 'Report\ReportOfficeEntryStatusController@getOfficePartialEntryStatus');
 
 //PP Category
 Route::post('/setrule', 'categorization\PoststatController@saveRule');

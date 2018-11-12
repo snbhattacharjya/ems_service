@@ -468,7 +468,7 @@ class UserController extends Controller
 		'designation'=>'required'
 		]);
 	 $UserId=auth('api')->user()->id;
-	 User::where('id',$UserId)->update(['name' => $request->name],['email' => $request->email],['mobile' => $request->mobile],['aadhaar' => $request->aadhaar],['designation'=> $request->designation]);
+	 User::where('id',$UserId)->update(['name' => $request->name,'email' => $request->email,'mobile' => $request->mobile,'aadhaar' => $request->aadhaar,'designation'=> $request->designation]);
 	 return response()->json('Updated Successfully',201);
       }	
  public function passwordInsert(){

@@ -88,22 +88,22 @@ class ReportController extends Controller
               return response()->json($arr,201);
             }else{
 
-              $officeid=$request->officeId;
-              $result['personel']= DB::select("SELECT p.office_id,p.name as empname,p.designation,p.present_address,p.permanent_address,p.dob,p.gender,p.scale,
-              p.basic_pay,p.grade_pay,p.emp_group,p.working_status,p.email,p.phone,p.mobile,p.epic,p.part_no,p.sl_no,p.post_stat,
-              p.branch_ifsc,p.bank_account_no,q.name as qualification,ln.name as languagename,
-              sdv.name as subdivision,actemp.name as actemp,acperm.name as acpermanent,acoffice.name as acofficename,
-              rmrks.name as remark
-              from  personnel p join offices o on p.office_id=o.id
-              join qualifications q on p.qualification_id=q.id 
-               join languages ln on p.language_id=ln.id
-               join subdivisions sdv on p.subdivision_id=sdv.id
-              join assembly_constituencies actemp on  p.assembly_temp_id=actemp.id
-              join assembly_constituencies acperm on  p.assembly_perm_id=acperm.id
-               join assembly_constituencies acoffice on  p.assembly_off_id=acoffice.id
-               join remarks rmrks on  p.remark_id=rmrks.id
-                where p.office_id='1301010003'");
-                 return response()->json($result,201);
+              // $officeid=$request->officeId;
+              // $result['personel']= DB::select("SELECT p.office_id,p.name as empname,p.designation,p.present_address,p.permanent_address,p.dob,p.gender,p.scale,
+              // p.basic_pay,p.grade_pay,p.emp_group,p.working_status,p.email,p.phone,p.mobile,p.epic,p.part_no,p.sl_no,p.post_stat,
+              // p.branch_ifsc,p.bank_account_no,q.name as qualification,ln.name as languagename,
+              // sdv.name as subdivision,actemp.name as actemp,acperm.name as acpermanent,acoffice.name as acofficename,
+              // rmrks.name as remark
+              // from  personnel p join offices o on p.office_id=o.id
+              // join qualifications q on p.qualification_id=q.id 
+              //  join languages ln on p.language_id=ln.id
+              //  join subdivisions sdv on p.subdivision_id=sdv.id
+              // join assembly_constituencies actemp on  p.assembly_temp_id=actemp.id
+              // join assembly_constituencies acperm on  p.assembly_perm_id=acperm.id
+              //  join assembly_constituencies acoffice on  p.assembly_off_id=acoffice.id
+              //  join remarks rmrks on  p.remark_id=rmrks.id
+              //   where p.office_id='1301010003'");
+              //    return response()->json($result,201);
             }
 
          } 
