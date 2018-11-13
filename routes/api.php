@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 */
 Route::middleware('auth:api')->get('/user','PermissionController@getPermission');
 Route::get('/userauth', function (Request $request) {
-    return auth('api')->user()->token()->id;
+    return auth('api')->user();
 });
 //Register Routes
 Route::get('/a', 'PersonnelController@is_personnel');

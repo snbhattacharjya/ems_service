@@ -10,6 +10,7 @@ use DB;
 use Auth;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
+
 class UserExport extends Controller
 {    
     private $user;
@@ -17,15 +18,19 @@ class UserExport extends Controller
     
     public function __construct(Request $request)
     {	
-        $this->user=$this->checkAuth($request);
+      $this->user=json_decode($this->checkAuth($request));
+ // echo '<pre>';
+     // print_r(json_decode($this->user));exit;
         // $this->userID=auth('api')->user()->user_id;
         // $this->level=auth('api')->user()->level;
         // $this->district=auth('api')->user()->area; 
     }
     
-   public function checkAuth(Request $request){
-    $office=$request->mode; 
+   public function checkAuth($request){
+    $office=$request->mode;
     $token=$request->token;
+
+
     $client = new Client();
     $headers =[
         'Authorization' => 'Bearer '.$token,        
@@ -35,18 +40,23 @@ class UserExport extends Controller
     $response = $client->request('GET', 'http://service.ems.test/api/userauth',[
         'headers' => $headers
     ]);
-    if ($response->getStatusCode() == 200){return json_decode((string)$response->getBody());}
-    else{dd('Unauthorize Access');}
+ 
+    if ($response->getStatusCode() == 200){
+        
+        return (string)$response->getBody();
+       
+        
+        } else{dd('Unauthorize Access');}
    
 
    }
 
    public function userexport(Request $request) 
     {
-        
+    
         if(isset($this->user))
             {
-                if($request->mode=="office" && ($this->user->level===3 || $this->user->level===4|| $this->user->level===12 || $this->user->level===10)){
+                if($request->mode=="office" && ($this->user->level===3 || $this->user->level===4|| $this->user->level===12 )){
                 $data=User::select('offices.name','offices.email','rand_id','address','post_office','pin','offices.mobile','rand_password')
                 ->join('user_random_password', 'rand_id', '=', 'users.user_id')
                 ->join('offices', 'offices.id', '=', 'user_random_password.rand_id')
@@ -57,7 +67,7 @@ class UserExport extends Controller
                 $file='user'.date('Y-m-d-H-i-s').'-'.'13';
                 $csvExporter->build($data, ['name'=>'Name','email'=>'Email', 'rand_id'=>'UserId','address'=>'Address','post_office'=>'Post Office','pin'=>'Pin Code','mobile'=>'Mobile Number','rand_password'=>'Password'])->download( $file.'.csv');
 
-                }elseif($request->mode=="user" && ($this->user->level===3 || $this->user->level===4|| $this->user->level===12 || $this->user->level===10)){
+                }elseif($request->mode=="user" && ($this->user->level===3 || $this->user->level===4|| $this->user->level===12)){
                 
                     $data=User::select('user_id','name','email','mobile')
                     ->whereNotIn('level',[1,2,3,4,11,12,10])
