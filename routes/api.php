@@ -50,6 +50,7 @@ Route::get('/offices', 'OfficeController@getAllOffices');
 Route::get('/office/{id}', 'OfficeController@getOfficeById');
 Route::post('/office', 'OfficeController@store');
 Route::post('/office/update', 'OfficeController@update');
+Route::get('/officetype/{officeId}', 'OfficeController@getOfficeType');
 
 //Personnel Routes
 

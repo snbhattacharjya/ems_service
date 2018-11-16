@@ -443,7 +443,7 @@ class UserController extends Controller
   public function createPassword(){
 		
 	//User::whereNotIn('area','20')->where('level','10');
-	  User::where('area','17')->where('level','10')->get()->each(function($user) {
+	  User::where('area','05')->where('level','10')->get()->each(function($user) {
 		    $pass=$this->random_password();
 			$user->password = bcrypt($pass);
 			$user->save();
