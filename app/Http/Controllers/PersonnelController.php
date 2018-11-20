@@ -62,6 +62,7 @@ class PersonnelController extends Controller
       
 
          if($this->is_personnelOffice_countMatch($officeid)){
+            
          $request->validate([
              'officer_name' => 'required|string|max:50',
              'designation' => 'required|string|max:50',
@@ -319,7 +320,17 @@ class PersonnelController extends Controller
 
 
    }
+  public function duplicateBankAccount(Request $request){
+    $accountNumber=$request->bankNumber;
+   if( Personnel::where('bank_account_no', '=',$accountNumber)->exists()){
+  
+    return response()->json(array('status'=>201,'msg'=>'Account Exists'));
+     
+     }else{
+    return response()->json(array('status'=>401,'msg'=>'Not Found'));     
+     }
 
+  }
 
 
  

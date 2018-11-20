@@ -59,6 +59,7 @@ Route::post('/personnel', 'PersonnelController@store');
 Route::get('/personnel/{id}', 'PersonnelController@getPersonnelById');
 Route::get('/personnel', 'PersonnelController@getAllPersonnel');
 Route::post('/personnel/update', 'PersonnelController@update');
+Route::post('/accountcheck/{bankNumber}', 'PersonnelController@duplicateBankAccount');
 
 //Subdivision Routes
 Route::get('/subdivisions', 'SubdivisionController@getSubdivisions');
@@ -97,7 +98,7 @@ Route::get('/officeentrystatus', 'Report\ReportOfficeEntryStatusController@getOf
 Route::get('/personelProgressReport', 'Report\PollingPersonelProgressController@pollingPersonelProgressReport');
 Route::get('/subdivisionwiseassemblyreport', 'SudivreportController@subdivisionWiseAssemblyReport');
 Route::get('/officepartialentrystatus', 'Report\ReportOfficeEntryStatusController@getOfficePartialEntryStatus');
-
+Route::get('/officecompletestatus', 'Report\ReportOfficeEntryStatusController@getOfficeEntryComplete');
 //PP Category
 Route::post('/setrule', 'categorization\PoststatController@saveRule');
 Route::post('/officebysubdivision', 'categorization\PoststatController@getOfficeBySubCat');
