@@ -59,7 +59,7 @@ Route::post('/personnel', 'PersonnelController@store');
 Route::get('/personnel/{id}', 'PersonnelController@getPersonnelById');
 Route::get('/personnel', 'PersonnelController@getAllPersonnel');
 Route::post('/personnel/update', 'PersonnelController@update');
-Route::post('/accountcheck/{bankNumber}', 'PersonnelController@duplicateBankAccount');
+Route::get('/accountcheck/{bankNumber}', 'PersonnelController@duplicateBankAccount');
 
 //Subdivision Routes
 Route::get('/subdivisions', 'SubdivisionController@getSubdivisions');
@@ -126,3 +126,4 @@ Route::post('/savepoststatmanual', 'categorization\ManualPoststatSetController@p
 //Route::get('/allassemblies', 'AssemblyConstituencyController@getAssembliesAll');
  Route::get('/export/{mode}/{token}', 'Export\UserExport@userexport');
  Route::get('/checkuser/{mode}/{token}', 'Export\UserExport@checkAuth');
+ Route::get('/exportpersonnel', 'Export\UserExport@export');

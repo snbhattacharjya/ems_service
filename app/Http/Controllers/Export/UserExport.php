@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Export;
 use App\User;
 use App\Passwordgeneration;
 use App\Office;
+use App\Personnel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
@@ -57,15 +58,24 @@ class UserExport extends Controller
         if(isset($this->user))
             {
                 if($request->mode=="office" && ($this->user->level===3 || $this->user->level===4|| $this->user->level===12 )){
-                $data=User::select('offices.name','offices.email','rand_id','address','post_office','pin','offices.mobile','rand_password')
-                ->join('user_random_password', 'rand_id', '=', 'users.user_id')
+               
+               
+                    $data=User::select('offices.name','offices.email','rand_id','subdivisions.name as subdiv','block_munis.name as blk','police_stations.name as ps','address','post_office','pin','offices.mobile','rand_password')
+               
+                ->join('user_random_password', 'user_random_password.rand_id', '=', 'users.user_id')
                 ->join('offices', 'offices.id', '=', 'user_random_password.rand_id')
+                ->join('subdivisions', 'subdivisions.id', '=', 'offices.subdivision_id')
+                ->join('block_munis', 'block_munis.id', '=', 'offices.block_muni_id')
+                ->join('police_stations', 'police_stations.id', '=', 'offices.police_station_id')
                 ->where('level','10')
                 ->where('area',$this->user->area)
                 ->get(); 
+             
+
+               // print_r($data);
                 $csvExporter = new \Laracsv\Export();
-                $file='user'.date('Y-m-d-H-i-s').'-'.'13';
-                $csvExporter->build($data, ['name'=>'Name','email'=>'Email', 'rand_id'=>'UserId','address'=>'Address','post_office'=>'Post Office','pin'=>'Pin Code','mobile'=>'Mobile Number','rand_password'=>'Password'])->download( $file.'.csv');
+                $file='offices'.date('Ymd_H_i_s').'_'.$this->user->area;
+                $csvExporter->build($data, ['name'=>'Name','email'=>'Email', 'rand_id'=>'UserId','address'=>'Address','post_office'=>'Post Office','ps'=>'Police Station','blk'=>'Block Muni','subdiv'=>'Subdivision','pin'=>'Pin Code','mobile'=>'Mobile Number','rand_password'=>'Password'])->download( $file.'.csv');
 
                 }elseif($request->mode=="user" && ($this->user->level===3 || $this->user->level===4|| $this->user->level===12)){
                 
@@ -76,9 +86,19 @@ class UserExport extends Controller
 
 
                 $csvExporter = new \Laracsv\Export();
-                $file='user'.date('Y-m-d-H-i-s').'-'.'13';
+                $file='user'.date('Ymd_H_i_s').'-'.$this->user->area;
                 $csvExporter->build($data, ['name'=>'Name','email'=>'Email', 'user_id'=>'UserId','email'=>'Email Address','mobile'=>'Mobile Number'])->download( $file.'.csv');
                 
+                }elseif($request->mode=="personnel" && ($this->user->level===3 || $this->user->level===4|| $this->user->level===12)){
+                    $data=Personnel::select('office_id','name','designation','dob','gender','present_address','permanent_address',
+                    'mobile','phone','email')
+                    ->groupBy('office_id')
+                    ->where('area',$this->user->area)
+                    ->get(); 
+                 echo '<pre>';
+                 print_r($data);
+
+
                 }else{
                     return  response()->json('Error',401);
                 }
@@ -90,15 +110,16 @@ class UserExport extends Controller
     }
 
    public function export(){
-    $data=User::select('offices.name','rand_id','address','post_office','pin','offices.mobile','rand_password')
-    ->join('user_random_password', 'rand_id', '=', 'users.user_id')
-    ->join('offices', 'offices.id', '=', 'user_random_password.rand_id')
-    ->where('level','10')
-    ->where('area','13')
+      echo 'hi';
+    $data=Personnel::select('office_id','name','designation','dob','gender','present_address','permanent_address',
+    'mobile','phone','email')
+    //->groupBy('office_id')
+    ->where('district_id','13')
     ->get(); 
+ 
     $csvExporter = new \Laracsv\Export();
     $file='user'.date('Y-m-d-H-i-s').'-'.'13';
-    $csvExporter->build($data, ['name'=>'Name', 'rand_id'=>'UserId','address'=>'Address','post_office'=>'Post Office','pin'=>'Pin Code','mobile'=>'Mobile Number','rand_password'=>'Password'])->download( $file.'.csv');
+    $csvExporter->build($data, ['office_id'=>'Office Code', 'name'=>'Name','designation'=>'Designation','dob'=>'DOB','gender'=>'Gender','mobile'=>'Mobile Number','phone'=>'Phone'])->download( $file.'.csv');
 
    }
 

@@ -62,5 +62,21 @@ class ReportOfficeEntryStatusController extends Controller
  $arr['totalpartialoffice']=count($arr['officelist']);
     return response()->json($arr,201);   
     }
+    public function getOfficeWrong(){
 
+        $offices=DB::select("select distinct(offices.id) as officeId,offices.name as officeName,offices.mobile,offices.total_staff as totalStuff from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district'");
+        for($i=0;$i<count($offices);$i++){
+         $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district'  and personnel.office_id=".$offices[$i]->officeId);
+         // print_r($personnel->totpersonnel);
+         if($offices[$i]->totalStuff==$personnel[0]->totpersonnel && $personnel[0]->totpersonnel!=''){
+        $arr['officelist'][]=array('officeId'=>$offices[$i]->officeId,'officeName'=>$offices[$i]->officeName,
+            'mobile'=>$offices[$i]->mobile,'totalStuff'=>$offices[$i]->totalStuff ,'personelenty'=>$personnel[0]->totpersonnel );
+        }
+       }
+      
+    
+     $arr['totalpartialoffice']=count($arr['officelist']);
+        return response()->json($arr,201);   
+        }
+    
 }

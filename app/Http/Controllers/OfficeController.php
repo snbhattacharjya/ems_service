@@ -290,7 +290,7 @@ class OfficeController extends Controller
    
    public function getOfficeType(Request $request){
      
-    if($this->level==3 || $this->level==12){
+    if($this->level!=''){
         $arr=array();
         $arr['officeType']= Office::where('id',$request->officeId)->pluck('category_id');  
         return $arr;
