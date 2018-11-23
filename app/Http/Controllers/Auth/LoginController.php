@@ -27,8 +27,8 @@ class LoginController extends Controller
     {
         return $this->proxy([
             'grant_type' => 'password',
-            'username' =>base6d_decode(base6d_decode($request->username)),
-            'password' =>base6d_decode(base6d_decode( $request->password))
+            'username' =>base64_decode(base64_decode($request->username)),
+            'password' =>base64_decode(base64_decode( $request->password))
         ]);
     }
     public function refresh(Request $request)

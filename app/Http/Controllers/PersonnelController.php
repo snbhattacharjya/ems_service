@@ -281,7 +281,7 @@ class PersonnelController extends Controller
     public function getIfsc(Request $request){
         $ifsc=$request->branch_ifsc;
 		if(!empty($ifsc)){
-        $remarks=DB::select('SELECT ifsc,branch FROM `ifsc_code` where ifsc="'.$ifsc.'"');
+        $remarks=DB::select('SELECT ifsc,bank,branch FROM `ifsc_code` where ifsc="'.$ifsc.'"');
         if(empty($remarks)){
         return response()->json('Your Bank not in WB',201);
 

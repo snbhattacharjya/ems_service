@@ -296,7 +296,9 @@ class OfficeController extends Controller
         return $arr;
     }
    }
-
+  public function searchOffice(Request $request){
+  
+  }
 
 
 }

@@ -35,8 +35,8 @@ class UserController extends Controller
                 $userCreationType=$request->sub_level;
 				$user_id=$getStateCode.$UserArea.$userGenertaionLevelCode[0].$userCreationType;
 					 if (User::where('user_id', '=',$user_id)->exists()){
-                      $msg='User Already Exists';
-                      //$msg=$user_id;
+                      $msg='User Already Exists-'.$user_id;
+                     // $msg=$user_id;
 					  $execute=0;
 					 }else{
 					  $msg= $user_id;
@@ -47,8 +47,8 @@ class UserController extends Controller
                 $userCreationType=$request->sub_level;
 					 $user_id=$getStateCode.$UserArea.$userGenertaionLevelCode[0].$userCreationType;
 					 if (User::where('user_id', '=',$user_id)->exists()){
-                      $msg='User Already Exists';
-                     //$msg=$user_id;
+                      $msg='User Already Exists-'.$user_id;
+                    // $msg=$user_id;
 					  $execute=0;
 					 }else{
 					  $msg= $user_id;
@@ -58,7 +58,7 @@ class UserController extends Controller
             $userCreationType=$request->subdiv_block_id;
 				     $user_id=$getStateCode.$UserArea.$userGenertaionLevelCode[0].$userCreationType;
 					 if (User::where('user_id', '=',$user_id)->exists()){
-                      $msg='User Already Exists';
+                      $msg='User Already Exists-'.$user_id;
                       //$msg=$user_id;
 					  $execute=0;
 					 }else{
@@ -69,8 +69,8 @@ class UserController extends Controller
             $userCreationType=$request->sub_level;
 					 $user_id=$getStateCode.$UserArea.$userGenertaionLevelCode[0].$userCreationType;
 					 if (User::where('user_id', '=',$user_id)->exists()){
-                      $msg='User Already Exists';
-                      //$msg=$user_id;
+                     $msg='User Already Exists-'.$user_id;
+                     // $msg=$user_id;
 					  $execute=0;
 					 }else{
 					  $msg= $user_id;
@@ -85,7 +85,8 @@ class UserController extends Controller
 						$user_id=$getStateCode.$UserArea.$userCreationType.$ppcell_type.'01';
 								
 								if(User::where('user_id', '=',$user_id)->exists()){
-								$msg='User Already Exists';
+								$msg='User Already Exists-'.$user_id;
+								   // $msg=$user_id;
 									$execute=0;
 								}else{
 									$msg= $user_id;
@@ -111,7 +112,8 @@ class UserController extends Controller
                          
 					     $user_id=$getStateCode.$UserArea.$userCreationType.$subdiv_block_id.$ppcell_type.'01';
 					     if(User::where('user_id', '=',$user_id)->exists()){
-					     $msg='User Already Exists';
+						 $msg='User Already Exists-'.$user_id;
+						 $msg=$user_id;
 					     $execute=0;
 					      }else{
 					       $msg= $user_id;
@@ -253,6 +255,7 @@ class UserController extends Controller
 			}
 			$list=User::where('area',$area)
 					  ->whereNotIn('level',$canNotsee)
+					  
 					  ->get();
 		   return response()->json($list);
    }
@@ -384,16 +387,17 @@ class UserController extends Controller
  // print_r($user);
 	    if(!empty($user[0]->user_id)){
 				if(substr($user[0]->user_id,-1)!=4){
-					$user_id=substr($user[0]->user_id,-1)+1;
+					 $user_id=substr($user[0]->user_id,-1)+1;
 					 $msg=$user_code_like.'0'.$user_id;
 					$execute=1;
 					}else{
-					$msg='Unable to process';
+					$msg='Unable to process-'.$user_code_like;
+					
 					$execute=0;
 					}
 
 	       }else{     
-					  echo $msg=$user_code_like.'01';
+					$msg=$user_code_like.'01';
 					$execute=1;
 	        }
 		  return array('msg'=>$msg,'execute'=>$execute);
