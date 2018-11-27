@@ -93,8 +93,8 @@ class UserExport extends Controller
                 $data=Personnel::select('office_id','name','designation','dob','gender','present_address','permanent_address',
                 'mobile','phone','email','basic_pay','grade_pay','pay_level','emp_group','post_stat')
             
-                ->where('district_id','13')
-                ->orderBy('office_id')
+                ->where('district_id',$this->user->area)
+                //->orderBy('office_id')
                 ->get(); 
             
                 $csvExporter = new \Laracsv\Export();

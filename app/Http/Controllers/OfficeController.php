@@ -297,8 +297,21 @@ class OfficeController extends Controller
     }
    }
   public function searchOffice(Request $request){
+  $officeId=$request['office_id'];
+  $identification_code=$request['identification_code'];
+  $mobile=$request['mobile'];
+  $name=$request['name'];
   
+  $data=Office::where('district_id' ,'=',$this->district)
+               ->orWhere('name','like',''. $name . '%')
+               ->orWhere('identification_code','like','%' . $identification_code . '%')
+               ->orWhere('mobile','like','%'.$mobile.'%');
+
+               return response()->json( $data,201);
+
   }
+
+
 
 
 }

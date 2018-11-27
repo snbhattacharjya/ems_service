@@ -183,7 +183,7 @@ class UserController extends Controller
 			$AddUser->user_id = $msg;
 			$pass=$this->random_password();
 	       	$AddUser->password = Hash::make($pass);
-			$AddUser->change_password =1 ;
+			$AddUser->change_password =0 ;
 			$AddUser->save();
 			$lastInsertedId=$AddUser->id; // get office id
 			//get office id
@@ -193,7 +193,7 @@ class UserController extends Controller
 				['rand_id' =>$msg  , 'rand_password' => $pass,'created_at'=>now()]
 				
 			);
-            $msg ="User created succesfully with code - ".$msg;
+            $msg ="User created succesfully with code - ".$msg." Password is-".$pass;
         }
 
 		    return response()->json($msg,201);
@@ -253,10 +253,12 @@ class UserController extends Controller
 			}else{
 
 			}
-			$list=User::where('area',$area)
+		 $list=User::where('area',$area)
 					  ->whereNotIn('level',$canNotsee)
-					  
+					  ->orderBy('level','asc')
 					  ->get();
+					  //->toSql();
+					
 		   return response()->json($list);
    }
 

@@ -52,6 +52,8 @@ class LoginController extends Controller
         ]);
         if ($response->getStatusCode() == 200){
                 $data = json_decode((string)$response->getBody());
+              
+              
                 // attach a refresh token to the response via HttpOnly cookie
                 return response([
                     'access_token' => $data->access_token,
@@ -65,6 +67,8 @@ class LoginController extends Controller
                     false,
                     true // HttpOnly
                 );
+      
+
         }
         else if ($response->getStatusCode() === 400) {
             return response()->json('Invalid Request. Please enter a username or a password.', $response->getStatusCode());

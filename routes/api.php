@@ -114,7 +114,9 @@ Route::get('/revokerule/{RuleID}', 'categorization\PoststatController@revokeRule
 Route::get('/queryrule/{RuleID}', 'categorization\PoststatController@queryRule');
 Route::post('/setpoststat', 'categorization\ManualPoststatSetController@GetPersonnelByOfficeAndPoststat');
 Route::post('/savepoststatmanual', 'categorization\ManualPoststatSetController@postStatManualSave');
+//Analytics
 
+Route::get('/analytics', 'AnalyticsController@totalUsers');
 });
 
 //Route::post('/deo', 'UserController@diocreation');
