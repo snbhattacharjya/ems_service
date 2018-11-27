@@ -301,11 +301,22 @@ class OfficeController extends Controller
   $identification_code=$request['identification_code'];
   $mobile=$request['mobile'];
   $name=$request['name'];
-  
-  $data=Office::where('district_id' ,'=',$this->district)
-               ->orWhere('name','like',''. $name . '%')
-               ->orWhere('identification_code','like','%' . $identification_code . '%')
-               ->orWhere('mobile','like','%'.$mobile.'%');
+        if(!empty($officeId) || !empty($identification_code) || !empty($mobile) || !empty($name) ){
+        $sql="select * from office where district_id='".$this->district."'";
+        }
+      if(!empty($officeId)){
+        $sql .='or id like %'.$officeId.' %';
+        }
+        if(!empty($name)){
+            $sql .='or name like %'.$name.' %';
+        }
+        if(!empty($identification_code)){
+            $sql .='or identification_code like %'.$identification_code.' %';   
+        }
+        if(!empty($mobile)){
+            $sql .='or mobile like %'.$mobile.' %';   
+        }
+
 
                return response()->json( $data,201);
 
