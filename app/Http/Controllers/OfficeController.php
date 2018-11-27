@@ -297,10 +297,11 @@ class OfficeController extends Controller
     }
    }
   public function searchOffice(Request $request){
-  $officeId=$request['office_id'];
+  echo $officeId=$request['office_id']; exit;
   $identification_code=$request['identification_code'];
   $mobile=$request['mobile'];
   $name=$request['name'];
+
         if(!empty($officeId) || !empty($identification_code) || !empty($mobile) || !empty($name) ){
         $sql="select * from office where district_id='".$this->district."'";
         }
@@ -316,9 +317,9 @@ class OfficeController extends Controller
         if(!empty($mobile)){
             $sql .='or mobile like %'.$mobile.' %';   
         }
-
-
-               return response()->json( $data,201);
+      echo  $sql;
+       // $data= DB::select($sql);
+            // return response()->json( $data,201);
 
   }
 
