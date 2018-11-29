@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class OfficeController extends Controller
 {
@@ -63,6 +64,7 @@ class OfficeController extends Controller
     }
    public function getOfficeById(Request $request) //
     {
+        Session::set('officeId',  $request->id);
         return Office::where('id' , $request->id)->get();
 
     }
@@ -72,22 +74,22 @@ class OfficeController extends Controller
 		$UserArea=auth('api')->user()->area;
 		    $request->validate([
             'office_name' => 'required|string|max:50',
-            'identification_code' => 'required|string|max:50',
+            'identification_code' => 'required|string|max:30',
             'officer_designation' => 'required|string|max:50',
             'office_address' => 'required|string|max:50',
             'post_office' => 'required|string|max:50',
             'pin' => 'required|digits:6',
-            'block_muni_id' => 'required',
-            'police_station_id' => 'required',
-            'ac_id' => 'required',
-            'pc_id' => 'required',
-            'subdivision_id' => 'required',
-            'category_id' => 'required',
-            'institute_id' => 'required',
-            //'email' => 'required|email',
-            //'phone' => 'required|numeric',
+            'block_muni_id' => 'required|numeric',
+            'police_station_id' => 'required|numeric',
+            'ac_id' => 'required|numeric',
+            'pc_id' => 'required|numeric',
+            'subdivision_id' => 'required|numeric',
+            'category_id' => 'required|numeric',
+            'institute_id' => 'required|numeric',
+            'email' => 'email|max:50',
+            'phone' => 'numeric|max:15',
             'mobile' => 'required|digits:10',
-            'fax' => 'max:15',
+            'fax' => 'numeric|max:15',
             'total_staff' => 'required|numeric',
             'male_staff' => 'required|numeric',
             'female_staff' => 'required|numeric',
@@ -111,29 +113,29 @@ class OfficeController extends Controller
             'id' => 'required|unique:offices|digits:10'
         ]);
         $office =new Office;
-        $office->id = $request->id;
-        $office->name = $request->office_name;
-        $office->identification_code = $request->identification_code;
-        $office->officer_designation =  $request->officer_designation;
-        $office->address =  $request->office_address;
-        $office->post_office =  $request->post_office;
-        $office->pin =  $request->pin;
-        $office->subdivision_id = $request->subdivision_id;
-        $office->district_id = $UserArea;
-        $office->block_muni_id =  $request->block_muni_id;
-        $office->police_station_id =  $request->police_station_id;
-        $office->ac_id =  $request->ac_id;
-        $office->pc_id =  $request->pc_id;
-        $office->category_id =  $request->category_id;
-        $office->institute_id =  $request->institute_id;
-        $office->identification_code =  $request->identification_code;
-        $office->email =  $request->email;
-        $office->phone =  $request->phone;
-        $office->mobile =  $request->mobile;
-        $office->fax =  $request->fax;
-        $office->total_staff =  $request->total_staff;
-        $office->male_staff =  $request->male_staff;
-        $office->female_staff =  $request->female_staff;
+        $office->id =  strip_tags($request->id,'');
+        $office->name =  strip_tags($request->office_name,'');
+        $office->identification_code =  strip_tags($request->identification_code,'');
+        $office->officer_designation =   strip_tags($request->officer_designation,'');
+        $office->address =   strip_tags($request->office_address,'');
+        $office->post_office =   strip_tags($request->post_office,'');
+        $office->pin =   strip_tags($request->pin,'');
+        $office->subdivision_id =  strip_tags($request->subdivision_id,'');
+        $office->district_id =  strip_tags($UserArea,'');
+        $office->block_muni_id =   strip_tags($request->block_muni_id,'');
+        $office->police_station_id =   strip_tags($request->police_station_id,'');
+        $office->ac_id =   strip_tags($request->ac_id,'');
+        $office->pc_id =   strip_tags($request->pc_id,'');
+        $office->category_id =   strip_tags($request->category_id,'');
+        $office->institute_id =   strip_tags($request->institute_id,'');
+        $office->identification_code =   strip_tags($request->identification_code,'');
+        $office->email =   strip_tags($request->email,'');
+        $office->phone =   strip_tags($request->phone,'');
+        $office->mobile =   strip_tags($request->mobile,'');
+        $office->fax =   strip_tags($request->fax,'');
+        $office->total_staff =   strip_tags($request->total_staff,'');
+        $office->male_staff =   strip_tags($request->male_staff,'');
+        $office->female_staff =   strip_tags($request->female_staff,'');
         $office->created_at = date('Y-m-d H:i:s');
        
 		if($request->agree==1){
@@ -142,7 +144,7 @@ class OfficeController extends Controller
 			$office->agree = 0;
 		}
        $office->save();
-        //echo $office->id;
+        
        $request=array('name'=>$request->office_name,'email'=>$request->email,'mobile'=>$request->mobile,'officer_designation'=>$request->officer_designation);
         if($office->id!=''){
             $this->createUserFromOffice($request,$office->id);
@@ -179,10 +181,15 @@ class OfficeController extends Controller
 	  }
 
     public function update(Request $request){
+         
+        $officeId= Session::get('officeId');
+  if($officeId==$request->office_id){
 		 if($this->level===10 && $request->office_id != $this->userID){
 		 	return response()->json('Invalid Office',401);
 
 		}else{
+
+
 			 $request->validate([
             'office_name' => 'required|string|max:50',
             'identification_code' => 'required|string|max:50',
@@ -208,30 +215,30 @@ class OfficeController extends Controller
         $office =Office::find($request->office_id);
        // print_r($office);exit;
 
-        $office->id = $request->office_id;
-        $office->name = $request->office_name;
-        $office->identification_code = $request->identification_code;
-        $office->officer_designation =  $request->officer_designation;
-        $office->address =  $request->office_address;
-        $office->post_office =  $request->post_office;
-        $office->pin =  $request->pin;
+        $office->id = strip_tags($request->office_id,'');
+        $office->name = strip_tags($request->office_name,'');
+        $office->identification_code = strip_tags($request->identification_code,'');
+        $office->officer_designation =   strip_tags($request->officer_designation,'');
+        $office->address =   strip_tags($request->office_address,'');
+        $office->post_office =   strip_tags($request->post_office,'');
+        $office->pin =  strip_tags($request->pin,'');
 		if($this->level!=10){
-        $office->subdivision_id = $request->subdivision_id;
+        $office->subdivision_id =  strip_tags($request->subdivision_id,'');
 		}
         $office->district_id = $this->district;
-        $office->block_muni_id =  $request->block_muni_id;
-        $office->police_station_id =  $request->police_station_id;
-        $office->ac_id =  $request->ac_id;
-        $office->pc_id =  $request->pc_id;
-        $office->category_id =  $request->category_id;
-        $office->institute_id =  $request->institute_id;
-        $office->email =  $request->email;
-        $office->phone =  $request->phone;
-        $office->mobile =  $request->mobile;
-        $office->fax =  $request->fax;
-        $office->total_staff =  $request->total_staff;
-        $office->male_staff =  $request->male_staff;
-        $office->female_staff =  $request->female_staff;
+        $office->block_muni_id =   strip_tags($request->block_muni_id,'');
+        $office->police_station_id =   strip_tags($request->police_station_id,'');
+        $office->ac_id =   strip_tags($request->ac_id,'');
+        $office->pc_id =   strip_tags($request->pc_id,'');
+        $office->category_id =  strip_tags( $request->category_id,'');
+        $office->institute_id =  strip_tags($request->institute_id,'');
+        $office->email =   strip_tags($request->email,'');
+        $office->phone =   strip_tags($request->phone,'');
+        $office->mobile =   strip_tags($request->mobile,'');
+        $office->fax =   strip_tags($request->fax,'');
+        $office->total_staff =   strip_tags($request->total_staff,'');
+        $office->male_staff =   strip_tags($request->male_staff,'');
+        $office->female_staff =   strip_tags($request->female_staff,'');
 		$office->updated_at = date('Y-m-d H:i:s');
 		if($request->agree==1){
 		$office->agree = 1;
@@ -241,11 +248,14 @@ class OfficeController extends Controller
         
         //echo $request->agree;exit;
         $office->save();
-
+        Session::set('officeId','');
         return response()->json($office->id,201);
 
 
-		 }
+         }
+        }else{
+            return response()->json('Unauthorize Access Denied',401);
+        }
 
     }
 

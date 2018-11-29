@@ -5,6 +5,7 @@ use App\Personnel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use \Illuminate\Http\Response;
+use Illuminate\Support\Facades\Session;
 class PersonnelController extends Controller
 {
 
@@ -47,6 +48,7 @@ class PersonnelController extends Controller
     public function getPersonnelById(Request $request)
     {
 
+        Session::set('personnelId',  $request->id);
         return Personnel::where('id' , $request->id)->get();
 
     }
@@ -60,7 +62,7 @@ class PersonnelController extends Controller
             $officeid=$request->office_id;
          }
       
-
+         if($this->is_acPc_exists($officeid)){
          if($this->is_personnelOffice_countMatch($officeid)){
             
          $request->validate([
@@ -71,27 +73,27 @@ class PersonnelController extends Controller
              'permanent_address' => 'required|string|max:100',
              'dob' => 'required|date',
              'gender' => 'required',
-             'scale' => 'required',
-             'basic_pay' => 'required|numeric',
+             'scale' => 'required|max:15',
+             'basic_pay' => 'required|numeric|max:7',
              //'grade_pay' => 'required|numeric',
              'emp_group' => 'required',
              'working_status' => 'required',
              
-             
-           // 'mobile' => 'required|digits:10',
-             'qualification_id' => 'required',
-             'language_id' => 'required',
-             'epic' => 'required',
-            // 'part_no' => 'numeric',
-             //'sl_no' => 'numeric',
-             'assembly_temp_id' => 'required',
-             'assembly_perm_id' => 'required',
-             'assembly_off_id' => 'required',
-             //'block_muni_temp_id' => 'required',
-             //'block_muni_temp_id' => 'required',
-             //'block_muni_temp_id' => 'required',
-             'branch_ifsc' => 'required',
-             'bank_account_no' => 'required|numeric'
+             'phone'=> 'numeric|max:15',
+             'mobile' => 'required|digits:10',
+             'qualification_id' => 'required|numeric',
+             'language_id' => 'required|numeric',
+             'epic' => 'required|max:20',
+             'part_no' => 'numeric|max:4',
+             'sl_no' => 'numeric|max:4',
+             'assembly_temp_id' => 'required|numeric',
+             'assembly_perm_id' => 'required|numeric',
+             'assembly_off_id' => 'required|numeric',
+             'block_muni_temp_id' => 'numeric',
+             'block_muni_temp_id' => 'numeric',
+             'block_muni_temp_id' => 'numeric',
+             'branch_ifsc' => 'required|max:11',
+             'bank_account_no' => 'required|numeric|max:16'
              
 
 
@@ -113,8 +115,6 @@ class PersonnelController extends Controller
             $id = substr($officeid,0,6).str_pad($id+1,5,"0",STR_PAD_LEFT);
         }
      
-      //print_r($request->all());exit;
-        // echo  $id;exit;
 
         $request = array_add($request,'id',$id);
         $request->validate([
@@ -131,43 +131,43 @@ class PersonnelController extends Controller
 
 		}
         
-        $personnel->name = $request->officer_name;
-        $personnel->designation = $request->designation;
-        $personnel->aadhaar = $request->aadhaar;
-        $personnel->qualification_id = $request->qualification_id;
-        $personnel->language_id = $request->language_id;
-        $personnel->dob = $request->dob;
-        $personnel->gender = $request->gender;
+        $personnel->name = strip_tags($request->officer_name,'');
+        $personnel->designation = strip_tags($request->designation,'');
+       // $personnel->aadhaar = $request->aadhaar;
+        $personnel->qualification_id = strip_tags($request->qualification_id,'');
+        $personnel->language_id = strip_tags($request->language_id,'');
+        $personnel->dob = strip_tags($request->dob,'');
+        $personnel->gender = strip_tags($request->gender,'');
 
-        $personnel->scale = $request->scale;
-        $personnel->basic_pay = $request->basic_pay;
-        $personnel->grade_pay = $request->grade_pay;
-        $personnel->working_status = $request->working_status;
-        $personnel->emp_group = $request->emp_group;
+        $personnel->scale = strip_tags($request->scale,'');
+        $personnel->basic_pay = strip_tags($request->basic_pay,'');
+        $personnel->grade_pay = strip_tags($request->grade_pay,'');
+        $personnel->working_status = strip_tags($request->working_status,'');
+        $personnel->emp_group = strip_tags($request->emp_group,'');
 
-        $personnel->email = $request->email;
-        $personnel->phone = $request->phone;
-        $personnel->mobile = $request->mobile;
-        $personnel->present_address = $request->present_address;
-        $personnel->permanent_address = $request->permanent_address;
-        $personnel->block_muni_temp_id = $request->block_muni_temp_id;
-        $personnel->block_muni_perm_id = $request->block_muni_perm_id;
-        $personnel->block_muni_off_id = $request->block_muni_off_id;
+        $personnel->email = strip_tags($request->email,'');
+        $personnel->phone = strip_tags($request->phone,'');
+        $personnel->mobile = strip_tags($request->mobile,'');
+        $personnel->present_address =strip_tags($request->present_address,'');
+        $personnel->permanent_address = strip_tags($request->permanent_address,'');
+        $personnel->block_muni_temp_id = strip_tags($request->block_muni_temp_id,'');
+        $personnel->block_muni_perm_id = strip_tags($request->block_muni_perm_id,'');
+        $personnel->block_muni_off_id = strip_tags($request->block_muni_off_id,'');
 
-        $personnel->epic = $request->epic;
-        $personnel->part_no = $request->part_no;
-        $personnel->sl_no = $request->sl_no;
-        $personnel->assembly_temp_id = $request->assembly_temp_id;
-        $personnel->assembly_perm_id = $request->assembly_perm_id;
-        $personnel->assembly_off_id = $request->assembly_off_id;
+        $personnel->epic = strip_tags($request->epic,'');
+        $personnel->part_no = strip_tags($request->part_no,'');
+        $personnel->sl_no = strip_tags($request->sl_no,'');
+        $personnel->assembly_temp_id = strip_tags($request->assembly_temp_id,'');
+        $personnel->assembly_perm_id = strip_tags($request->assembly_perm_id,'');
+        $personnel->assembly_off_id = strip_tags($request->assembly_off_id,'');
 
-        $personnel->branch_ifsc = $request->branch_ifsc;
-        $personnel->bank_account_no = $request->bank_account_no;
-        $personnel->remark_id = $request->remark_id;
+        $personnel->branch_ifsc = strip_tags($request->branch_ifsc,'');
+        $personnel->bank_account_no = strip_tags($request->bank_account_no,'');
+        $personnel->remark_id =strip_tags($request->remark_id,'');
         $personnel->district_id = substr($officeid,0,2);
         $personnel->subdivision_id = substr($officeid,0,4);
-        $personnel->remark_reason = $request->remark_reason;
-        $personnel->pay_level = $request->pay_level;
+        $personnel->remark_reason = strip_tags($request->remark_reason,'');
+        $personnel->pay_level = strip_tags($request->pay_level,'');
 		$personnel->created_at =date('Y-m-d H:i:s');
         $personnel->save();
       
@@ -176,12 +176,18 @@ class PersonnelController extends Controller
 
         return response()->json("Total Number Exceeded",401);   
         }
+
+    }else{
+        return response()->json("Please Update Office Data First",401);   
     }
+    }
+
+
     public function update(Request $request)
     {
 
-	 
-
+       $personnelId= Session::get('personnelId');
+       if($personnelId==$request->id){
 
          $request->validate([
              'officer_name' => 'required|string|max:50',
@@ -191,71 +197,74 @@ class PersonnelController extends Controller
              'permanent_address' => 'required|string|max:100',
              'dob' => 'required|date',
              'gender' => 'required',
-             'scale' => 'required',
-             'basic_pay' => 'required|numeric',
+             'scale' => 'required|max:15',
+             'basic_pay' => 'required|numeric|max:7',
              //'grade_pay' => 'required|numeric',
              'emp_group' => 'required',
              'working_status' => 'required',
              'mobile' => 'required|digits:10',
              'qualification_id' => 'required',
              'language_id' => 'required',
-             'epic' => 'required',
-             //'part_no' => 'numeric',
-            // 'sl_no' => 'numeric',
-             'assembly_temp_id' => 'required',
-             'assembly_perm_id' => 'required',
-             'assembly_off_id' => 'required',
-            // 'block_muni_temp_id' => 'required',
-             //'block_muni_temp_id' => 'required',
-            // 'block_muni_temp_id' => 'required',
-             'branch_ifsc' => 'required',
-             'bank_account_no' => 'required|numeric',
+             'epic' => 'required|max:20',
+             'part_no' => 'numeric|max:4',
+             'sl_no' => 'numeric|max:4',
+             'assembly_temp_id' => 'required|numeric',
+             'assembly_perm_id' => 'required|numeric',
+             'assembly_off_id' => 'required|numeric',
+             'block_muni_temp_id' => 'numeric',
+             'block_muni_temp_id' => 'numeric',
+             'block_muni_temp_id' => 'numeric',
+             'branch_ifsc' => 'required|max:11',
+             'bank_account_no' => 'required|numeric|max:16',
              
 
 
          ]);
 
         $personnel =Personnel::find($request->id);
-        $personnel->id = $request->id;
+
+        $personnel->id = strip_tags($request->id);
+         
+
         if($this->level===10){
 			$personnel->office_id = $this->userID;
 		}else{
-        $personnel->office_id = $request->office_id;
+        $personnel->office_id = strip_tags($request->office_id,'');
 
 		}
-        $personnel->name = $request->officer_name;
-        $personnel->designation = $request->designation;
-        $personnel->aadhaar = $request->aadhaar;
-        $personnel->qualification_id = $request->qualification_id;
-        $personnel->language_id = $request->language_id;
-        $personnel->dob = $request->dob;
-        $personnel->gender = $request->gender;
+        $personnel->name = strip_tags($request->officer_name,'');
+        $personnel->designation = strip_tags($request->designation,'');
+        $personnel->aadhaar = strip_tags($request->aadhaar,'');
+        $personnel->qualification_id = strip_tags($request->qualification_id,'');
+        $personnel->language_id = strip_tags($request->language_id,'');
+        $personnel->dob = strip_tags($request->dob,'');
+        $personnel->gender = strip_tags($request->gender,'');
 
-        $personnel->scale = $request->scale;
-        $personnel->basic_pay = $request->basic_pay;
-        $personnel->grade_pay = $request->grade_pay;
-        $personnel->working_status = $request->working_status;
-        $personnel->emp_group = $request->emp_group;
+        $personnel->scale = strip_tags($request->scale,'');
+        $personnel->basic_pay = strip_tags($request->basic_pay,'');
+        $personnel->grade_pay = strip_tags($request->grade_pay,'');
+        $personnel->working_status = strip_tags($request->working_status,'');
+        $personnel->emp_group = strip_tags($request->emp_group,'');
 
-        $personnel->email = $request->email;
-        $personnel->phone = $request->phone;
-        $personnel->mobile = $request->mobile;
-        $personnel->present_address = $request->present_address;
-        $personnel->permanent_address = $request->permanent_address;
-        $personnel->block_muni_temp_id = $request->block_muni_temp_id;
-        $personnel->block_muni_perm_id = $request->block_muni_perm_id;
-        $personnel->block_muni_off_id = $request->block_muni_off_id;
+        $personnel->email = strip_tags($request->email,'');
+        $personnel->phone = strip_tags($request->phone,'');
+        $personnel->mobile = strip_tags($request->mobile,'');
+        $personnel->present_address =  strip_tags($request->present_address,'');
+        $personnel->permanent_address =strip_tags($request->permanent_address,'');
+        $personnel->block_muni_temp_id = strip_tags($request->block_muni_temp_id,'');
+        $personnel->block_muni_perm_id =  strip_tags($request->block_muni_perm_id,'');
+        $personnel->block_muni_off_id =  strip_tags($request->block_muni_off_id,'');
 
-        $personnel->epic = $request->epic;
-        $personnel->part_no = $request->part_no;
-        $personnel->sl_no = $request->sl_no;
-        $personnel->assembly_temp_id = $request->assembly_temp_id;
-        $personnel->assembly_perm_id = $request->assembly_perm_id;
-        $personnel->assembly_off_id = $request->assembly_off_id;
+        $personnel->epic = strip_tags($request->epic,'');
+        $personnel->part_no = strip_tags($request->part_no,'');
+        $personnel->sl_no = strip_tags($request->sl_no,'');
+        $personnel->assembly_temp_id = strip_tags($request->assembly_temp_id,'');
+        $personnel->assembly_perm_id = strip_tags($request->assembly_perm_id,'');
+        $personnel->assembly_off_id = strip_tags($request->assembly_off_id,'');
 
-        $personnel->branch_ifsc = $request->branch_ifsc;
-        $personnel->bank_account_no = $request->bank_account_no;
-        $personnel->remark_id = $request->remark_id;
+        $personnel->branch_ifsc = strip_tags($request->branch_ifsc,'');
+        $personnel->bank_account_no = strip_tags($request->bank_account_no,'');
+        $personnel->remark_id =strip_tags($request->remark_id,'');
         if($this->level===10){
 			$personnel->district_id = substr($this->userID,0,2);
 			$personnel->subdivision_id = substr($this->userID,0,4);
@@ -263,12 +272,17 @@ class PersonnelController extends Controller
         $personnel->district_id = substr($request->office_id,0,2);
         $personnel->subdivision_id = substr($request->office_id,0,4);
 		}
-        $personnel->remark_reason = $request->remark_reason;
-        $personnel->pay_level = $request->pay_level;
-        $personnel->save();
+        $personnel->remark_reason = strip_tags($request->remark_reason,'');
+        $personnel->pay_level = strip_tags($request->pay_level,'');
         $personnel->updated_at =date('Y-m-d H:i:s');
+        $personnel->save();
+        
+        Session::set('personnelId','');
         return response()->json($personnel->id,201);
+       }else{
 
+        return response()->json('Unauthorize Access Denied',401);
+       }
    
 
     }
@@ -320,6 +334,24 @@ class PersonnelController extends Controller
 
 
    }
+    public function is_acPc_exists($officeId){
+        $sql="SELECT ac_id as ac,pc_id as pc FROM `offices`  where district_id='".$this->district."' and id='".$officeId."'";
+        $acPc = DB::select($sql);
+        $ac=$acPc[0]->ac;
+        $pc=$acPc[0]->pc;	
+        
+        if($ac!='' && $pc!=''){
+            return true;  
+        }else{
+           
+            return false;
+        }        
+
+                
+    }
+
+
+
   public function duplicateBankAccount(Request $request){
     $accountNumber=$request->bankNumber;
    if( Personnel::where('bank_account_no', '=',$accountNumber)->exists()){
