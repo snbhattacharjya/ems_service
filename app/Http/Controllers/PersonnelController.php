@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Personnel;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use \Illuminate\Http\Response;
@@ -23,7 +24,7 @@ class PersonnelController extends Controller
 
     public function getAllPersonnel()
     {
-		 
+
         if($this->level===10){
             return Personnel::where('office_id' , $this->userID)->get();
 
@@ -41,14 +42,14 @@ class PersonnelController extends Controller
         return Personnel:: where('district_id','=',$this->district)
 			                  ->where('office_id' ,'=',$officeid)
 				              ->get();
-       
+
     }
-	
+
 
     public function getPersonnelById(Request $request)
     {
 
-        Session::set('personnelId',  $request->id);
+
         return Personnel::where('id' , $request->id)->get();
 
     }
@@ -57,35 +58,35 @@ class PersonnelController extends Controller
 
         if($this->level===10){
             $officeid=$this->userID;
-           
+
         }else{
             $officeid=$request->office_id;
          }
-      
+
          if($this->is_acPc_exists($officeid)){
          if($this->is_personnelOffice_countMatch($officeid)){
-            
+
          $request->validate([
              'officer_name' => 'required|string|max:50',
              'designation' => 'required|string|max:50',
-             
+
              'present_address' => 'required|string|max:100',
              'permanent_address' => 'required|string|max:100',
              'dob' => 'required|date',
              'gender' => 'required',
              'scale' => 'required|max:15',
-             'basic_pay' => 'required|numeric|max:7',
+             'basic_pay' => 'required|numeric|max:9999999',
              //'grade_pay' => 'required|numeric',
              'emp_group' => 'required',
              'working_status' => 'required',
-             
-             'phone'=> 'numeric|max:15',
+
+             'phone'=> 'max:15',
              'mobile' => 'required|digits:10',
              'qualification_id' => 'required|numeric',
              'language_id' => 'required|numeric',
              'epic' => 'required|max:20',
-             'part_no' => 'numeric|max:4',
-             'sl_no' => 'numeric|max:4',
+             'part_no' => 'numeric|max:9999',
+             'sl_no' => 'numeric|max:9999',
              'assembly_temp_id' => 'required|numeric',
              'assembly_perm_id' => 'required|numeric',
              'assembly_off_id' => 'required|numeric',
@@ -93,13 +94,13 @@ class PersonnelController extends Controller
              'block_muni_temp_id' => 'numeric',
              'block_muni_temp_id' => 'numeric',
              'branch_ifsc' => 'required|max:11',
-             'bank_account_no' => 'required|numeric|max:16'
-             
+             'bank_account_no' => 'required|max:16'
+
 
 
          ]);
-	
-        
+
+
 
 
 
@@ -114,7 +115,7 @@ class PersonnelController extends Controller
         else{
             $id = substr($officeid,0,6).str_pad($id+1,5,"0",STR_PAD_LEFT);
         }
-     
+
 
         $request = array_add($request,'id',$id);
         $request->validate([
@@ -125,12 +126,12 @@ class PersonnelController extends Controller
         $personnel->id = $request->id;
 		if($this->level===10){
             $personnel->office_id = $this->userID;
-         
+
 		}else{
         $personnel->office_id = $officeid;
 
 		}
-        
+
         $personnel->name = strip_tags($request->officer_name,'');
         $personnel->designation = strip_tags($request->designation,'');
        // $personnel->aadhaar = $request->aadhaar;
@@ -170,35 +171,39 @@ class PersonnelController extends Controller
         $personnel->pay_level = strip_tags($request->pay_level,'');
 		$personnel->created_at =date('Y-m-d H:i:s');
         $personnel->save();
-      
+
         return response()->json($personnel->id,201);
         }else{
 
-        return response()->json("Total Number Exceeded",401);   
+        return response()->json("Total Number Exceeded",401);
         }
 
     }else{
-        return response()->json("Please Update Office Data First",401);   
+        return response()->json("Please Update Office Data First",401);
     }
     }
+
 
 
     public function update(Request $request)
     {
 
-       $personnelId= Session::get('personnelId');
-       if($personnelId==$request->id){
+
+      $personnelId= $this->getpersonnelid($request->token,$request->office_id);
+
+
+       if($personnelId!='' ){
 
          $request->validate([
              'officer_name' => 'required|string|max:50',
              'designation' => 'required|string|max:50',
-             
+             'phone'=> 'max:15',
              'present_address' => 'required|string|max:100',
              'permanent_address' => 'required|string|max:100',
              'dob' => 'required|date',
              'gender' => 'required',
              'scale' => 'required|max:15',
-             'basic_pay' => 'required|numeric|max:7',
+             'basic_pay' => 'required|numeric|max:9999999',
              //'grade_pay' => 'required|numeric',
              'emp_group' => 'required',
              'working_status' => 'required',
@@ -206,8 +211,8 @@ class PersonnelController extends Controller
              'qualification_id' => 'required',
              'language_id' => 'required',
              'epic' => 'required|max:20',
-             'part_no' => 'numeric|max:4',
-             'sl_no' => 'numeric|max:4',
+             'part_no' => 'numeric|max:9999',
+             'sl_no' => 'numeric|max:9999',
              'assembly_temp_id' => 'required|numeric',
              'assembly_perm_id' => 'required|numeric',
              'assembly_off_id' => 'required|numeric',
@@ -215,16 +220,16 @@ class PersonnelController extends Controller
              'block_muni_temp_id' => 'numeric',
              'block_muni_temp_id' => 'numeric',
              'branch_ifsc' => 'required|max:11',
-             'bank_account_no' => 'required|numeric|max:16',
-             
+             'bank_account_no' => 'required|max:16',
+
 
 
          ]);
 
-        $personnel =Personnel::find($request->id);
+        $personnel =Personnel::find($personnelId);
 
-        $personnel->id = strip_tags($request->id);
-         
+        $personnel->id = strip_tags($personnelId);
+
 
         if($this->level===10){
 			$personnel->office_id = $this->userID;
@@ -276,22 +281,22 @@ class PersonnelController extends Controller
         $personnel->pay_level = strip_tags($request->pay_level,'');
         $personnel->updated_at =date('Y-m-d H:i:s');
         $personnel->save();
-        
-        Session::set('personnelId','');
+
+        $personnelId=0;
         return response()->json($personnel->id,201);
        }else{
 
         return response()->json('Unauthorize Access Denied',401);
        }
-   
+
 
     }
     public function getRemarks(){
-		
-		$remarks=DB::select('SELECT id,name FROM `remarks` order by id asc');
+
+		$remarks=DB::select('SELECT id,name FROM `remarks` where id not in(12) order by id asc');
 		 return response()->json($remarks,201);
     }
-    
+
     public function getIfsc(Request $request){
         $ifsc=$request->branch_ifsc;
 		if(!empty($ifsc)){
@@ -302,9 +307,9 @@ class PersonnelController extends Controller
         }else{
             return response()->json($remarks,201);
         }
-        
-       
-    
+
+
+
     }else{
             return response()->json('please entered',201);
 
@@ -313,41 +318,44 @@ class PersonnelController extends Controller
    public function is_personnelOffice_countMatch($officeId){
     $officeStuff="SELECT total_staff as officeStuff FROM `offices`  where district_id='".$this->district."' and id='".$officeId."'";
     $officeStuff = DB::select($officeStuff);
-    $officeStuff=$officeStuff[0]->officeStuff;	 
-    
+    $officeStuff=$officeStuff[0]->officeStuff;
+
        $sql='SELECT  count(o.id) as totalEmployee
 						  FROM personnel p
 						  inner join offices o on (o.id=p.office_id )
-						  where o.district_id="'.$this->district.'" and p.office_id="'.$officeId.'"';	
-						
+						  where o.district_id="'.$this->district.'" and p.office_id="'.$officeId.'"';
+
 				$office = DB::select($sql);
-				
+
         $totalEmployee=$office[0]->totalEmployee;
         if($officeStuff>$totalEmployee){
          return true;
 
         }else{
-           
+
             return false;
-        }        
+        }
 
 
 
    }
     public function is_acPc_exists($officeId){
-        $sql="SELECT ac_id as ac,pc_id as pc FROM `offices`  where district_id='".$this->district."' and id='".$officeId."'";
+        $sql="SELECT ac_id as ac,pc_id as pc,subdivision_id,police_station_id,date(updated_at) as updated_at  FROM `offices`  where district_id='".$this->district."' and id='".$officeId."'";
         $acPc = DB::select($sql);
         $ac=$acPc[0]->ac;
-        $pc=$acPc[0]->pc;	
-        
-        if($ac!='' && $pc!=''){
-            return true;  
+        $pc=$acPc[0]->pc;
+        $ps=$acPc[0]->police_station_id;
+        $subdiv=$acPc[0]->subdivision_id;
+        $updated_at=$acPc[0]->updated_at;
+      
+        if($ac!='' && $pc!='' && $ps!='' && $subdiv!='' && $updated_at >='2018-12-06'){
+            return true;
         }else{
-           
-            return false;
-        }        
 
-                
+            return false;
+        }
+
+
     }
 
 
@@ -355,15 +363,24 @@ class PersonnelController extends Controller
   public function duplicateBankAccount(Request $request){
     $accountNumber=$request->bankNumber;
    if( Personnel::where('bank_account_no', '=',$accountNumber)->exists()){
-  
+
     return response()->json(array('status'=>201,'msg'=>'Account Exists'));
-     
+
      }else{
-    return response()->json(array('status'=>401,'msg'=>'Not Found'));     
+    return response()->json(array('status'=>401,'msg'=>'Not Found'));
      }
 
   }
 
+  public function getpersonnelid($hash,$office_id){
+    $sql="select * from personnel where office_id='".$office_id."'";
+    $res=DB::select($sql);
 
- 
+  foreach($res as $of){
+        if(Hash::check($of->id , $hash)){
+        return $of->id;
+        }
+  }
+}
+
 }

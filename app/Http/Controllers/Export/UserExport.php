@@ -19,12 +19,12 @@ class UserExport extends Controller
 
     public function __construct(Request $request)
     {
-//       $this->user=json_decode($this->checkAuth($request));
-//  echo '<pre>';
-//      print_r(json_decode($this->user));exit;
-        $this->userID=auth('api')->user()->user_id;
-        $this->level=auth('api')->user()->level;
-        $this->district=auth('api')->user()->area;
+      $this->user=json_decode($this->checkAuth($request));
+ // echo '<pre>';
+     // print_r(json_decode($this->user));exit;
+        // $this->userID=auth('api')->user()->user_id;
+        // $this->level=auth('api')->user()->level;
+        // $this->district=auth('api')->user()->area;
     }
 
    public function checkAuth($request){
@@ -38,7 +38,7 @@ class UserExport extends Controller
         'Accept'        => 'application/json',
     ];
 
-    $response = $client->request('GET', 'http://service.ems.test/api/userauth',[
+    $response = $client->request('GET', 'http://10.247.144.104/ems_service/public/index.php/api/userauth',[
         'headers' => $headers
     ]);
 
@@ -55,9 +55,9 @@ class UserExport extends Controller
    public function userexport(Request $request)
     {
 
-        if(isset($this->userID))
+        if(isset($this->user))
             {
-                if($request->mode=="office" && ($this->level===3 || $this->level===4|| $this->level===12 )){
+                if($request->mode=="office" && ($this->user->level===3 || $this->user->level===4|| $this->user->level===12 )){
 
 
                     $data=User::select('offices.name','offices.email','rand_id','subdivisions.name as subdiv','block_munis.name as blk','police_stations.name as ps','address','post_office','pin','offices.mobile','rand_password')
@@ -68,40 +68,40 @@ class UserExport extends Controller
                 ->join('block_munis', 'block_munis.id', '=', 'offices.block_muni_id')
                 ->join('police_stations', 'police_stations.id', '=', 'offices.police_station_id')
                 ->where('level','10')
-                ->where('area',$this->district)
+                ->where('area',$this->user->area)
                 ->get();
 
-                return  $data;
-               // print_r($data);
-                // $csvExporter = new \Laracsv\Export();
-                // $file='offices_'.date('Ymd_H_i_s').'_'.$this->district;
-                // $csvExporter->build($data, ['name'=>'Name','email'=>'Email', 'rand_id'=>'UserId','address'=>'Address','post_office'=>'Post Office','ps'=>'Police Station','blk'=>'Block Muni','subdiv'=>'Subdivision','pin'=>'Pin Code','mobile'=>'Mobile Number','rand_password'=>'Password'])->download( $file.'.csv');
 
-                }elseif($request->mode=="user" && ($this->level===3 || $this->level===4|| $this->level===12)){
+               // print_r($data);
+                $csvExporter = new \Laracsv\Export();
+                $file='offices_'.date('Ymd_H_i_s').'_'.$this->user->area;
+                $csvExporter->build($data, ['name'=>'Name','email'=>'Email', 'rand_id'=>'UserId','address'=>'Address','post_office'=>'Post Office','ps'=>'Police Station','blk'=>'Block Muni','subdiv'=>'Subdivision','pin'=>'Pin Code','mobile'=>'Mobile Number','rand_password'=>'Password'])->download( $file.'.csv');
+
+                }elseif($request->mode=="user" && ($this->user->level===3 || $this->user->level===4|| $this->user->level===12)){
 
                     $data=User::select('user_id','name','email','mobile')
                     ->whereNotIn('level',[1,2,3,4,11,12,10])
-                    ->where('area',$this->district)
+                    ->where('area',$this->user->area)
                     ->get();
 
 
                 $csvExporter = new \Laracsv\Export();
-                $file='user_'.date('Ymd_H_i_s').'-'.$this->district;
+                $file='user_'.date('Ymd_H_i_s').'-'.$this->user->area;
                 $csvExporter->build($data, ['name'=>'Name','email'=>'Email', 'user_id'=>'UserId','email'=>'Email Address','mobile'=>'Mobile Number'])->download( $file.'.csv');
 
-                }elseif($request->mode=="personnel" && ($this->level===3 || $this->level===4|| $this->level===12)){
+                }elseif($request->mode=="personnel" && ($this->user->level===3 || $this->user->level===4|| $this->user->level===12)){
                 $data=Personnel::select('office_id','name','designation','dob','gender','present_address','permanent_address',
                 'mobile','phone','email','basic_pay','grade_pay','pay_level','emp_group','post_stat')
 
-                ->where('district_id',$this->district)
-                //->orderBy('office_id')
+                ->where('district_id','13')
+                ->orderBy('office_id')
                 ->get();
-                return  $data;
-                // $csvExporter = new \Laracsv\Export();
-                // $file='personnel_'.date('Y-m-d-H-i-s').'-'.'13';
-                // $csvExporter->build($data, ['office_id'=>'Office Code', 'name'=>'Name','designation'=>'Designation',
-                // 'dob'=>'DOB','gender'=>'Gender','mobile'=>'Mobile Number','phone'=>'Phone','present_address'=>'Present Address',
-                // 'permanent_address'=>'Permanent Address','email'=>'Email','basic_pay'=>'Basic Pay','emp_group'=>'Group','post_stat'=>'post Status'])->download( $file.'.csv');
+
+                $csvExporter = new \Laracsv\Export();
+                $file='personnel_'.date('Y-m-d-H-i-s').'-'.'13';
+                $csvExporter->build($data, ['office_id'=>'Office Code', 'name'=>'Name','designation'=>'Designation',
+                'dob'=>'DOB','gender'=>'Gender','mobile'=>'Mobile Number','phone'=>'Phone','present_address'=>'Present Address',
+                'permanent_address'=>'Permanent Address','email'=>'Email','basic_pay'=>'Basic Pay','emp_group'=>'Group','post_stat'=>'post Status'])->download( $file.'.csv');
 
 
                 }else{

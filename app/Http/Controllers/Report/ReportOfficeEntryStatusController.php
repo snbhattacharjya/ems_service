@@ -15,16 +15,48 @@ class ReportOfficeEntryStatusController extends Controller
     }
     public function getOfficeEntryStatus(){
         if($this->level==3 || $this->level==4 || $this->level==5 || $this->level==12 ){
-          $status=DB::select("select id,name,mobile,identification_code,address,post_office,pin from offices where district_id='".$this->district."' and id not in(select office_id from personnel)");
+
+            $sql="'select offices.id ,offices.name,offices.mobile,
+            offices.identification_code,offices.address,offices.post_office,
+            offices.pin,offices.subdivision_id as subdivisionId,subdivisions.name as subdivision,
+            offices.block_muni_id as blockmuniId,block_munis.name as block,offices.police_station_id as policcstationId,police_stations.name as policestations from offices 
+            join subdivisions on offices.subdivision_id=subdivisions.id
+            join block_munis on offices.block_muni_id=block_munis.id
+            join police_stations on offices.police_station_id= police_stations.id
+            
+            where offices.district_id='".$this->district."' and offices.id not in(select office_id from personnel)'";
+          $status=DB::select($sql);
           return response()->json($status,201);
          }else if($this->level==6){
           $subdivision_id= substr($this->userID,7,10);
-          $status=DB::select("select id,name,mobile,identification_code,address,post_office,pin from offices where district_id='".$this->district."' and subdivision_id='".$subdivision_id."'  and id not in(select office_id from personnel)");
+
+         $sql="select offices.id ,offices.name,offices.mobile,
+         offices.identification_code,offices.address,offices.post_office,
+         offices.pin,offices.subdivision_id as subdivisionId,subdivisions.name as subdivision,
+         offices.block_muni_id as blockmuniId,block_munis.name as block,offices.police_station_id as policcstationId,police_stations.name as policestations from offices 
+         join subdivisions on offices.subdivision_id=subdivisions.id
+         join block_munis on offices.block_muni_id=block_munis.id
+         join police_stations on offices.police_station_id= police_stations.id
+         
+         where offices.district_id='".$this->district."' and offices.subdivision_id='".$subdivision_id."' and offices.id not in(select office_id from personnel)'";
+
+
+          $status=DB::select($sql);
           return response()->json($status,201);
 
          }else if($this->level==7){
             $block_muni_id= substr($this->userID,7,10);
-            $status=DB::select("select id,name,mobile,identification_code,address,post_office,pin from offices where district_id='".$this->district."' and block_muni_id='".$block_muni_id."'  and id not in(select office_id from personnel)");
+            $sql="select offices.id ,offices.name,offices.mobile,
+            offices.identification_code,offices.address,offices.post_office,
+            offices.pin,offices.subdivision_id as subdivisionId,subdivisions.name as subdivision,
+            offices.block_muni_id as blockmuniId,block_munis.name as block,offices.police_station_id as policcstationId,police_stations.name as policestations from offices 
+            join subdivisions on offices.subdivision_id=subdivisions.id
+            join block_munis on offices.block_muni_id=block_munis.id
+            join police_stations on offices.police_station_id= police_stations.id
+            
+            where offices.district_id='".$this->district."' and offices.block_muni_id='".$block_muni_id."' and offices.id not in(select office_id from personnel)'";
+            
+            $status=DB::select($sql);
             return response()->json($status,201);
          }else{
 

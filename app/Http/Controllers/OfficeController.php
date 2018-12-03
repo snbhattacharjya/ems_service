@@ -33,7 +33,7 @@ class OfficeController extends Controller
 	                 ->where('block_muni_id',$block_munis)
 	                 ->get();
 	    }else{
-		
+
 		return response()->json('Unauthorize Access',422);
 	  }
 
@@ -43,28 +43,28 @@ class OfficeController extends Controller
 	public function getAllofficeBysubdivision(Request $request)
     {
 	   if($this->level===3 || $this->level===12){//DIO	and DEO
-		
+
             $subdivision_id=$request->subdivision_id;
 	        return Office::where('district_id' ,'=',$this->district)
                    ->where('subdivision_id' ,'=', $subdivision_id)
 				   ->get();
-	   }elseif($this->level===6){//SDO	
-            $subdivision_id=substr($this->userID,-4);	   
+	   }elseif($this->level===6){//SDO
+            $subdivision_id=substr($this->userID,-4);
 			return Office::where('district_id' ,'=',$this->district)
                    ->where('subdivision_id' ,'=', $subdivision_id)
-				   ->get();	   
+				   ->get();
 	   }elseif($this->level===7){//BDO
-		    $block_munis=substr($this->userID,-6);	   
+		    $block_munis=substr($this->userID,-6);
 			return Office::where('district_id' ,'=',$this->district)
                    ->where('block_muni_id' ,'=', $block_munis)
-				   ->get();	
+				   ->get();
 	   }else{
-		 return response()->json('Unauthorize Access',422);  
-	   }		   
+		 return response()->json('Unauthorize Access',422);
+	   }
     }
    public function getOfficeById(Request $request) //
     {
-        Session::set('officeId',  $request->id);
+
         return Office::where('id' , $request->id)->get();
 
     }
@@ -87,9 +87,9 @@ class OfficeController extends Controller
             'category_id' => 'required|numeric',
             'institute_id' => 'required|numeric',
             'email' => 'email|max:50',
-            'phone' => 'numeric|max:15',
+            'phone' => 'max:15',
             'mobile' => 'required|digits:10',
-            'fax' => 'numeric|max:15',
+            'fax' => 'max:15',
             'total_staff' => 'required|numeric',
             'male_staff' => 'required|numeric',
             'female_staff' => 'required|numeric',
@@ -106,8 +106,8 @@ class OfficeController extends Controller
         else{
             $id = $request->police_station_id.str_pad($id+1,4,"0",STR_PAD_LEFT);
         }
-        
-        
+
+
         $request = array_add($request,'id',$id);
         $request->validate([
             'id' => 'required|unique:offices|digits:10'
@@ -137,19 +137,19 @@ class OfficeController extends Controller
         $office->male_staff =   strip_tags($request->male_staff,'');
         $office->female_staff =   strip_tags($request->female_staff,'');
         $office->created_at = date('Y-m-d H:i:s');
-       
+
 		if($request->agree==1){
 		$office->agree = 1;
 		}else{
 			$office->agree = 0;
 		}
        $office->save();
-        
+
        $request=array('name'=>$request->office_name,'email'=>$request->email,'mobile'=>$request->mobile,'officer_designation'=>$request->officer_designation);
         if($office->id!=''){
             $this->createUserFromOffice($request,$office->id);
           }
-       
+
 
 	    return response()->json($office->id,201);
 	}
@@ -178,13 +178,15 @@ class OfficeController extends Controller
         ['rand_id' =>$user_id  , 'rand_password' => $pass,'created_at'=>now()]
           );
         }
-	  }
+      }
+
 
     public function update(Request $request){
-         
-        $officeId= Session::get('officeId');
-  if($officeId==$request->office_id){
-		 if($this->level===10 && $request->office_id != $this->userID){
+        $officeId=0;
+        $officeId= $this->getofficeid($request->token);
+
+  if($officeId!= ''){
+		 if($this->level===10 && $officeId != $this->userID){
 		 	return response()->json('Invalid Office',401);
 
 		}else{
@@ -205,6 +207,7 @@ class OfficeController extends Controller
             'institute_id' => 'required',
             'email' => 'required|email',
             'mobile' => 'required|digits:10',
+            'phone' => 'max:15',
             'fax' => 'max:15',
             'total_staff' => 'required|numeric',
             'male_staff' => 'required|numeric',
@@ -212,10 +215,10 @@ class OfficeController extends Controller
 			'agree' => 'required|boolean'
         ]);
 
-        $office =Office::find($request->office_id);
+        $office =Office::find($officeId);
        // print_r($office);exit;
 
-        $office->id = strip_tags($request->office_id,'');
+        $office->id = strip_tags($officeId,'');
         $office->name = strip_tags($request->office_name,'');
         $office->identification_code = strip_tags($request->identification_code,'');
         $office->officer_designation =   strip_tags($request->officer_designation,'');
@@ -245,16 +248,17 @@ class OfficeController extends Controller
 		}else{
 			$office->agree = 0;
         }
-        
+
         //echo $request->agree;exit;
         $office->save();
-        Session::set('officeId','');
-        return response()->json($office->id,201);
 
+        $officeId=0;
+        return response()->json($office->id,201);
+        $officeId=0;
 
          }
         }else{
-            return response()->json('Unauthorize Access Denied',401);
+            return response()->json('Unauthorize Access Denied to office data',401);
         }
 
     }
@@ -269,7 +273,7 @@ class OfficeController extends Controller
             return response()->json("Office does not exist",401);
         }
     }
-   
+
 	public function resetPassword(Request $request){
         $officeId=$request->officeId;
         $newPassword=$this->random_password();
@@ -281,15 +285,15 @@ class OfficeController extends Controller
 
            DB::update("update user_random_password set 	rand_password='$newPassword' , created_at='$date' where rand_id= '$officeId'");
            }else{
-            $values = array('rand_id' => $officeId,'rand_password' => $newPassword,'created_at'=>date('Y-m-d H:i:s')); 
-            DB::table('user_random_password')->insert($values);;   
+            $values = array('rand_id' => $officeId,'rand_password' => $newPassword,'created_at'=>date('Y-m-d H:i:s'));
+            DB::table('user_random_password')->insert($values);;
            }
-        
+
            return response()->json($newPassword,201);
-       
-       
+
+
         }
-    
+
         }
 
     function random_password( $length = 8 ) {
@@ -297,12 +301,12 @@ class OfficeController extends Controller
 		$password = substr( str_shuffle( $chars ), 0, $length );
 		return $password;
 	}
-   
+
    public function getOfficeType(Request $request){
-     
+
     if($this->level!=''){
         $arr=array();
-        $arr['officeType']= Office::where('id',$request->officeId)->pluck('category_id');  
+        $arr['officeType']= Office::where('id',$request->officeId)->pluck('category_id');
         return $arr;
     }
    }
@@ -322,10 +326,10 @@ class OfficeController extends Controller
             $sql .='or name like %'.$name.' %';
         }
         if(!empty($identification_code)){
-            $sql .='or identification_code like %'.$identification_code.' %';   
+            $sql .='or identification_code like %'.$identification_code.' %';
         }
         if(!empty($mobile)){
-            $sql .='or mobile like %'.$mobile.' %';   
+            $sql .='or mobile like %'.$mobile.' %';
         }
       echo  $sql;
        // $data= DB::select($sql);
@@ -333,7 +337,17 @@ class OfficeController extends Controller
 
   }
 
+  public function getofficeid($hash){
+    // $ofs=Office::where('district_id',$this->district)->get();
+     $sql="select * from offices where district_id='".$this->district."'";
+     $res=DB::select($sql);
 
+     foreach($res as $of){
+           if(Hash::check($of->id , $hash)){
+           return $of->id;
+           }
+     }
+     }
 
 
 }
