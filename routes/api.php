@@ -121,7 +121,7 @@ Route::get('/analytics', 'AnalyticsController@totalUsers');
 
 //Route::post('/deo', 'UserController@diocreation');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
-  Route::get('/createpassword', 'UserController@createPassword');
+ // Route::get('/createpassword', 'UserController@createPassword');
 //Route::get('/passwordinsert', 'UserController@passwordInsert');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
 //Route::get('/generateletter', 'GenerateLetterController@generateLetter');
@@ -129,3 +129,4 @@ Route::get('/analytics', 'AnalyticsController@totalUsers');
  Route::get('/export/{mode}/{token}', 'Export\UserExport@userexport');
  Route::get('/checkuser/{mode}/{token}', 'Export\UserExport@checkAuth');
  Route::get('/exportpersonnel', 'Export\UserExport@export');
+ Route::get('/permission', 'UserController@getDefaultMenuPermission_To_assignPermission');

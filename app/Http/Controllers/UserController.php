@@ -25,9 +25,10 @@ class UserController extends Controller
 			'designation'=>'required'
 			]);
 			$UserArea=auth('api')->user()->area;
-			$user_type_code=$request->level;
+			
+			 $user_type_code=$request->level;
 			$userGenertaionLevelCode=$this->getUserLevelName($user_type_code);
-
+           
             $getStateCode=$this->getState();
 
 
@@ -186,9 +187,22 @@ class UserController extends Controller
 			$AddUser->change_password =0 ;
 			$AddUser->save();
 			$lastInsertedId=$AddUser->id; // get office id
-			//get office id
-	       //echo $user_type_code;exit;
-			$this->getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code);
+			
+		   if($request->ppcell=='DEO'){
+			$ppcell=$request->ppcell;
+		   }elseif($request->ppcell=='OC' && $request->sub_level='DT'){
+			 $user_type_code='05'; //OC PPCELL SAME AS ADM 
+			$ppcell='';
+		   }elseif($request->ppcell=='OC' && $request->sub_level='06'){
+			$user_type_code='06'; //OC PPCELL SAME AS ADM 
+		   $ppcell='';
+		    }else{
+			$ppcell='';  
+		   }
+
+			$this->getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code,$ppcell);
+			
+			
 			DB::table('user_random_password')->insert(
 				['rand_id' =>$msg  , 'rand_password' => $pass,'created_at'=>now()]
 				
@@ -362,13 +376,25 @@ class UserController extends Controller
 		    return response()->json($arr);
 
            }
-	public function getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code){
+	public function getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code,$ppcell=''){
+		
+		if($ppcell=='DEO'){
+			
+				$arr[]=array('user_id'=>$lastInsertedId,'user_type_code'=>$user_type_code,'menu_id'=>7);
+				$arr[]=array('user_id'=>$lastInsertedId,'user_type_code'=>$user_type_code,'menu_id'=>8);
+				$arr[]=array('user_id'=>$lastInsertedId,'user_type_code'=>$user_type_code,'menu_id'=>9);	
+			}else{
+
+			}
+			//$user_type_code='07';
+			
 			$getDefaultMenuPermission=DB::table('default_permission')->where('user_type_code',$user_type_code)->pluck('menu_id');
-			$arr=array();
+			
+			
+			
 			foreach($getDefaultMenuPermission as $permissionVal){
 			$arr[]=array('user_id'=>$lastInsertedId,'user_type_code'=>$user_type_code,'menu_id'=>$permissionVal);
 			}
-			//print_r($arr);
 		    Permission::insert($arr);
 	}
 	public function getDefaultPrevillege_To_assignPrevillege(){
@@ -449,7 +475,7 @@ class UserController extends Controller
   public function createPassword(){
 		
 	//User::whereNotIn('area','20')->where('level','10');where('user_id','like','0304%')->
-	  User::where('level','12')->get()->each(function($user) {
+	  User::where('area','16')->where('level','10')->get()->each(function($user) {
 		    $pass=$this->random_password();
 			$user->password = bcrypt($pass);
 			$user->save();
