@@ -75,7 +75,7 @@ class UserExport extends Controller
                // print_r($data);
                 $csvExporter = new \Laracsv\Export();
                 $file='offices_'.date('Ymd_H_i_s').'_'.$this->user->area;
-                $csvExporter->build($data, ['name'=>'Name','email'=>'Email', number_format('rand_id',0)=>'UserId','address'=>'Address','post_office'=>'Post Office','ps'=>'Police Station','blk'=>'Block Muni','subdiv'=>'Subdivision','pin'=>'Pin Code','mobile'=>'Mobile Number','rand_password'=>'Password'])->download( $file.'.csv');
+                $csvExporter->build($data, ['name'=>'Name','email'=>'Email', 'rand_id'=>'UserId','address'=>'Address','post_office'=>'Post Office','ps'=>'Police Station','blk'=>'Block Muni','subdiv'=>'Subdivision','pin'=>'Pin Code','mobile'=>'Mobile Number','rand_password'=>'Password'])->download( $file.'.csv');
 
                 }elseif($request->mode=="user" && ($this->user->level===3 || $this->user->level===4|| $this->user->level===12)){
 
