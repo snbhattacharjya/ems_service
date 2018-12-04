@@ -189,18 +189,19 @@ class UserController extends Controller
 			$lastInsertedId=$AddUser->id; // get office id
 			
 		   if($request->ppcell=='DEO'){
-			$ppcell=$request->ppcell;
-		   }elseif($request->ppcell=='OC' && $request->sub_level='DT'){
+			$user_type_code='99'; // General For Data Entry Operator
+		   }elseif($request->ppcell=='OC' && $request->sub_level=='DT'){
 			 $user_type_code='05'; //OC PPCELL SAME AS ADM 
-			$ppcell='';
-		   }elseif($request->ppcell=='OC' && $request->sub_level='06'){
-			$user_type_code='06'; //OC PPCELL SAME AS ADM 
+			 
+			
+		   }elseif($request->ppcell=='OC' && $request->sub_level=='06' && $request->subdiv_block_id!=''){
+			$user_type_code='06'; //OC sUBDIVISION PPCELL  SAME AS SUBDIVISION 
 		   $ppcell='';
 		    }else{
-			$ppcell='';  
+				$user_type_code=$user_type_code;
 		   }
 
-			$this->getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code,$ppcell);
+			$this->getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code);
 			
 			
 			DB::table('user_random_password')->insert(
@@ -376,17 +377,8 @@ class UserController extends Controller
 		    return response()->json($arr);
 
            }
-	public function getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code,$ppcell=''){
+	public function getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code){
 		
-		if($ppcell=='DEO'){
-			
-				$arr[]=array('user_id'=>$lastInsertedId,'user_type_code'=>$user_type_code,'menu_id'=>7);
-				$arr[]=array('user_id'=>$lastInsertedId,'user_type_code'=>$user_type_code,'menu_id'=>8);
-				$arr[]=array('user_id'=>$lastInsertedId,'user_type_code'=>$user_type_code,'menu_id'=>9);	
-			}else{
-
-			}
-			//$user_type_code='07';
 			
 			$getDefaultMenuPermission=DB::table('default_permission')->where('user_type_code',$user_type_code)->pluck('menu_id');
 			

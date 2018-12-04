@@ -28,7 +28,7 @@ class PersonnelController extends Controller
         if($this->level===10){
             return Personnel::where('office_id' , $this->userID)->get();
 
-        }else if($this->level===3 || $this->level===12){
+        }else if($this->level===3 || $this->level===12 || $this->level=8 ){
 			 return Personnel:: where('district_id',$this->district)->get();
 			//
 		}else{
@@ -348,7 +348,7 @@ class PersonnelController extends Controller
         $subdiv=$acPc[0]->subdivision_id;
         $updated_at=$acPc[0]->updated_at;
       
-        if($ac!='' && $pc!='' && $ps!='' && $subdiv!='' && $updated_at >='2018-12-06'){
+        if($ac!='' && $pc!='' && $ps!='' && $subdiv!='' && $updated_at >='2018-12-04'){
             return true;
         }else{
 

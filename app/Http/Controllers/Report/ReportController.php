@@ -21,7 +21,7 @@ class ReportController extends Controller
             
              $arr['result']= DB::select("select f.id as officeID,f.name,
             f.identification_code,f.officer_designation,
-            f.address,f.post_office,f.pin,f.email,f.mobile,f.fax,f.total_staff,
+            f.address,f.post_office,f.pin,f.email,f.mobile,f.phone,f.fax,f.total_staff,
             f.male_staff,f.female_staff,sdv.name as subdivision,blm.name as block,
             ps.name as police,ac.name as acname,pc.name as pcname,ds.name as district,
             cat.name as category,ins.name as institute from offices f 

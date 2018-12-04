@@ -137,7 +137,7 @@ class SudivreportController extends Controller
 	  
 	}	
 		public function subdivisionWiseAssemblyReport(){
-			if($this->district!='' & ($this->level===3 || $this->level===4 || $this->level===12)){
+			if($this->district!='' & ($this->level===3 || $this->level===4 || $this->level===12 || $this->level===8 || $this->level===5)){
 			$sqlRequirement='select assembly_constituencies.id,assembly_constituencies.name,
 			assembly_constituencies.pc_id,parliamentary_constituencies.name as pcname,
 			assembly_constituencies.subdivision_id as subdivision_id,

@@ -20,7 +20,8 @@ class OfficeController extends Controller
 
 	public function getAllOffices()
     {
-     if($this->level===3 || $this->level===12){ //DIO and DEO
+       // echo $this->level;
+     if($this->level===3 || $this->level===12 || $this->level===8){ //DIO and DEO
 	    return Office::where('district_id',$this->district)->get();
 	    }elseif($this->level===6){//SDO
 		 $subdivision_id=substr($this->userID,-4);
@@ -42,7 +43,7 @@ class OfficeController extends Controller
 
 	public function getAllofficeBysubdivision(Request $request)
     {
-	   if($this->level===3 || $this->level===12){//DIO	and DEO
+	   if($this->level===3 || $this->level===12 || $this->level===8){//DIO	and DEO
 
             $subdivision_id=$request->subdivision_id;
 	        return Office::where('district_id' ,'=',$this->district)
@@ -147,11 +148,11 @@ class OfficeController extends Controller
 
        $request=array('name'=>$request->office_name,'email'=>$request->email,'mobile'=>$request->mobile,'officer_designation'=>$request->officer_designation);
         if($office->id!=''){
-            $this->createUserFromOffice($request,$office->id);
+            $pass= $this->createUserFromOffice($request,$office->id);
           }
 
 
-	    return response()->json($office->id,201);
+	    return response()->json($office->id." with password  ".$pass,201);
 	}
    public function createUserFromOffice($request,$user_id){
         $user_id=$user_id;
@@ -177,7 +178,9 @@ class OfficeController extends Controller
         DB::table('user_random_password')->insert(
         ['rand_id' =>$user_id  , 'rand_password' => $pass,'created_at'=>now()]
           );
+        
         }
+        return $pass; 
       }
 
 
@@ -311,7 +314,7 @@ class OfficeController extends Controller
     }
    }
   public function searchOffice(Request $request){
-  echo $officeId=$request['office_id']; exit;
+ 
   $identification_code=$request['identification_code'];
   $mobile=$request['mobile'];
   $name=$request['name'];

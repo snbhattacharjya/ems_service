@@ -15,7 +15,7 @@ class SubdivisionController extends Controller
     }
 
     public function getSubdivisions(){
-		if($this->level===3 || $this->level===4|| $this->level===5 || $this->level===12){//ADM,DM,DIO
+		if($this->level===3 || $this->level===4|| $this->level===5 || $this->level===12 || $this->level===8){//ADM,DM,DIO
            return Subdivision::where('district_id',$this->district)->get();
 		}elseif($this->level===6){//SDO
 			$subdivision_id=substr($this->userID,-4);
