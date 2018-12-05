@@ -188,8 +188,14 @@ class UserController extends Controller
 			$AddUser->save();
 			$lastInsertedId=$AddUser->id; // get office id
 			
+			if($request->level=='05' || $request->level=='06' || $request->level=='07' ){
+				$user_type_code=$user_type_code;
+			}elseif($request->level=='08'){
+
+
 		   if($request->ppcell=='DEO'){
 			$user_type_code='99'; // General For Data Entry Operator
+			
 		   }elseif($request->ppcell=='OC' && $request->sub_level=='DT'){
 			 $user_type_code='05'; //OC PPCELL SAME AS ADM 
 			 
@@ -198,8 +204,11 @@ class UserController extends Controller
 			$user_type_code='06'; //OC sUBDIVISION PPCELL  SAME AS SUBDIVISION 
 		   $ppcell='';
 		    }else{
-				$user_type_code=$user_type_code;
+				
 		   }
+
+		}
+
 
 			$this->getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code);
 			

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Subdivision;
 use App\BlockMuni;
+
 use Illuminate\Http\Request;
 use \Illuminate\Http\Response;
 class SubdivisionController extends Controller
@@ -29,5 +30,13 @@ class SubdivisionController extends Controller
 		}else{
 			return response()->json('Unauthorize Access',422);
 		}
-    }
+	}
+	public function getBlockmuniBysubdivision(Request $request){
+		if($this->level===3 || $this->level===4|| $this->level===5||$this->level===6 || $this->level===7  || $this->level===12 || $this->level===8){
+        if($request->subdivision_id!=''){
+		return BlockMuni::where('subdivision_id',$request->subdivId)->get();
+		}
+	}
+	}
+
 }

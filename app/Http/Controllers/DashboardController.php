@@ -17,7 +17,7 @@ class DashboardController extends Controller
 	public function getOfficeData(){//get Dashboard Content
 	        $arr=array();
 			//echo $this->level;
-	    if($this->level===3 || $this->level===5 || $this->level===4 || $this->level===12){
+	    if($this->level===3 || $this->level===5 || $this->level===4 || $this->level===12 || $this->level===8){
 			
 			$distinct="SELECT count(DISTINCT(office_id)) as office_count FROM `personnel` where district_id='".$this->district."'";
 			$distinct_office = DB::select($distinct);

@@ -348,7 +348,7 @@ class PersonnelController extends Controller
         $subdiv=$acPc[0]->subdivision_id;
         $updated_at=$acPc[0]->updated_at;
       
-        if($ac!='' && $pc!='' && $ps!='' && $subdiv!='' && $updated_at >='2018-12-04'){
+        if($ac!='' && $pc!='' && $ps!='' && $subdiv!='' && $updated_at >='2018-12-06'){
             return true;
         }else{
 
