@@ -2,14 +2,17 @@
 
 namespace App\Jobs;
 
+use App\DistrictPPdata;
+use App\Jobs\Job;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\DistrictPPdata;
+use Illuminate\Contracts\Bus\SelfHandling;
+
 use Illuminate\Support\Facades\DB;
-class ProcessDistrictPPdata implements ShouldQueue
+class ProcessDistrictPPdata extends Job implements SelfHandling, ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -20,9 +23,6 @@ class ProcessDistrictPPdata implements ShouldQueue
      */
     public function __construct()
     {
-       //$this->userID=auth('api')->user()->user_id;
-       // $this->level=auth('api')->user()->level;
-       // $this->district=auth('api')->user()->area;
     }
 
     /**
@@ -30,33 +30,8 @@ class ProcessDistrictPPdata implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
-    {
-        //
-		  $this->district=auth('api')->user()->area;
-		    $sql="SELECT count(*)id from offices where district_id='".$this->district."'";
-			$totalOfficeQuery=DB::select($sql);
-			$totalOffice=$totalOfficeQuery[0]->id;
-		 if(!empty($totalOfficeQuery[0]->id)){
-			$getFmalesql="SELECT count(*)gender from personnel INNER JOIN offices on offices.id=personnel.office_id where personnel.district_id='".$this->district."' and personnel.gender='F'";
-			$officef = DB::select($getFmalesql);
-			$totalFemale=$officef[0]->gender ;
-			$getMalesql="SELECT count(*)gender from personnel INNER JOIN offices on offices.id=personnel.office_id where personnel.district_id='".$this->district."' and personnel.gender='M'";
-			$officem = DB::select($getMalesql);
-		    $totalMale=$officem[0]->gender;
-		    $totalemployee=$totalMale +$totalFemale ;
-			
-			if(DistrictPPdata::where('district_id', '=',$this->district)->exists()){
-			 DB::table('district_pp_data')
-			->where('district_id',$this->district)
-			->update(['pp_data'=>$totalOffice,'total_register_male'=>$totalMale,'total_register_female'=>$totalFemale,'total_register_emp'=>$totalemployee]);
-		   //echo 'hi';
-		   }else{
-			   	
-			 DB::table('district_pp_data')->insert(
-                ['district_id'=>$this->district,'pp_data'=>$totalOffice,'total_register_male'=>$totalMale,'total_register_female'=>$totalFemale,'total_register_emp'=>$totalemployee]);
-			}
+    public function handle(){
+        
     }
-}
 
 }

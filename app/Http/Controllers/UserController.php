@@ -66,17 +66,24 @@ class UserController extends Controller
 					  $msg= $user_id;
 					  $execute=1;
 					 }
-           }else if($request->level==='07'){//BDO
-            $userCreationType=$request->sub_level;
+		   }else if($request->level==='07'){//BDO
+			
+			 $userCreationType=$request->sub_level;
+					if($userCreationType!=''){
 					 $user_id=$getStateCode.$UserArea.$userGenertaionLevelCode[0].$userCreationType;
-					 if (User::where('user_id', '=',$user_id)->exists()){
-                     $msg='User Already Exists-'.$user_id;
-                     // $msg=$user_id;
-					  $execute=0;
-					 }else{
-					  $msg= $user_id;
-					  $execute=1;
-					 }
+							if(User::where('user_id', '=',$user_id)->exists()){
+							$msg='User Already Exists-'.$user_id;
+							// $msg=$user_id;
+							$execute=0;
+							}else{
+							$msg= $user_id;
+							$execute=1;
+							}
+					}else{
+							$msg= "Please Choose Block from the Dropdown";
+							$execute=0;	
+					}
+
 	       }else if($request->level==='08'){ //ppcell(WB13DTOC01/WB13DTHC01/WB13DTDEO001/WB13DTDEO002)
                   $userCreationType=$request->sub_level;
                   $ppcell_type=$request->ppcell;
@@ -189,7 +196,7 @@ class UserController extends Controller
 			$lastInsertedId=$AddUser->id; // get office id
 			
 			if($request->level=='05' || $request->level=='06' || $request->level=='07' ){
-				$user_type_code=$user_type_code;
+			 	$user_type_code=$user_type_code;
 			}elseif($request->level=='08'){
 
 
@@ -263,7 +270,7 @@ class UserController extends Controller
     public function getallUsers(){
 			$area=auth('api')->user()->area;
 			$level=auth('api')->user()->level;
-			if($level===3 || $level===12){
+			if($level===3 || $level===12 || $level===5 || $level===8){
 				$canNotsee=[1,2,3,12];
 			}elseif($level===6){//SDO
 				$canNotsee=[1,2,3,4,5,6,7,8,10,11];

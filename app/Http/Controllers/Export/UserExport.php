@@ -72,7 +72,6 @@ class UserExport extends Controller
                 ->get();
 
 
-               // print_r($data);
                 $csvExporter = new \Laracsv\Export();
                 $file='offices_'.date('Ymd_H_i_s').'_'.$this->user->area;
                 $csvExporter->build($data, ['name'=>'Name','email'=>'Email', 'rand_id'=>'UserId','address'=>'Address','post_office'=>'Post Office','ps'=>'Police Station','blk'=>'Block Muni','subdiv'=>'Subdivision','pin'=>'Pin Code','mobile'=>'Mobile Number','rand_password'=>'Password'])->download( $file.'.csv');
@@ -93,12 +92,12 @@ class UserExport extends Controller
                 $data=Personnel::select('office_id','name','designation','dob','gender','present_address','permanent_address',
                 'mobile','phone','email','basic_pay','grade_pay','pay_level','emp_group','post_stat')
 
-                ->where('district_id','13')
+                ->where('district_id',$this->user->area)
                 ->orderBy('office_id')
                 ->get();
 
                 $csvExporter = new \Laracsv\Export();
-                $file='personnel_'.date('Y-m-d-H-i-s').'-'.'13';
+                $file='personnel_'.date('Y-m-d-H-i-s').'-'.$this->user->area;
                 $csvExporter->build($data, ['office_id'=>'Office Code', 'name'=>'Name','designation'=>'Designation',
                 'dob'=>'DOB','gender'=>'Gender','mobile'=>'Mobile Number','phone'=>'Phone','present_address'=>'Present Address',
                 'permanent_address'=>'Permanent Address','email'=>'Email','basic_pay'=>'Basic Pay','emp_group'=>'Group','post_stat'=>'post Status'])->download( $file.'.csv');

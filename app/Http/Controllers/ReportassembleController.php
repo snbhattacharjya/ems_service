@@ -41,12 +41,14 @@ class ReportassembleController extends Controller
 		  $arr['available']=$reportAvailable;
 		   
 		  return response()->json($arr,200);
-	 }else if($this->district!='' & ($this->level===3 || $this->level===4 || $this->level===12 || $this->level===8 || $this->level===5) & $this->district===$request->district_id){
-		 $arr['district']=$this->getDistrictName($this->district);
+	 }else if($this->district!='' & ($this->level===3 || $this->level===4 || $this->level===12 || $this->level===5) & $this->district===$request->district_id){
+		
+	
+		$arr['district']=$this->getDistrictName($this->district);
 		  $sqlAvailable='SELECT ac.id,ac.name,ap.male_party_count as male_party_count,
 		                ap.female_party_count as female_party_count from 
 						assembly_constituencies ac inner join assembly_party ap on (ap.assembly_id=ac.id) 
-						where ac.district_id="'.$request->district_id.'" order by ac.id asc';
+						where ac.district_id="'.$request->district_id.'"   order by ac.id asc';
 		
 		
 		
@@ -55,7 +57,39 @@ class ReportassembleController extends Controller
 		   
 		return response()->json($arr,200);
 		 
-	 }else{
+	 }else if($this->level===6){
+		$subdivision_id=substr($this->userID,7,4);
+		
+		$arr['district']=$this->getDistrictName($this->district);
+		 $sqlAvailable='SELECT ac.id,ac.name,ap.male_party_count as male_party_count,
+					   ap.female_party_count as female_party_count from 
+					   assembly_constituencies ac inner join assembly_party ap on (ap.assembly_id=ac.id) 
+					   where ac.district_id="'.$request->district_id.'"  and  ac.subdivision_id="'.$subdivision_id.'" order by ac.id asc';
+	   
+	   
+	   
+	   (array)$reportAvailable=DB::select($sqlAvailable);
+	   $arr['available']=$reportAvailable;
+		  
+	   return response()->json($arr,200);
+	}elseif($this->level===8){
+		$subdivision_id=substr($this->userID,7,4);
+		$usertype=substr($this->userID,11,2);
+		 if($usertype=='OC'){
+		$arr['district']=$this->getDistrictName($this->district);
+		 $sqlAvailable='SELECT ac.id,ac.name,ap.male_party_count as male_party_count,
+					   ap.female_party_count as female_party_count from 
+					   assembly_constituencies ac inner join assembly_party ap on (ap.assembly_id=ac.id) 
+					   where ac.district_id="'.$request->district_id.'"  and  ac.subdivision_id="'.$subdivision_id.'" order by ac.id asc';
+	   
+	   
+	   
+	   (array)$reportAvailable=DB::select($sqlAvailable);
+	   $arr['available']=$reportAvailable;
+		  
+	   return response()->json($arr,200);
+		 }
+   }else{
 		return response()->json("Unauthorize Access",200);   
 		 
 	 }

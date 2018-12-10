@@ -21,9 +21,28 @@ class OfficeController extends Controller
 	public function getAllOffices()
     {
        // echo $this->level;
-     if($this->level===3 || $this->level===12 || $this->level===8){ //DIO and DEO
-	    return Office::where('district_id',$this->district)->get();
-	    }elseif($this->level===6){//SDO
+     if($this->level===3 || $this->level===12 || $this->level===8 || $this->level===5){ //DIO and DEO
+       
+             $sdo=substr($this->userID,4,3);
+			 $deo=substr($this->userID,11,3);
+			 if($sdo=='SDO' && $deo=='DEO'){
+                $subdivision_id=substr($this->userID,7,4);
+                return Office::where('district_id',$this->district)
+                ->where('subdivision_id',$subdivision_id)
+                ->get();
+              }elseif($sdo=='SDO' && $deo=='OC0'){
+                $subdivision_id=substr($this->userID,7,4);
+                return Office::where('district_id',$this->district)
+	                 ->where('subdivision_id',$subdivision_id)
+	                 ->get();
+
+            }else{
+                return Office::where('district_id',$this->district)->get();   
+            }
+       
+       
+    
+         }elseif($this->level===6){//SDO
 		 $subdivision_id=substr($this->userID,-4);
 	     return Office::where('district_id',$this->district)
 	                 ->where('subdivision_id',$subdivision_id)
@@ -43,12 +62,27 @@ class OfficeController extends Controller
 
 	public function getAllofficeBysubdivision(Request $request)
     {
-	   if($this->level===3 || $this->level===12 || $this->level===8){//DIO	and DEO
+	   if($this->level===3 || $this->level===12 || $this->level===8 || $this->level===5){//DIO	and DEO
+            if($request->subdivision_id=='admin'){
+                if($this->district==13){
+                return User::where('area' ,'=',$this->district)
+                ->whereNotIn('level' ,[1,10,11,3])
+                ->get();  
+                }else{
+                    return User::where('area' ,'=',$this->district)
+                    ->whereNotIn('level' ,[1,2,10,11,3,12])
+                    ->get();    
+                }
 
+
+            }else{ 
             $subdivision_id=$request->subdivision_id;
 	        return Office::where('district_id' ,'=',$this->district)
                    ->where('subdivision_id' ,'=', $subdivision_id)
-				   ->get();
+                   ->get();
+                   
+            }
+
 	   }elseif($this->level===6){//SDO
             $subdivision_id=substr($this->userID,-4);
 			return Office::where('district_id' ,'=',$this->district)

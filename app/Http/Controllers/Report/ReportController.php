@@ -49,16 +49,16 @@ class ReportController extends Controller
                 $officeid=$request->officeId;
                  $result['personel']= DB::select('SELECT p.office_id,p.name as empname,p.designation,p.present_address,p.permanent_address,p.dob,p.gender,p.scale,
                 p.basic_pay,p.grade_pay,p.emp_group,p.working_status,p.email,p.phone,p.mobile,p.epic,p.part_no,p.sl_no,p.post_stat,
-                p.branch_ifsc,p.bank_account_no
+                p.branch_ifsc,p.bank_account_no,p.remark_id,p.qualification_id,p.subdivision_id,p.assembly_temp_id,p.assembly_perm_id,p.assembly_off_id
                 from  personnel p join offices o on p.office_id=o.id where p.office_id='.$officeid.'');
 
-                $result['qualification']= DB::select('SELECT q.name as qualification,rmrks.name as remark
+                $result['qualification']= DB::select('SELECT q.name as qualification,q.id as qid,rmrks.name as remark,rmrks.id as rid
                 from  personnel p join offices o on p.office_id=o.id
-                join qualifications q on p.qualification_id=q.id 
+                join qualifications q on p.qualification_id=q.id
                 join remarks rmrks on  p.remark_id=rmrks.id
                 where p.office_id='.$officeid.'');
-               
-               $result['assembly']= DB::select('SELECT sdv.name as subdivision,actemp.name as actemp,acperm.name as acpermanent,acoffice.name as acofficename
+
+               $result['assembly']= DB::select('SELECT sdv.name as subdivision, sdv.id as sdvid,actemp.name as actemp, actemp.id as actempid,acperm.name as acpermanent,acperm.id as acpermid,acoffice.name as acofficename, acoffice.id as acoffid
                from  personnel p join offices o on p.office_id=o.id
                join subdivisions sdv on p.subdivision_id=sdv.id
                join assembly_constituencies actemp on  p.assembly_temp_id=actemp.id
@@ -70,18 +70,20 @@ class ReportController extends Controller
               $i=0;
              foreach($arr as $a){
                foreach($result['qualification'] as $q){
-                 $a->qualification=$q->qualification;
-                 $a->remark=$q->remark;
+                if($a->remark_id == $q->rid){$a->remark=$q->remark;}
+                if($a->qualification_id == $q->qid){$a->qualification=$q->qualification;}
+
                }
-             }
+            }
              foreach($arr as $a){
               foreach($result['assembly'] as $as){
-                $a->subdivision=$as->subdivision;
-                $a->actemp=$as->actemp;
-                $a->acpermanent=$as->acpermanent;
-                $a->acofficename=$as->acofficename;
+                if($a->subdivision_id == $as->sdvid){$a->subdivision=$as->subdivision;}
+                if($a->assembly_temp_id == $as->actempid){$a->actemp=$as->actemp;}
+                if($a->assembly_perm_id == $as->acpermid){$a->acpermanent=$as->acpermanent;}
+                if($a->assembly_off_id == $as->acoffid){$a->acofficename=$as->acofficename;}
               }
             }
+
              
 
                

@@ -71,6 +71,7 @@ Route::get('/getblockbysubdission/{subdivision_id}', 'SubdivisionController@getB
 //Police Station Routes
 Route::get('/policestations/{subdivision_id}', 'PoliceStationController@getPoliceStations');
 
+
 //Category Routes
 Route::get('/categories', 'CategoryController@getCategories');
 
