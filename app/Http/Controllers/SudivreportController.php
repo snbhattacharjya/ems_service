@@ -237,6 +237,57 @@ return response()->json($reportAvailable,200);
 		   } 
 		   return response()->json($arr,200);
 	     	}elseif($this->level==6 || $this->level==8 ){
+
+				$usertype=substr($this->userID,4,4);
+ 
+				if($usertype=="DTOC"){
+					$sqlRequirement='select assembly_constituencies.id,assembly_constituencies.name,
+					assembly_constituencies.pc_id,parliamentary_constituencies.name as pcname,
+					assembly_constituencies.subdivision_id as subdivision_id,
+					subdivisions.name as subdivisions,
+					assembly_party.male_party_count  from assembly_constituencies 
+					join assembly_party on assembly_constituencies.id=assembly_party.assembly_id
+					join subdivisions on subdivisions.id=assembly_constituencies.subdivision_id
+					join parliamentary_constituencies on parliamentary_constituencies.id=assembly_constituencies.pc_id
+					where assembly_constituencies.district_id='.$this->district.' order by assembly_constituencies.subdivision_id asc,assembly_constituencies.pc_id asc';
+					$arr['subdivisionWiseAssemblyReport']=DB::select($sqlRequirement);
+					
+					$subdivision=(new SubdivisionController)->getSubdivisions();
+				   for($i=0;$i<count($subdivision);$i++){
+					
+					$subdivisionwise='select assembly_constituencies.id,assembly_constituencies.name,
+					assembly_constituencies.pc_id,parliamentary_constituencies.name as pcname,
+					assembly_constituencies.subdivision_id as subdivision_id,
+					subdivisions.name as subdivisions,
+					assembly_party.male_party_count  from assembly_constituencies 
+					join assembly_party on assembly_constituencies.id=assembly_party.assembly_id
+					join subdivisions on subdivisions.id=assembly_constituencies.subdivision_id
+					join parliamentary_constituencies on parliamentary_constituencies.id=assembly_constituencies.pc_id
+					where assembly_constituencies.district_id='.$this->district.' and assembly_constituencies.subdivision_id="'.$subdivision[$i]->id.'" ';
+					//$arr['subdivisionwise']['subdivisionname']=$subdivision[$i]->name;
+					$arr['subdivisionwise'][$subdivision[$i]->name]=DB::select($subdivisionwise);
+		
+				   } 
+				  $pc=(new ParliamentaryConstituencyController)->getPcs();
+					
+				  for($i=0;$i<count($pc);$i++){
+					
+					$pcwise='select assembly_constituencies.id,assembly_constituencies.name,
+					assembly_constituencies.pc_id,parliamentary_constituencies.name as pcname,
+					assembly_constituencies.subdivision_id as subdivision_id,
+					subdivisions.name as subdivisions,
+					assembly_party.male_party_count  from assembly_constituencies 
+					join assembly_party on assembly_constituencies.id=assembly_party.assembly_id
+					join subdivisions on subdivisions.id=assembly_constituencies.subdivision_id
+					join parliamentary_constituencies on parliamentary_constituencies.id=assembly_constituencies.pc_id
+					where assembly_constituencies.district_id='.$this->district.' and assembly_constituencies.pc_id="'.$pc[$i]->id.'" ';
+					//$arr['subdivisionwise']['subdivisionname']=$subdivision[$i]->name;
+					$arr['pcwise'][$pc[$i]->name]=DB::select($pcwise);
+		
+				   } 
+				   return response()->json($arr,200);
+				}else{
+
 				$subdivision_id=substr($this->userID,7,4);
 				$sqlRequirement='select assembly_constituencies.id,assembly_constituencies.name,
 				assembly_constituencies.pc_id,parliamentary_constituencies.name as pcname,
@@ -283,7 +334,7 @@ return response()->json($reportAvailable,200);
 	
 			   } 
 			   return response()->json($arr,200);
-
+			  } 
 			 }else{
 
 		return response()->json($reportRequirement,400);

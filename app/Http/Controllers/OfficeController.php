@@ -64,16 +64,11 @@ class OfficeController extends Controller
     {
 	   if($this->level===3 || $this->level===12 || $this->level===8 || $this->level===5){//DIO	and DEO
             if($request->subdivision_id=='admin'){
-                if($this->district==13){
+              
                 return User::where('area' ,'=',$this->district)
-                ->whereNotIn('level' ,[1,10,11,3])
+                ->whereIn('level' ,[6,7,8])
                 ->get();  
-                }else{
-                    return User::where('area' ,'=',$this->district)
-                    ->whereNotIn('level' ,[1,2,10,11,3,12])
-                    ->get();    
-                }
-
+               
 
             }else{ 
             $subdivision_id=$request->subdivision_id;
@@ -315,7 +310,7 @@ class OfficeController extends Controller
         $officeId=$request->officeId;
         $newPassword=$this->random_password();
         $date=date('Y-m-d H:i:s');
-        if($this->level==3 || $this->level==12){
+        if($this->level==3 || $this->level==12 || $this->level==8 || $this->level==5 ){
             User::where('user_id', $officeId)
             ->update(['password'=>Hash::make($newPassword),'change_password'=>0, 'updated_at' =>date('Y-m-d H:i:s')]);
          if(DB::table('user_random_password')->where('rand_id', '=', $officeId)->exists()){

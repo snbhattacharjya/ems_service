@@ -21,6 +21,7 @@ Route::get('/a', 'PersonnelController@is_personnel');
 Route::post('/register', 'Auth\RegisterController@register');
 //Login Routes
 Route::post('/login', 'Auth\LoginController@login');
+Route::get('/getdashboard','DashboardController@index');
 //Logout Routes
 Route::get('/logout', 'Auth\LoginController@logout')->middleware('auth:api');
 
@@ -123,12 +124,12 @@ Route::get('/analytics', 'AnalyticsController@totalUsers');
 
 //Route::post('/deo', 'UserController@diocreation');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
- // Route::get('/createpassword', 'UserController@createPassword');
+Route::get('/createpassword', 'UserController@createPassword');
 //Route::get('/passwordinsert', 'UserController@passwordInsert');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
 //Route::get('/generateletter', 'GenerateLetterController@generateLetter');
 //Route::get('/allassemblies', 'AssemblyConstituencyController@getAssembliesAll');
- Route::get('/export/{mode}/{token}', 'Export\UserExport@userexport');
- Route::get('/checkuser/{mode}/{token}', 'Export\UserExport@checkAuth');
- Route::get('/exportpersonnel', 'Export\UserExport@export');
- Route::get('/permission', 'UserController@getDefaultMenuPermission_To_assignPermission');
+ //Route::get('/export/{mode}/{token}', 'Export\UserExport@userexport');
+ //Route::get('/checkuser/{mode}/{token}', 'Export\UserExport@checkAuth');
+ //Route::get('/exportpersonnel', 'Export\UserExport@export');
+// Route::get('/permission', 'UserController@getDefaultMenuPermission_To_assignPermission');

@@ -11,14 +11,23 @@ class DashboardController extends Controller
     public function __construct()
     {	$this->userID=auth('api')->user()->user_id;
         $this->level=auth('api')->user()->level;
-        $this->district=auth('api')->user()->area;
+		$this->district=auth('api')->user()->area;
+		$area=auth('api')->user()->area;
     }
+
+  public function index(){
+
+	$arr['dashboard']=$this->getOfficeData();
+	
+    $arr['user']['district']=$this->getDistrict($area);
+	$arr['election']=$this->getElection();
+	return response()->json($arr,200);
+  }
 
 	public function getOfficeData(){//get Dashboard Content
 	        $arr=array();
 			//echo $this->level;
 	    if($this->level===3 || $this->level===5 || $this->level===4 || $this->level===12){
-			
 			$distinct="SELECT count(DISTINCT(office_id)) as office_count FROM `personnel` where district_id='".$this->district."'";
 			$distinct_office = DB::select($distinct);
 			$arr['distinct_office']=$distinct_office[0]->office_count;	  
@@ -45,25 +54,16 @@ class DashboardController extends Controller
 				$arr['error']='Office Details Does Not Exists';
 				$arr['status']=401;
 		        }
-			   
-				
-
 		}elseif($this->level===10){
-			
 			$officeStuff="SELECT total_staff as officeStuff FROM `offices`  where district_id='".$this->district."' and id='".$this->userID."'";
             $officeStuff = DB::select($officeStuff);
         	$arr['officeStuff']=$officeStuff[0]->officeStuff;	  
-
-            // $sql="SELECT count(*)id from offices where district_id='".$this->district."' and id='".$this->userID."'";
-            // $office = DB::select($sql);
-            // $arr['totalOffice']=$office[0]->id;
             $sql='SELECT  count(o.id) as totalEmployee,
 						  sum(CASE WHEN p.gender = "M" THEN 1 ELSE 0 END) AS Male, 
 						  sum(CASE WHEN p.gender = "F" THEN 1 ELSE 0 END) AS Female 
 						  FROM personnel p
 						  inner join offices o on (o.id=p.office_id )
 						  where o.district_id="'.$this->district.'" and p.office_id="'.$this->userID.'"';	
-						 // echo $sql;exit;
 				$office = DB::select($sql);
 				$arr['totalfemale']=$office[0]->Female;
 				$arr['totalMale']=$office[0]->Male ;
@@ -76,11 +76,9 @@ class DashboardController extends Controller
 				$distinct="SELECT count(DISTINCT(office_id)) as office_count FROM `personnel` where `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
 			    $distinct_office = DB::select($distinct);
 			    $arr['distinct_office']=$distinct_office[0]->office_count;	
-
-				$sql="SELECT count(*)id  FROM `offices` WHERE `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
+               $sql="SELECT count(*)id  FROM `offices` WHERE `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
 				$office = DB::select($sql);
 				$arr['totalOffice']=$office[0]->id;
-				
 				$sql="SELECT  count(o.id) as totalEmployee,
                       sum(CASE WHEN p.gender = 'M' THEN 1 ELSE 0 END) AS Male, 
                       sum(CASE WHEN p.gender = 'F' THEN 1 ELSE 0 END) AS Female 
@@ -108,7 +106,7 @@ class DashboardController extends Controller
 				$sql="SELECT count(*)id  FROM `offices` WHERE `block_muni_id` = '".$block_munis."' and district_id='".$this->district."'";
 				$office = DB::select($sql);
 				$arr['totalOffice']=$office[0]->id;
-				//************
+	
 				$sql="SELECT  count(o.id) as totalEmployee,
                       sum(CASE WHEN p.gender = 'M' THEN 1 ELSE 0 END) AS Male, 
                       sum(CASE WHEN p.gender = 'F' THEN 1 ELSE 0 END) AS Female 
@@ -129,15 +127,12 @@ class DashboardController extends Controller
 				 $deo=substr($this->userID,11,3);
 				if($sdo=='SDO' && $deo=='DEO'){ //SDO PPCELL DEO
 				$subdivision_id=substr($this->userID,7,4); 
-			
 				$distinct="SELECT count(DISTINCT(office_id)) as office_count FROM `personnel` where `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
 				$distinct_office = DB::select($distinct);
 				$arr['distinct_office']=$distinct_office[0]->office_count;	
-
-				$sql="SELECT count(*)id  FROM `offices` WHERE `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
+                $sql="SELECT count(*)id  FROM `offices` WHERE `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
 				$office = DB::select($sql);
 				$arr['totalOffice']=$office[0]->id;
-				
 				$sql="SELECT  count(o.id) as totalEmployee,
 					  sum(CASE WHEN p.gender = 'M' THEN 1 ELSE 0 END) AS Male, 
 					  sum(CASE WHEN p.gender = 'F' THEN 1 ELSE 0 END) AS Female 
@@ -158,11 +153,9 @@ class DashboardController extends Controller
 					$distinct="SELECT count(DISTINCT(office_id)) as office_count FROM `personnel` where `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
 					$distinct_office = DB::select($distinct);
 					$arr['distinct_office']=$distinct_office[0]->office_count;	
-	
 					$sql="SELECT count(*)id  FROM `offices` WHERE `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
 					$office = DB::select($sql);
 					$arr['totalOffice']=$office[0]->id;
-					
 					$sql="SELECT  count(o.id) as totalEmployee,
 						  sum(CASE WHEN p.gender = 'M' THEN 1 ELSE 0 END) AS Male, 
 						  sum(CASE WHEN p.gender = 'F' THEN 1 ELSE 0 END) AS Female 
@@ -177,7 +170,6 @@ class DashboardController extends Controller
 						$arr['success']='Check Office Details';
 						$arr['status']=201;
                	}else{
-						
 				$distinct="SELECT count(DISTINCT(office_id)) as office_count FROM `personnel` where district_id='".$this->district."'";
 				$distinct_office = DB::select($distinct);
 				$arr['distinct_office']=$distinct_office[0]->office_count;	  
@@ -202,8 +194,7 @@ class DashboardController extends Controller
 				$arr['status']=201;
 				}
 		}
-
-		}elseif($this->userID=='WBCEO'){
+	}elseif($this->userID=='WBCEO'){
 
 			$sql="select sum(pp_data) as office_count,sum(total_register_male) as Male,sum(total_register_female) as Female,sum(total_register_emp) as totalEmployee,sum(distinct_office) as distinct_office from district_pp_data ";
 			$office = DB::select($sql);
@@ -213,18 +204,19 @@ class DashboardController extends Controller
 				 $arr['totalfemale']=$office[0]->Female;
 				 $arr['totalMale']=$office[0]->Male;
 				 $arr['totalemployee']=$office[0]->totalEmployee;
-
-
 		}else{
 			return response()->json($this->userID,422);
 		}
-
-
-
-
-
 		return $arr;
 
 	}
+public function getDistrict($districtID){
+		$district= District::where('id',$districtID)->pluck('name');
+		return $district;
+	  }
+	  public function getElection(){
+		$election= DB::select("select name,year from elections");
+		return $election;
+	  }
 
 }

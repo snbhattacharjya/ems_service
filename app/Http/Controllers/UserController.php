@@ -482,8 +482,7 @@ class UserController extends Controller
 
   public function createPassword(){
 		
-	//User::whereNotIn('area','20')->where('level','10');where('user_id','like','0304%')->
-	  User::where('area','16')->where('level','10')->get()->each(function($user) {
+	User::where('area','15')->where('level','10')->get()->each(function($user){
 		    $pass=$this->random_password();
 			$user->password = bcrypt($pass);
 			$user->save();
