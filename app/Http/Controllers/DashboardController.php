@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\PersonnelController;
 use App\User;
 use App\Office;
+use App\District;
 use Illuminate\Support\Facades\DB;
 class DashboardController extends Controller
 {
@@ -13,16 +14,7 @@ class DashboardController extends Controller
         $this->level=auth('api')->user()->level;
 		$this->district=auth('api')->user()->area;
 		$area=auth('api')->user()->area;
-    }
-
-  public function index(){
-
-	$arr['dashboard']=$this->getOfficeData();
-	
-    $arr['user']['district']=$this->getDistrict($area);
-	$arr['election']=$this->getElection();
-	return response()->json($arr,200);
-  }
+    }  
 
 	public function getOfficeData(){//get Dashboard Content
 	        $arr=array();
@@ -210,13 +202,6 @@ class DashboardController extends Controller
 		return $arr;
 
 	}
-public function getDistrict($districtID){
-		$district= District::where('id',$districtID)->pluck('name');
-		return $district;
-	  }
-	  public function getElection(){
-		$election= DB::select("select name,year from elections");
-		return $election;
-	  }
+
 
 }

@@ -94,7 +94,7 @@ class PersonnelController extends Controller
              'block_muni_temp_id' => 'numeric',
              'block_muni_temp_id' => 'numeric',
              'branch_ifsc' => 'required|max:11',
-             'bank_account_no' => 'required|max:16'
+             'bank_account_no' => 'required|unique:personnel,bank_account_no|max:16'
 
 
 
@@ -220,7 +220,7 @@ class PersonnelController extends Controller
              'block_muni_temp_id' => 'numeric',
              'block_muni_temp_id' => 'numeric',
              'branch_ifsc' => 'required|max:11',
-             'bank_account_no' => 'required|max:16',
+             'bank_account_no' => 'required|unique:personnel,bank_account_no,'.$personnelId.'|max:16'
 
 
 

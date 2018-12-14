@@ -23,6 +23,7 @@ class UserController extends Controller
 			//'aadhaar' => 'required',
 			'level' => 'required',
 			'designation'=>'required'
+			
 			]);
 			$UserArea=auth('api')->user()->area;
 			
@@ -174,8 +175,12 @@ class UserController extends Controller
 				          $msg='Choose Parrent Level';
 						  $execute= 0;
 		    }
-
+			
 		if($execute!='' and $execute==1){
+			$request = array_add($request,'user_id',$msg);
+			$request->validate([
+				'user_id' => 'required|unique:users,user_id'
+			]);
 			//return (print_r($request->all()));exit;
 			$AddUser=new User;
 			$AddUser->name = $request->name;
@@ -188,7 +193,7 @@ class UserController extends Controller
 			$AddUser->area = $UserArea;
 			$AddUser->is_active = 1;
 			$AddUser->created_at = now()->timestamp;
-			$AddUser->user_id = $msg;
+			$AddUser->user_id = $request->user_id;
 			$pass=$this->random_password();
 	       	$AddUser->password = Hash::make($pass);
 			$AddUser->change_password =0 ;
@@ -216,7 +221,7 @@ class UserController extends Controller
 
 		}
 
-
+        if($lastInsertedId!=''){
 			$this->getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code);
 			
 			
@@ -224,7 +229,9 @@ class UserController extends Controller
 				['rand_id' =>$msg  , 'rand_password' => $pass,'created_at'=>now()]
 				
 			);
-            $msg ="User created succesfully with code - ".$msg." Password is-".$pass;
+			$msg ="User created succesfully with code - ".$msg." Password is-".$pass;
+		}
+
         }
 
 		    return response()->json($msg,201);
