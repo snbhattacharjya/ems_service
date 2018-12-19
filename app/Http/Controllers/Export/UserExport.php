@@ -60,13 +60,12 @@ class UserExport extends Controller
                 if($request->mode=="office" && ($this->user->level===3 || $this->user->level===4|| $this->user->level===12 )){
 
 
-                    $data=User::select('offices.name','offices.email','rand_id','subdivisions.name as subdiv','block_munis.name as blk','police_stations.name as ps','address','post_office','pin','offices.mobile','rand_password')
-
-                ->join('user_random_password', 'user_random_password.rand_id', '=', 'users.user_id')
-                ->join('offices', 'offices.id', '=', 'user_random_password.rand_id')
-                ->join('subdivisions', 'subdivisions.id', '=', 'offices.subdivision_id')
-                ->join('block_munis', 'block_munis.id', '=', 'offices.block_muni_id')
-                ->join('police_stations', 'police_stations.id', '=', 'offices.police_station_id')
+                $data=User::select('offices.name','offices.email','rand_id','subdivisions.name as subdiv','block_munis.name as blk','police_stations.name as ps','address','post_office','pin','offices.mobile','rand_password')
+                ->join('user_random_password', 'user_random_password.rand_id', '=', 'users.user_id','left outer')
+                ->join('offices', 'offices.id', '=', 'user_random_password.rand_id','left outer')
+                ->join('subdivisions', 'subdivisions.id', '=', 'offices.subdivision_id','left outer')
+                ->join('block_munis', 'block_munis.id', '=', 'offices.block_muni_id','left outer')
+                ->join('police_stations', 'police_stations.id', '=', 'offices.police_station_id','left outer')
                 ->where('level','10')
                 ->where('area',$this->user->area)
                 ->get();

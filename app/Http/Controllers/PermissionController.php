@@ -21,7 +21,7 @@ class PermissionController extends Controller
     $arr['dashboard']=(new DashboardController)->getOfficeData();
 	
     $arr['user']['district']=$this->getDistrict($area);
-	$arr['election']=$this->getElection();
+	//$arr['election']=$this->getElection();
 
 
 

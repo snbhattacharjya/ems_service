@@ -66,7 +66,7 @@ class OfficeController extends Controller
             if($request->subdivision_id=='admin'){
               
                 return User::where('area' ,'=',$this->district)
-                ->whereIn('level' ,[6,7,8])
+                ->whereIn('level' ,[5,6,7,8])
                 ->get();  
                
 

@@ -138,7 +138,7 @@ class DashboardController extends Controller
 						$arr['totalemployee']=$office[0]->totalEmployee;
 						$arr['success']='Check Office Details';
 						$arr['status']=201;
-						$arr['totalemployee']=4;
+					
 				}elseif($sdo=='SDO' && $deo=='OC0'){ //SDO PPCELL OC
 
 					$subdivision_id=substr($this->userID,7,4);
