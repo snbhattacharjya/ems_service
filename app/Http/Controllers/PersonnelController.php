@@ -169,7 +169,8 @@ class PersonnelController extends Controller
         $personnel->subdivision_id = substr($officeid,0,4);
         $personnel->remark_reason = strip_tags($request->remark_reason,'');
         $personnel->pay_level = strip_tags($request->pay_level,'');
-		$personnel->created_at =date('Y-m-d H:i:s');
+        $personnel->created_at =date('Y-m-d H:i:s');
+        $personnel->updated_at =date('Y-m-d H:i:s');
         $personnel->save();
 
         return response()->json($personnel->id,201);
@@ -280,6 +281,7 @@ class PersonnelController extends Controller
         $personnel->remark_reason = strip_tags($request->remark_reason,'');
         $personnel->pay_level = strip_tags($request->pay_level,'');
         $personnel->updated_at =date('Y-m-d H:i:s');
+        
         $personnel->save();
 
         $personnelId=0;
@@ -340,15 +342,16 @@ class PersonnelController extends Controller
 
    }
     public function is_acPc_exists($officeId){
-        $sql="SELECT ac_id as ac,pc_id as pc,subdivision_id,police_station_id,date(updated_at) as updated_at  FROM `offices`  where district_id='".$this->district."' and id='".$officeId."'";
+        $sql="SELECT ac_id as ac,pc_id as pc,subdivision_id,police_station_id,date(updated_at) as updated_at,agree as agree_pp1  FROM `offices`  where district_id='".$this->district."' and id='".$officeId."'";
         $acPc = DB::select($sql);
         $ac=$acPc[0]->ac;
         $pc=$acPc[0]->pc;
         $ps=$acPc[0]->police_station_id;
         $subdiv=$acPc[0]->subdivision_id;
         $updated_at=$acPc[0]->updated_at;
+        $agree_pp1=$acPc[0]->agree_pp1;
       
-        if($ac!='' && $pc!='' && $ps!='' && $subdiv!='' && $updated_at >='2018-12-06'){
+        if($ac!='' && $pc!='' && $ps!='' && $subdiv!='' && $updated_at >='2018-12-06' &&  $agree_pp1==1){
             return true;
         }else{
 

@@ -120,11 +120,10 @@ Route::post('/savepoststatmanual', 'categorization\ManualPoststatSetController@p
 //Analytics
 
 Route::get('/analytics', 'AnalyticsController@totalUsers');
-});
-
+//IsDeletionRestore
 //Route::post('/deo', 'UserController@diocreation');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
-Route::get('/createpassword', 'UserController@createPassword');
+//Route::get('/createpassword', 'UserController@createPassword');
 //Route::get('/passwordinsert', 'UserController@passwordInsert');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
 //Route::get('/generateletter', 'GenerateLetterController@generateLetter');
@@ -133,3 +132,13 @@ Route::get('/createpassword', 'UserController@createPassword');
  //Route::get('/checkuser/{mode}/{token}', 'Export\UserExport@checkAuth');
  //Route::get('/exportpersonnel', 'Export\UserExport@export');
 // Route::get('/permission', 'UserController@getDefaultMenuPermission_To_assignPermission');
+
+//Office delete
+Route::get('/issearch/{s}', 'officeDeletionRestoreController@searchOffice');
+Route::get('/isdelete/{id}', 'officeDeletionRestoreController@deleteOffice');
+Route::get('/isrestore/{id}', 'officeDeletionRestoreController@restoreDeletedOffice');
+Route::get('/gettrashedOffice', 'officeDeletionRestoreController@trashedOffice');
+
+});
+
+

@@ -20,20 +20,19 @@ class DashboardController extends Controller
 	        $arr=array();
 			//echo $this->level;
 	    if($this->level===3 || $this->level===5 || $this->level===4 || $this->level===12){
-			$distinct="SELECT count(DISTINCT(office_id)) as office_count FROM `personnel` where district_id='".$this->district."'";
-			$distinct_office = DB::select($distinct);
-			$arr['distinct_office']=$distinct_office[0]->office_count;	  
+			
 			$sql="SELECT count(*)id from offices where district_id='".$this->district."'";
 			$office = DB::select($sql);
+			
 			if(!empty($office[0]->id)){
 				$arr['totalOffice']=$office[0]->id;
-					$sql='SELECT  count(o.id) as totalEmployee,
-						  sum(CASE WHEN p.gender = "M" THEN 1 ELSE 0 END) AS Male, 
-						  sum(CASE WHEN p.gender = "F" THEN 1 ELSE 0 END) AS Female 
-						  FROM personnel p
-						  inner join offices o on (o.id=p.office_id )
-						  where o.district_id="'.$this->district.'"';	
+					$sql='SELECT count(DISTINCT(personnel.office_id)) as office_count,
+					count(personnel.id) as totalEmployee,
+					sum(CASE WHEN personnel.gender = "M" and offices.agree=1 THEN 1 ELSE 0 END) AS Male, 
+					sum(CASE WHEN personnel.gender = "F" and offices.agree=1 THEN 1 ELSE 0 END) AS Female 
+					FROM `personnel` inner join offices on personnel.office_id=offices.id where offices.district_id="'.$this->district.'"';	
 				$office = DB::select($sql);
+				$arr['distinct_office']=$office[0]->office_count;
 				$arr['totalfemale']=$office[0]->Female;
 				$arr['totalMale']=$office[0]->Male ;
 				$arr['totalemployee']=$office[0]->totalEmployee;
@@ -42,7 +41,9 @@ class DashboardController extends Controller
            
 				$arr['success']='Check Office Details';
 				$arr['status']=201;
-				}else{
+				
+			
+			}else{
 				$arr['error']='Office Details Does Not Exists';
 				$arr['status']=401;
 		        }
@@ -65,20 +66,18 @@ class DashboardController extends Controller
 
 		}elseif($this->level===6){//SDO
 				$subdivision_id=substr($this->userID,-4);
-				$distinct="SELECT count(DISTINCT(office_id)) as office_count FROM `personnel` where `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
-			    $distinct_office = DB::select($distinct);
-			    $arr['distinct_office']=$distinct_office[0]->office_count;	
-               $sql="SELECT count(*)id  FROM `offices` WHERE `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
+				$sql="SELECT count(*)id  FROM `offices` WHERE `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
 				$office = DB::select($sql);
 				$arr['totalOffice']=$office[0]->id;
-				$sql="SELECT  count(o.id) as totalEmployee,
-                      sum(CASE WHEN p.gender = 'M' THEN 1 ELSE 0 END) AS Male, 
-                      sum(CASE WHEN p.gender = 'F' THEN 1 ELSE 0 END) AS Female 
-                      FROM personnel p
-                      inner join offices o on (o.id=p.office_id ) 
-					   and o.subdivision_id='". $subdivision_id."'
-                      where o.district_id='".$this->district."'";
+				$sql="SELECT count(DISTINCT(personnel.office_id)) as office_count,
+				count(personnel.id) as totalEmployee,
+				sum(CASE WHEN personnel.gender = 'M' and offices.agree=1 THEN 1 ELSE 0 END) AS Male, 
+				sum(CASE WHEN personnel.gender = 'F' and offices.agree=1 THEN 1 ELSE 0 END) AS Female 
+				FROM `personnel` inner join offices on personnel.office_id=offices.id 
+				and offices.subdivision_id='".$subdivision_id."'  
+				where offices.district_id='".$this->district."'";
 				$office = DB::select($sql);
+				$arr['distinct_office']=$office[0]->office_count;
                 $arr['totalfemale']=$office[0]->Female;
 				$arr['totalMale']=$office[0]->Male ;
 				$arr['totalemployee']=$office[0]->totalEmployee;
@@ -87,26 +86,21 @@ class DashboardController extends Controller
 
 		}elseif($this->level===7){//BDO
 			
-			   $block_munis=substr($this->userID,-6);
-			   
-               $distinct="SELECT count(DISTINCT(office_id)) as office_count FROM `personnel` where `block_muni_off_id` = '".$block_munis."' and district_id='".$this->district."'";
-			   
-			 
-			   $distinct_office = DB::select($distinct);
-			    $arr['distinct_office']=$distinct_office[0]->office_count;	
-
-				$sql="SELECT count(*)id  FROM `offices` WHERE `block_muni_id` = '".$block_munis."' and district_id='".$this->district."'";
+			    $block_munis=substr($this->userID,-6);
+			    $sql="SELECT count(*)id  FROM `offices` WHERE `block_muni_id` = '".$block_munis."' and district_id='".$this->district."'";
 				$office = DB::select($sql);
 				$arr['totalOffice']=$office[0]->id;
 	
-				$sql="SELECT  count(o.id) as totalEmployee,
-                      sum(CASE WHEN p.gender = 'M' THEN 1 ELSE 0 END) AS Male, 
-                      sum(CASE WHEN p.gender = 'F' THEN 1 ELSE 0 END) AS Female 
+				$sql="SELECT count(DISTINCT(p.office_id)) as office_count, 
+				      count(o.id) as totalEmployee,
+                      sum(CASE WHEN p.gender = 'M' and o.agree=1 THEN 1 ELSE 0 END) AS Male, 
+                      sum(CASE WHEN p.gender = 'F' and o.agree=1 THEN 1 ELSE 0 END) AS Female 
                       FROM personnel p
                       inner join offices o on (o.id=p.office_id ) 
 					  and o.block_muni_id='". $block_munis."'
                       where o.district_id='".$this->district."'";
 				$office = DB::select($sql);
+				$arr['distinct_office']=$office[0]->office_count;
                 $arr['totalfemale']=$office[0]->Female;
 				$arr['totalMale']=$office[0]->Male ;
 				$arr['totalemployee']=$office[0]->totalEmployee;
@@ -119,63 +113,59 @@ class DashboardController extends Controller
 				 $deo=substr($this->userID,11,3);
 				if($sdo=='SDO' && $deo=='DEO'){ //SDO PPCELL DEO
 				$subdivision_id=substr($this->userID,7,4); 
-				$distinct="SELECT count(DISTINCT(office_id)) as office_count FROM `personnel` where `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
-				$distinct_office = DB::select($distinct);
-				$arr['distinct_office']=$distinct_office[0]->office_count;	
-                $sql="SELECT count(*)id  FROM `offices` WHERE `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
+				 $sql="SELECT count(*)id  FROM `offices` WHERE `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
 				$office = DB::select($sql);
 				$arr['totalOffice']=$office[0]->id;
-				$sql="SELECT  count(o.id) as totalEmployee,
-					  sum(CASE WHEN p.gender = 'M' THEN 1 ELSE 0 END) AS Male, 
-					  sum(CASE WHEN p.gender = 'F' THEN 1 ELSE 0 END) AS Female 
-					  FROM personnel p
-					  inner join offices o on (o.id=p.office_id ) 
-					   and o.subdivision_id='". $subdivision_id."'
-					  where o.district_id='".$this->district."'";
-						$office = DB::select($sql);
-						$arr['totalfemale']=$office[0]->Female;
-						$arr['totalMale']=$office[0]->Male ;
-						$arr['totalemployee']=$office[0]->totalEmployee;
-						$arr['success']='Check Office Details';
-						$arr['status']=201;
+
+				$sql="SELECT count(DISTINCT(personnel.office_id)) as office_count,
+				count(personnel.id) as totalEmployee,
+				sum(CASE WHEN personnel.gender = 'M' and offices.agree=1 THEN 1 ELSE 0 END) AS Male, 
+				sum(CASE WHEN personnel.gender = 'F' and offices.agree=1 THEN 1 ELSE 0 END) AS Female 
+				FROM `personnel` inner join offices on personnel.office_id=offices.id 
+				 and offices.subdivision_id='".$subdivision_id."'  
+				where offices.district_id='".$this->district."'";
+				$office = DB::select($sql);
+				$arr['distinct_office']=$office[0]->office_count;
+				$arr['totalfemale']=$office[0]->Female;
+				$arr['totalMale']=$office[0]->Male ;
+				$arr['totalemployee']=$office[0]->totalEmployee;
+				$arr['success']='Check Office Details';
+				$arr['status']=201;
 					
 				}elseif($sdo=='SDO' && $deo=='OC0'){ //SDO PPCELL OC
 
 					$subdivision_id=substr($this->userID,7,4);
-					$distinct="SELECT count(DISTINCT(office_id)) as office_count FROM `personnel` where `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
-					$distinct_office = DB::select($distinct);
-					$arr['distinct_office']=$distinct_office[0]->office_count;	
+			
 					$sql="SELECT count(*)id  FROM `offices` WHERE `subdivision_id` = '".$subdivision_id."' and district_id='".$this->district."'";
 					$office = DB::select($sql);
 					$arr['totalOffice']=$office[0]->id;
-					$sql="SELECT  count(o.id) as totalEmployee,
-						  sum(CASE WHEN p.gender = 'M' THEN 1 ELSE 0 END) AS Male, 
-						  sum(CASE WHEN p.gender = 'F' THEN 1 ELSE 0 END) AS Female 
-						  FROM personnel p
-						  inner join offices o on (o.id=p.office_id ) 
-						   and o.subdivision_id='". $subdivision_id."'
-						  where o.district_id='".$this->district."'";
+					$sql="SELECT count(DISTINCT(personnel.office_id)) as office_count,
+				count(personnel.id) as totalEmployee,
+				sum(CASE WHEN personnel.gender = 'M' and offices.agree=1  THEN 1 ELSE 0 END) AS Male, 
+				sum(CASE WHEN personnel.gender = 'F' and offices.agree=1  THEN 1 ELSE 0 END) AS Female 
+				FROM `personnel` inner join offices on personnel.office_id=offices.id 
+				and offices.subdivision_id='".$subdivision_id."'  
+				where offices.district_id='".$this->district."'";
 						$office = DB::select($sql);
+						$arr['distinct_office']=$office[0]->office_count;	
 						$arr['totalfemale']=$office[0]->Female;
 						$arr['totalMale']=$office[0]->Male ;
 						$arr['totalemployee']=$office[0]->totalEmployee;
 						$arr['success']='Check Office Details';
 						$arr['status']=201;
                	}else{
-				$distinct="SELECT count(DISTINCT(office_id)) as office_count FROM `personnel` where district_id='".$this->district."'";
-				$distinct_office = DB::select($distinct);
-				$arr['distinct_office']=$distinct_office[0]->office_count;	  
+				  
 				$sql="SELECT count(*)id from offices where district_id='".$this->district."'";
 				$office = DB::select($sql);
 			if(!empty($office[0]->id)){
 				$arr['totalOffice']=$office[0]->id;
-					$sql='SELECT  count(o.id) as totalEmployee,
-						  sum(CASE WHEN p.gender = "M" THEN 1 ELSE 0 END) AS Male, 
-						  sum(CASE WHEN p.gender = "F" THEN 1 ELSE 0 END) AS Female 
-						  FROM personnel p
-						  inner join offices o on (o.id=p.office_id )
-						  where o.district_id="'.$this->district.'"';	
+				$sql='SELECT count(DISTINCT(personnel.office_id)) as office_count,
+				count(personnel.id) as totalEmployee,
+				sum(CASE WHEN personnel.gender = "M" and offices.agree=1 THEN 1 ELSE 0 END) AS Male, 
+				sum(CASE WHEN personnel.gender = "F" and offices.agree=1 THEN 1 ELSE 0 END) AS Female 
+				FROM `personnel` inner join offices on personnel.office_id=offices.id   where offices.district_id="'.$this->district.'"';	
 				$office = DB::select($sql);
+				$arr['distinct_office']=$office[0]->office_count;
 				$arr['totalfemale']=$office[0]->Female;
 				$arr['totalMale']=$office[0]->Male ;
 				$arr['totalemployee']=$office[0]->totalEmployee;

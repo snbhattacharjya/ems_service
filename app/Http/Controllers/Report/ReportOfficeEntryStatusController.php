@@ -24,7 +24,7 @@ class ReportOfficeEntryStatusController extends Controller
             join block_munis on offices.block_muni_id=block_munis.id
             join police_stations on offices.police_station_id= police_stations.id
             
-            where offices.district_id='".$this->district."' and offices.id not in(select office_id from personnel)";
+            where offices.district_id='".$this->district."' and offices.agree=1  and offices.id not in(select office_id from personnel)";
         
             $status=DB::select($sql);
           return response()->json($status,201);
@@ -39,7 +39,7 @@ class ReportOfficeEntryStatusController extends Controller
          join block_munis on offices.block_muni_id=block_munis.id
          join police_stations on offices.police_station_id= police_stations.id
          
-         where offices.district_id='".$this->district."' and offices.subdivision_id='".$subdivision_id."' and offices.id not in(select office_id from personnel)";
+         where offices.district_id='".$this->district."' and offices.agree=1 and offices.subdivision_id='".$subdivision_id."' and offices.id not in(select office_id from personnel)";
 
 
           $status=DB::select($sql);
@@ -55,7 +55,7 @@ class ReportOfficeEntryStatusController extends Controller
             join block_munis on offices.block_muni_id=block_munis.id
             join police_stations on offices.police_station_id= police_stations.id
             
-            where offices.district_id='".$this->district."' and offices.block_muni_id='".$block_muni_id."' and offices.id not in(select office_id from personnel)";
+            where offices.district_id='".$this->district."' and offices.agree=1  and offices.block_muni_id='".$block_muni_id."' and offices.id not in(select office_id from personnel)";
             
             $status=DB::select($sql);
             return response()->json($status,201);
@@ -80,7 +80,7 @@ class ReportOfficeEntryStatusController extends Controller
     join subdivisions on offices.subdivision_id=subdivisions.id
     join block_munis on offices.block_muni_id=block_munis.id
     join police_stations on offices.police_station_id= police_stations.id
-    where offices.district_id='".$this->district."'";
+    where offices.district_id='".$this->district."' and offices.agree=1 ";
        $offices=DB::select( $sql);
        for($i=0;$i<count($offices);$i++){
         $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district'  and personnel.office_id=".$offices[$i]->officeId);
@@ -118,7 +118,7 @@ class ReportOfficeEntryStatusController extends Controller
     join subdivisions on offices.subdivision_id=subdivisions.id
     join block_munis on offices.block_muni_id=block_munis.id
     join police_stations on offices.police_station_id= police_stations.id
-    where offices.district_id='".$this->district."' and offices.subdivision_id='".$subdivision_id."'";
+    where offices.district_id='".$this->district."' and offices.agree=1 and offices.subdivision_id='".$subdivision_id."'";
        $offices=DB::select( $sql);
        for($i=0;$i<count($offices);$i++){
         $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district' and offices.subdivision_id='$subdivision_id' and personnel.office_id=".$offices[$i]->officeId);
@@ -156,7 +156,7 @@ class ReportOfficeEntryStatusController extends Controller
             join subdivisions on offices.subdivision_id=subdivisions.id
             join block_munis on offices.block_muni_id=block_munis.id
             join police_stations on offices.police_station_id= police_stations.id
-            where offices.district_id='".$this->district."' and offices.block_muni_id='".$block_muni_id."'";
+            where offices.district_id='".$this->district."' and offices.agree=1 and offices.block_muni_id='".$block_muni_id."'";
                $offices=DB::select( $sql);
                for($i=0;$i<count($offices);$i++){
                 $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district' and offices.block_muni_id='$block_muni_id' and personnel.office_id=".$offices[$i]->officeId);
@@ -196,7 +196,7 @@ class ReportOfficeEntryStatusController extends Controller
                 join subdivisions on offices.subdivision_id=subdivisions.id
                 join block_munis on offices.block_muni_id=block_munis.id
                 join police_stations on offices.police_station_id= police_stations.id
-                where offices.district_id='".$this->district."'";
+                where offices.district_id='".$this->district."' and offices.agree=1";
                    $offices=DB::select( $sql);
                    for($i=0;$i<count($offices);$i++){
                     $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district'  and personnel.office_id=".$offices[$i]->officeId);
@@ -234,7 +234,7 @@ class ReportOfficeEntryStatusController extends Controller
                 join subdivisions on offices.subdivision_id=subdivisions.id
                 join block_munis on offices.block_muni_id=block_munis.id
                 join police_stations on offices.police_station_id= police_stations.id
-                where offices.district_id='".$this->district."' and offices.subdivision_id='".$subdivision_id."'";
+                where offices.district_id='".$this->district."' and offices.agree=1 and offices.subdivision_id='".$subdivision_id."'";
                    $offices=DB::select( $sql);
                    for($i=0;$i<count($offices);$i++){
                     $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district' and offices.subdivision_id='$subdivision_id' and personnel.office_id=".$offices[$i]->officeId);
@@ -273,7 +273,7 @@ class ReportOfficeEntryStatusController extends Controller
             join subdivisions on offices.subdivision_id=subdivisions.id
             join block_munis on offices.block_muni_id=block_munis.id
             join police_stations on offices.police_station_id= police_stations.id
-            where offices.district_id='".$this->district."' and offices.subdivision_id='".$subdivision_id."'";
+            where offices.district_id='".$this->district."' and offices.agree=1 and offices.subdivision_id='".$subdivision_id."'";
                $offices=DB::select( $sql);
                for($i=0;$i<count($offices);$i++){
                 $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district' and offices.subdivision_id='$subdivision_id' and personnel.office_id=".$offices[$i]->officeId);
@@ -315,7 +315,7 @@ class ReportOfficeEntryStatusController extends Controller
     join subdivisions on offices.subdivision_id=subdivisions.id
     join block_munis on offices.block_muni_id=block_munis.id
     join police_stations on offices.police_station_id= police_stations.id
-    where offices.district_id='".$this->district."'";
+    where offices.district_id='".$this->district."' and offices.agree=1";
     $offices=DB::select($sql);
     for($i=0;$i<count($offices);$i++){
      $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district'  and personnel.office_id=".$offices[$i]->officeId);
@@ -354,7 +354,7 @@ class ReportOfficeEntryStatusController extends Controller
     join subdivisions on offices.subdivision_id=subdivisions.id
     join block_munis on offices.block_muni_id=block_munis.id
     join police_stations on offices.police_station_id= police_stations.id
-    where offices.district_id='".$this->district."' and  offices.subdivision_id='".$subdivision_id."'";
+    where offices.district_id='".$this->district."' and offices.agree=1 and  offices.subdivision_id='".$subdivision_id."'";
     $offices=DB::select($sql);
     for($i=0;$i<count($offices);$i++){
      $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district' and offices.subdivision_id='$subdivision_id' and personnel.office_id=".$offices[$i]->officeId);
@@ -393,7 +393,7 @@ class ReportOfficeEntryStatusController extends Controller
     join subdivisions on offices.subdivision_id=subdivisions.id
     join block_munis on offices.block_muni_id=block_munis.id
     join police_stations on offices.police_station_id= police_stations.id
-    where offices.district_id='".$this->district."' and  offices.block_muni_id='".$block_muni_id."'";
+    where offices.district_id='".$this->district."' and offices.agree=1 and  offices.block_muni_id='".$block_muni_id."'";
     $offices=DB::select($sql);
     for($i=0;$i<count($offices);$i++){
      $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district' and offices.block_muni_id='$block_muni_id' and personnel.office_id=".$offices[$i]->officeId);
@@ -437,5 +437,13 @@ class ReportOfficeEntryStatusController extends Controller
      $arr['totalpartialoffice']=count($arr['officelist']);
         return response()->json($arr,201);   
         }
+  
+
+
+
+
+
+
+
     
 }
