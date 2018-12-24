@@ -89,6 +89,9 @@ Route::get('/subdivisionwiseassemblyreport', 'SudivreportController@subdivisionW
 Route::get('/officepartialentrystatus', 'Report\ReportOfficeEntryStatusController@getOfficePartialEntryStatus');
 Route::get('/officecompletestatus', 'Report\ReportOfficeEntryStatusController@getOfficeEntryComplete');
 Route::get('/officenotstarted', 'Report\ReportOfficeEntryStatusController@officeNotStarted');
+Route::get('/remarkwise_report', 'Report\RemarksWiseController@RemarksWisePersonnelStatus');
+Route::get('/personelProgressstatus', 'Report\PollingPersonelProgressController@districtWisePPstatistic');
+
 //PP Category
 Route::post('/setrule', 'categorization\PoststatController@saveRule');
 Route::post('/officebysubdivision', 'categorization\PoststatController@getOfficeBySubCat');
@@ -111,6 +114,7 @@ Route::get('/issearch/{s}', 'officeDeletionRestoreController@searchOffice');
 Route::get('/isdelete/{id}', 'officeDeletionRestoreController@deleteOffice');
 Route::get('/isrestore/{id}', 'officeDeletionRestoreController@restoreDeletedOffice');
 Route::get('/gettrashedOffice', 'officeDeletionRestoreController@trashedOffice');
+
 
 });
 
