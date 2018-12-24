@@ -6,12 +6,16 @@ use App\PoliceStation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use \Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 class PoliceStationController extends Controller
 {
 	 public function __construct()
-    {	$this->userID=auth('api')->user()->user_id;
+    {	
+        if(Auth::guard('api')->check()){
+        $this->userID=auth('api')->user()->user_id;
         $this->level=auth('api')->user()->level;
         $this->district=auth('api')->user()->area;
+        }
     }
 
     public function getPoliceStations(Request $request)

@@ -9,24 +9,38 @@ use App\officeDeleteRestore;
 use App\userDeleteRestore;
 use \Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 class officeDeletionRestoreController extends Controller
 {
     public function __construct()
     {
+        if(Auth::guard('api')->check()){
         $this->userID=auth('api')->user()->user_id;
         $this->level=auth('api')->user()->level;
 	 	$this->district=auth('api')->user()->area;
-		$area=auth('api')->user()->area;
+        $area=auth('api')->user()->area;
+        }
     }
 
     public function searchOffice(Request $request){
-        if(Office::where('id',$request->s )->Orwhere('name','like','%'.$request->s.'%')->Orwhere('mobile','like','%'.$request->s.'%')->where('district_id',$this->district)->exists() && $this->level===12 ){
-        return Office::where('id',$request->s )->Orwhere('name','like','%'.$request->s.'%')->Orwhere('mobile','like','%'.$request->s.'%')->where('district_id',$this->district)->get();
+        if($this->level===12 ){
+        return Office::where([
+            ['district_id', $this->district],
+            ['id', $request->s]
+        ])
+        ->Orwhere([
+            ['name','like','%'.$request->s.'%'],
+            ['district_id', $this->district],
+        ])
+        ->Orwhere([
+            ['mobile','like','%'.$request->s.'%'],
+            ['district_id', $this->district],
+        ])->get();
         }
 
     }
     public function trashedOffice(){
-        return DB::table('offices_deleted')->get();
+        return DB::table('offices_deleted')->where('district_id',$this->district)->get();
 
     }
 
@@ -61,7 +75,7 @@ class officeDeletionRestoreController extends Controller
     $office->male_staff =   strip_tags($officeDeleted[0]->male_staff,'');
     $office->female_staff =   strip_tags($officeDeleted[0]->female_staff,'');
     $office->created_at = date('Y-m-d H:i:s');
-    $office->agree = 1;
+    $office->agree = $officeDeleted[0]->agree;
     $office->save();
     $office_id= $office->id;
 
@@ -84,8 +98,7 @@ class officeDeletionRestoreController extends Controller
     $userDeleteStore->change_password =$UserDeleted[0]->change_password ;
     $userDeleteStore->save();
     $lastInsertedId=$userDeleteStore->id;
-
-    Office::where('id',$request->id)->delete();
+   Office::where('id',$request->id)->delete();
    User::where('user_id',$request->id)->delete();
     $arr=array('msg'=>'Deleted Completed','id'=>$request->id);
     return response()->json($arr);
@@ -120,7 +133,7 @@ class officeDeletionRestoreController extends Controller
     $office->male_staff =   strip_tags($officeDeleted[0]->male_staff,'');
     $office->female_staff =   strip_tags($officeDeleted[0]->female_staff,'');
     $office->created_at = date('Y-m-d H:i:s');
-    $office->agree = 1;
+    $office->agree = $officeDeleted[0]->agree;
     $office->save();
     $office_id= $office->id;
 

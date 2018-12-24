@@ -4,15 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 class AnalyticsController extends Controller
 {
     //
 
     public function __construct()
     {	
-	   $this->userID=auth('api')->user()->user_id;
-       $this->level=auth('api')->user()->level;
-      $this->district=auth('api')->user()->area;
+        if(Auth::guard('api')->check()){
+        $this->userID=auth('api')->user()->user_id;
+        $this->level=auth('api')->user()->level;
+        $this->district=auth('api')->user()->area;
+        }
     }
 
     public function totalUsers(){

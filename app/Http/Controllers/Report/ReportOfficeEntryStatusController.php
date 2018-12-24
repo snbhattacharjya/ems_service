@@ -5,13 +5,17 @@ namespace App\Http\Controllers\Report;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 class ReportOfficeEntryStatusController extends Controller
 {
     //
     public function __construct()
-    {	$this->userID=auth('api')->user()->user_id;
+    {	
+        if(Auth::guard('api')->check()){
+        $this->userID=auth('api')->user()->user_id;
         $this->level=auth('api')->user()->level;
         $this->district=auth('api')->user()->area;
+        }
     }
     public function getOfficeEntryStatus(){
         if($this->level==3 || $this->level==4 || $this->level==5 || $this->level==12 ||$this->level==8 ){
@@ -24,7 +28,7 @@ class ReportOfficeEntryStatusController extends Controller
             join block_munis on offices.block_muni_id=block_munis.id
             join police_stations on offices.police_station_id= police_stations.id
             
-            where offices.district_id='".$this->district."' and offices.agree=1  and offices.id not in(select office_id from personnel)";
+            where offices.district_id='".$this->district."' and offices.agree=1  and offices.id not in(select distinct office_id from personnel)";
         
             $status=DB::select($sql);
           return response()->json($status,201);
@@ -39,7 +43,7 @@ class ReportOfficeEntryStatusController extends Controller
          join block_munis on offices.block_muni_id=block_munis.id
          join police_stations on offices.police_station_id= police_stations.id
          
-         where offices.district_id='".$this->district."' and offices.agree=1 and offices.subdivision_id='".$subdivision_id."' and offices.id not in(select office_id from personnel)";
+         where offices.district_id='".$this->district."' and offices.agree=1 and offices.subdivision_id='".$subdivision_id."' and offices.id not in(select distinct office_id from personnel)";
 
 
           $status=DB::select($sql);
@@ -55,7 +59,7 @@ class ReportOfficeEntryStatusController extends Controller
             join block_munis on offices.block_muni_id=block_munis.id
             join police_stations on offices.police_station_id= police_stations.id
             
-            where offices.district_id='".$this->district."' and offices.agree=1  and offices.block_muni_id='".$block_muni_id."' and offices.id not in(select office_id from personnel)";
+            where offices.district_id='".$this->district."' and offices.agree=1  and offices.block_muni_id='".$block_muni_id."' and offices.id not in(select distinct office_id from personnel)";
             
             $status=DB::select($sql);
             return response()->json($status,201);
@@ -438,12 +442,19 @@ class ReportOfficeEntryStatusController extends Controller
         return response()->json($arr,201);   
         }
   
-
-
-
-
-
-
-
-    
+    public function officeNotStarted(){
+        if($this->level==3 || $this->level==4 || $this->level==5 || $this->level==12){
+            $sql="select offices.id ,offices.name,offices.mobile,
+            offices.identification_code,offices.address,offices.post_office,
+            offices.pin,offices.subdivision_id as subdivisionId,subdivisions.name as subdivision,
+            offices.block_muni_id as blockmuniId,block_munis.name as block,offices.police_station_id as policcstationId,police_stations.name as policestations from offices 
+            join subdivisions on offices.subdivision_id=subdivisions.id
+            join block_munis on offices.block_muni_id=block_munis.id
+            join police_stations on offices.police_station_id= police_stations.id
+            where offices.district_id='".$this->district."' and offices.agree=0  and offices.id not in(select distinct office_id from personnel)";
+            $status=DB::select($sql);
+          return response()->json($status,201);
+            
+    }
+   }
 }

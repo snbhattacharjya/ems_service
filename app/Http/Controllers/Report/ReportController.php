@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Personnel;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
 class ReportController extends Controller
 {
             
@@ -40,7 +42,10 @@ class ReportController extends Controller
              SUM(CASE WHEN p.gender="F" THEN 1 ELSE 0 END) AS femaleEntry
              from offices f join personnel p on f.id=p.office_id
              where f.id="'.$officeid.'"');
-             return response()->json($arr,201);
+             
+              
+
+              return response()->json($arr,201);
             }else if($reportMode=='pp2'){
               $result=array();
                 $officeid=$request->officeId;

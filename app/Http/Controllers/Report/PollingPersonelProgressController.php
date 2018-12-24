@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Report;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -11,9 +11,11 @@ class PollingPersonelProgressController extends Controller
     //
     public function __construct()
     {	
+        if(Auth::guard('api')->check()){
         $this->userID=auth('api')->user()->user_id;
         $this->level=auth('api')->user()->level;
         $this->district=auth('api')->user()->area;
+        }
     }
 
 
@@ -226,6 +228,56 @@ class PollingPersonelProgressController extends Controller
         }
        }
 
+ public function districtWisePPstatistic(){
+     if($this->level==2){
+   $sql_pp1="SELECT districts.id as districtsId ,districts.name, COUNT(CASE WHEN offices.agree = 0 THEN 1 END) AS PP1_Not_Updated, 
+   COUNT(CASE WHEN offices.agree = 1 THEN 1 else 0 END) PP1_Updated, COUNT(*) AS Total_Offices, 
+   SUM(CASE WHEN offices.agree = 1 THEN offices.male_staff else 0 END) AS Male_PP_Declared, 
+   SUM(CASE WHEN offices.agree = 1 THEN offices.female_staff else 0 END) AS Female_PP_Declared, 
+   SUM(CASE WHEN offices.agree = 1 THEN offices.total_staff else 0  END) AS Total_PP_Declared
+   FROM districts INNER JOIN offices ON districts.id = offices.district_id 
+   GROUP BY districts.name order by districts.id";
+     }else if($this->level===3 || $this->level===4 || $this->level===12 || $this->level===5){
+        $sql_pp1="SELECT districts.id as districtsId ,districts.name, COUNT(CASE WHEN offices.agree = 0 THEN 1 END) AS PP1_Not_Updated, 
+        COUNT(CASE WHEN offices.agree = 1 THEN 1 else 0 END) PP1_Updated, COUNT(*) AS Total_Offices, 
+        SUM(CASE WHEN offices.agree = 1 THEN offices.male_staff else 0 END) AS Male_PP_Declared, 
+        SUM(CASE WHEN offices.agree = 1 THEN offices.female_staff else 0 END) AS Female_PP_Declared, 
+        SUM(CASE WHEN offices.agree = 1 THEN offices.total_staff else 0  END) AS Total_PP_Declared
+        FROM districts INNER JOIN offices ON districts.id = offices.district_id where districts.id='$this->district'";
+     }else{
+   //
+     }
+   $results['pp1']=DB::select($sql_pp1);
+   if($this->level==2){
+   $sql_pp2="SELECT districts.id as districtsId,districts.name, COUNT(CASE WHEN personnel.gender = 'M' THEN 1 END) AS Male_PP_Added, 
+   COUNT(CASE WHEN personnel.gender = 'F' THEN 1 else 0 END) AS Female_PP_Added, 
+   COUNT(*) AS Total_PP_Added
+   FROM (districts INNER JOIN offices ON districts.id = offices.district_id) INNER JOIN 
+   personnel ON offices.id = personnel.office_id GROUP BY districts.name order by districts.id";
+   }else if($this->level===3 || $this->level===4 || $this->level===12 || $this->level===5){
+    $sql_pp2="SELECT districts.id as districtsId,districts.name, COUNT(CASE WHEN personnel.gender = 'M' THEN 1 END) AS Male_PP_Added, 
+    COUNT(CASE WHEN personnel.gender = 'F' THEN 1 else 0 END) AS Female_PP_Added, 
+    COUNT(*) AS Total_PP_Added
+    FROM (districts INNER JOIN offices ON districts.id = offices.district_id) INNER JOIN 
+    personnel ON offices.id = personnel.office_id where districts.id='$this->district'";
+   }else{
+
+   }
+   $results['pp2']=DB::select($sql_pp2);
+
+
+   foreach($result['pp1'] as  $pp1){
+    foreach($result['pp2'] as $pp2){
+    if($pp1->districtsId==$pp2->districtsId){
+       $pp1->Male_PP_Added=$pp2->Male_PP_Added;
+       $pp1->Female_PP_Added=$pp2->Female_PP_Added; 
+       $pp1->Total_PP_Added=$pp2->Total_PP_Added; 
+    }
+
+    }
+ }
+
+   }
 
 
 

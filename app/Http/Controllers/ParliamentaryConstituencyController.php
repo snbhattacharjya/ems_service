@@ -5,12 +5,16 @@ use Illuminate\Support\Facades\DB;
 use App\ParliamentaryConstituency;
 use Illuminate\Http\Request;
 use \Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 class ParliamentaryConstituencyController extends Controller
 {
     public function getPcs()
     {
-
+        if(Auth::guard('api')->check()){
         $area=auth('api')->user()->area;
+        }
+
+
         return $parl = DB::table('parliamentary_constituencies')
             ->groupBy('parliamentary_constituencies.id','parliamentary_constituencies.name')
            ->select('parliamentary_constituencies.id','parliamentary_constituencies.name')

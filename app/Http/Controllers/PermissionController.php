@@ -8,12 +8,17 @@ use App\UserLevel;
 use App\User;
 use App\District;
 use App\Http\Controllers\DashboardController;
+use Illuminate\Support\Facades\Auth;
 class PermissionController extends Controller
 {
     public function getPermission(){
+
+	if(Auth::guard('api')->check()){	
 	$userId=auth('api')->user()->id;
 	$level=auth('api')->user()->level;
 	$area=auth('api')->user()->area;
+	}
+
 	$arr=array();
 	$arr['user']=auth('api')->user();
     $arr['menu'][]=array('parent_menu'=>'Dashboard','group'=>'dashboard','menu_icon_name'=>'dashboard','menu_link'=>'/dashboard','submenu'=>'null');

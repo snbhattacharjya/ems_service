@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Permission;
 use App\Privilege;
 use App\Passwordgeneration;
+use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
 	public function getState(){
@@ -20,7 +21,7 @@ class UserController extends Controller
 		    $request->validate([
             'name' => 'required|string|max:40',
 			'email' => 'required|email',
-			'mobile' => 'required|unique:users,mobile|digits:10',
+			//'aadhaar' => 'required',
 			'level' => 'required',
 			'designation'=>'required'
 			]);
@@ -177,11 +178,6 @@ class UserController extends Controller
 
 		if($execute!='' and $execute==1){
 			//return (print_r($request->all()));exit;
-			$request = array_add($request,'user_id',$msg);
-			$request->validate([
-				'user_id' => 'required|unique:users,user_id',
-				
-			]);
 			$AddUser=new User;
 			$AddUser->name = $request->name;
 			$AddUser->email = $request->email;
@@ -193,7 +189,7 @@ class UserController extends Controller
 			$AddUser->area = $UserArea;
 			$AddUser->is_active = 1;
 			$AddUser->created_at = now()->timestamp;
-			$AddUser->user_id = $request->user_id;
+			$AddUser->user_id = $msg;
 			$pass=$this->random_password();
 	       	$AddUser->password = Hash::make($pass);
 			$AddUser->change_password =0 ;
@@ -252,7 +248,7 @@ class UserController extends Controller
 			$user_type_code=$request->level;
 			$userGenertaionLevelCode=$this->getUserLevelName($user_type_code);
 			$userCreationType=$request->userCreationType;
-			 $user_id=$getStateCode.$userGenertaionLevelCode[0].$UserArea.$userCreationType;
+			 $user_id=$getStateCode.$userGenertaionLevelCode[0].$UserArea.$userCreationType;exit;
 			$AddUser=new User;
 			$AddUser->name = $request->name;
 			$AddUser->email = $request->email;
@@ -489,32 +485,31 @@ class UserController extends Controller
 
   public function createPassword(){
 		
-	// User::where('area','15')->where('level','10')->get()->each(function($user){
-	// 	    $pass=$this->random_password();
-	// 		$user->password = bcrypt($pass);
-	// 		$user->save();
-	// 		DB::table('user_random_password')->insert(
-	// 			['rand_id' =>$user->user_id  , 'rand_password' => $pass,'created_at'=>now()]
+	User::where('area','15')->where('level','10')->get()->each(function($user){
+		    $pass=$this->random_password();
+			$user->password = bcrypt($pass);
+			$user->save();
+			DB::table('user_random_password')->insert(
+				['rand_id' =>$user->user_id  , 'rand_password' => $pass,'created_at'=>now()]
 				
-	// 		);
+			);
 			
           
-	// 	});
+		});
 		
 
-    //     echo 'Finished';
+        echo 'Finished';
 	}
 
  public function editUser(Request $request){
-	$UserId=auth('api')->user()->id;
 	    $request->validate([
 		'name' => 'required|string|max:40',
 		'email' => 'required|email',
-		//'mobile' => 'required|unique:users,mobile'.$UserId.'|digits:10',
+	   // 'mobile' => 'required|number|max:10',
 		//'aadhaar' => 'required',
 		'designation'=>'required'
 		]);
-	
+	 $UserId=auth('api')->user()->id;
 	 User::where('id',$UserId)->update(['name' => $request->name,'email' => $request->email,'mobile' => $request->mobile,'aadhaar' => $request->aadhaar,'designation'=> $request->designation]);
 	 return response()->json('Updated Successfully',201);
       }	

@@ -5,15 +5,17 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\SubdivisionController;
 use App\Http\Controllers\ParliamentaryConstituencyController;
-
+use Illuminate\Support\Facades\Auth;
 class SudivreportController extends Controller
 {
     // Report Subdivision Wise
 	  public function __construct()
     {	
+		if(Auth::guard('api')->check()){
 	    $this->userID=auth('api')->user()->user_id;
        $this->level=auth('api')->user()->level;
-        $this->district=auth('api')->user()->area;
+		$this->district=auth('api')->user()->area;
+		}
     }
 	public function getDistrictName($district){
 			$stateCode=DB::table('districts')->where('id',$district)->pluck('name');

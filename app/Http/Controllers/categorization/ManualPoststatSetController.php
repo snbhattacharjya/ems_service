@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\categorization;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Personnel;
@@ -9,9 +9,12 @@ use Illuminate\Support\Facades\DB;
 class ManualPoststatSetController extends Controller
 {
     public function __construct()
-    {	$this->userID=auth('api')->user()->user_id;
+    {	
+        if(Auth::guard('api')->check()){
+        $this->userID=auth('api')->user()->user_id;
         $this->level=auth('api')->user()->level;
         $this->district=auth('api')->user()->area;
+        }
     }
     public function GetPersonnelByOfficeAndPoststat(Request $request){//acccessable only district level
        $office_id=$request->office_id;

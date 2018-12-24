@@ -9,13 +9,16 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
-
+use Illuminate\Support\Facades\Auth;
 class OfficeController extends Controller
 {
     public function __construct()
-    {	$this->userID=auth('api')->user()->user_id;
+    {	
+        if(Auth::guard('api')->check()){
+        $this->userID=auth('api')->user()->user_id;
         $this->level=auth('api')->user()->level;
         $this->district=auth('api')->user()->area;
+        }
     }
 
 	public function getAllOffices()
