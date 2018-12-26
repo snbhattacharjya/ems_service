@@ -26,10 +26,10 @@ class PollingPersonelProgressController extends Controller
         block_munis.id as block_munis_id,
         block_munis.name as block,
         count(offices.id) as totalOffice,
-        sum(case when  offices.agree=1  then 1 ELSE 0 END) as updateOffice,
-        sum(case when  offices.agree=1  then offices.total_staff ELSE 0 END) as totalStuff,
-        sum(case when  offices.agree=1  then offices.male_staff ELSE 0 END) as totalMale,
-        sum(case when  offices.agree=1  then offices.female_staff ELSE 0 END) as female_staff,
+        sum(case when  offices.agree=1  then 1  END) as updateOffice,
+        sum(case when  offices.agree=1  then offices.total_staff  END) as totalStuff,
+        sum(case when  offices.agree=1  then offices.male_staff  END) as totalMale,
+        sum(case when  offices.agree=1  then offices.female_staff  END) as female_staff,
         cast(0 as UNSIGNED) as malepp2,cast(0 as UNSIGNED) as femalepp2,cast(0 as UNSIGNED) as pp2started
         FROM (subdivisions INNER JOIN block_munis ON subdivisions.id=block_munis.subdivision_id)
         INNER JOIN offices ON offices.block_muni_id = block_munis.id where offices.district_id='".$this->district."'
@@ -41,8 +41,8 @@ class PollingPersonelProgressController extends Controller
         block_munis.id as block_munis_id,
         block_munis.name as block,
         count(distinct(personnel.office_id)) as officepp2,
-        sum(case when personnel.gender='M' and offices.agree=1 then 1 else 0 end) as pp2M,
-        sum(case when personnel.gender='F' and offices.agree=1 then 1 else 0 end) as pp2F
+        sum(case when personnel.gender='M' and offices.agree=1 then 1  end) as pp2M,
+        sum(case when personnel.gender='F' and offices.agree=1 then 1  end) as pp2F
         FROM (subdivisions INNER JOIN block_munis ON subdivisions.id=block_munis.subdivision_id)
         INNER JOIN offices ON offices.block_muni_id = block_munis.id
         INNER JOIN  personnel on offices.id=personnel.office_id   where offices.district_id='".$this->district."'
@@ -64,17 +64,17 @@ class PollingPersonelProgressController extends Controller
      }
     // print_r($result['pp1']);
     return response()->json($result['pp1'],201);
-        }elseif($this->level===6){
+    }elseif($this->level===6){
             $subdivision_id=substr($this->userID,7,4);
             $qr="SELECT subdivisions.id as subdivision_id,
             subdivisions.name as subdivision,
             block_munis.id as block_munis_id,
             block_munis.name as block,
             count(offices.id) as totalOffice,
-            sum(case when  offices.agree=1  then 1 ELSE 0 END) as updateOffice,
-            sum(case when  offices.agree=1  then offices.total_staff ELSE 0 END) as totalStuff,
-            sum(case when  offices.agree=1  then offices.male_staff ELSE 0 END) as totalMale,
-            sum(case when  offices.agree=1  then offices.female_staff ELSE 0 END) as female_staff,
+            sum(case when  offices.agree=1  then 1  END) as updateOffice,
+            sum(case when  offices.agree=1  then offices.total_staff  END) as totalStuff,
+            sum(case when  offices.agree=1  then offices.male_staff  END) as totalMale,
+            sum(case when  offices.agree=1  then offices.female_staff  END) as female_staff,
             cast(0 as UNSIGNED) as malepp2,cast(0 as UNSIGNED) as femalepp2,cast(0 as UNSIGNED) as pp2started
             FROM (subdivisions INNER JOIN block_munis ON subdivisions.id=block_munis.subdivision_id)
             INNER JOIN offices ON offices.block_muni_id = block_munis.id where offices.district_id='".$this->district."'
@@ -84,8 +84,8 @@ class PollingPersonelProgressController extends Controller
 
            $pp2="SELECT block_munis.id as block_munis_id,
         count(distinct(personnel.office_id)) as officepp2,
-        sum(case when personnel.gender='M' and offices.agree=1 then 1 else 0 end) as pp2M,
-        sum(case when personnel.gender='F' and offices.agree=1 then 1 else 0 end) as pp2F
+        sum(case when personnel.gender='M' and offices.agree=1 then 1  end) as pp2M,
+        sum(case when personnel.gender='F' and offices.agree=1 then 1  end) as pp2F
         FROM (subdivisions INNER JOIN block_munis ON subdivisions.id=block_munis.subdivision_id)
         INNER JOIN offices ON offices.block_muni_id = block_munis.id
         INNER JOIN  personnel on offices.id=personnel.office_id   where offices.district_id='".$this->district."'
@@ -108,21 +108,20 @@ class PollingPersonelProgressController extends Controller
 
     }
    // print_r($result['pp1']);
-   return response()->json($result['pp1'],201);
-        }elseif($this->level===8){
+    return response()->json($result['pp1'],201);
+    }elseif($this->level===8){
             $usertype=substr($this->userID,4,4);
 
             if($usertype=="DTOC"){
-
                 $qr="SELECT subdivisions.id as subdivision_id,
                 subdivisions.name as subdivision,
                 block_munis.id as block_munis_id,
                 block_munis.name as block,
                 count(offices.id) as totalOffice,
-                sum(case when  offices.agree=1  then 1 ELSE 0 END) as updateOffice,
-                sum(case when  offices.agree=1  then offices.total_staff ELSE 0 END) as totalStuff,
-                sum(case when  offices.agree=1  then offices.male_staff ELSE 0 END) as totalMale,
-                sum(case when  offices.agree=1  then offices.female_staff ELSE 0 END) as female_staff,
+                sum(case when  offices.agree=1  then 1  END) as updateOffice,
+                sum(case when  offices.agree=1  then offices.total_staff  END) as totalStuff,
+                sum(case when  offices.agree=1  then offices.male_staff  END) as totalMale,
+                sum(case when  offices.agree=1  then offices.female_staff  END) as female_staff,
                 cast(0 as UNSIGNED) as malepp2,cast(0 as UNSIGNED) as femalepp2,cast(0 as UNSIGNED) as pp2started
                 FROM (subdivisions INNER JOIN block_munis ON subdivisions.id=block_munis.subdivision_id)
                 INNER JOIN offices ON offices.block_muni_id = block_munis.id where offices.district_id='".$this->district."'
@@ -131,8 +130,8 @@ class PollingPersonelProgressController extends Controller
           $result['pp1']= DB::select($qr);
             $pp2="SELECT block_munis.id as block_munis_id,
         count(distinct(personnel.office_id)) as officepp2,
-        sum(case when personnel.gender='M' and offices.agree=1 then 1 else 0 end) as pp2M,
-        sum(case when personnel.gender='F' and offices.agree=1 then 1 else 0 end) as pp2F
+        sum(case when personnel.gender='M' and offices.agree=1 then 1  end) as pp2M,
+        sum(case when personnel.gender='F' and offices.agree=1 then 1  end) as pp2F
         FROM (subdivisions INNER JOIN block_munis ON subdivisions.id=block_munis.subdivision_id)
         INNER JOIN offices ON offices.block_muni_id = block_munis.id
         INNER JOIN  personnel on offices.id=personnel.office_id where offices.district_id='".$this->district."'
@@ -151,26 +150,29 @@ class PollingPersonelProgressController extends Controller
 
      }
 
-               return response()->json($result['pp1'],201);
- }elseif($this->level===6){
-                    $subdivision_id=substr($this->userID,7,4);
+    }
+
+     return response()->json($result['pp1'],201);
+ }else if($this->level===7){
+     
+                    $block_muni_id=substr($this->userID,7,6);
                     $qr="SELECT subdivisions.id as subdivision_id,
                     subdivisions.name as subdivision,
                     block_munis.id as block_munis_id,
                     block_munis.name as block,
                     count(offices.id) as totalOffice,
-                    sum(case when offices.agree=1  then 1 ELSE 0 END) as updateOffice,
-                   sum(case when  offices.agree=1  then offices.total_staff ELSE 0 END) as totalStuff,
-                   sum(case when  offices.agree=1  then offices.male_staff ELSE 0 END) as totalMale,
-                   sum(case when  offices.agree=1  then offices.female_staff ELSE 0 END) as female_staff,
+                    sum(case when offices.agree=1  then 1  END) as updateOffice,
+                   sum(case when  offices.agree=1  then offices.total_staff  END) as totalStuff,
+                   sum(case when  offices.agree=1  then offices.male_staff  END) as totalMale,
+                   sum(case when  offices.agree=1  then offices.female_staff  END) as female_staff,
                    cast(0 as UNSIGNED) as malepp2,cast(0 as UNSIGNED) as femalepp2,cast(0 as UNSIGNED) as pp2started
                      FROM (subdivisions INNER JOIN block_munis ON subdivisions.id=block_munis.subdivision_id)
                     INNER JOIN offices ON offices.block_muni_id = block_munis.id where offices.district_id='".$this->district."'
-                    and subdivisions.id='".$subdivision_id."'
+                    and block_munis.id='".$block_muni_id."'
                     GROUP BY subdivisions.id, subdivisions.name, block_munis.id, block_munis.name ORDER BY subdivisions.id";
+                
 
-
-                   $result= DB::select($qr);
+                 $result= DB::select($qr);
                    return response()->json($result,201);
 
             }else{
@@ -181,10 +183,10 @@ class PollingPersonelProgressController extends Controller
             block_munis.id as block_munis_id,
             block_munis.name as block,
             count(offices.id) as totalOffice,
-            sum(case when  offices.agree=1  then 1 ELSE 0 END) as updateOffice,
-            sum(case when  offices.agree=1  then offices.total_staff ELSE 0 END) as totalStuff,
-            sum(case when  offices.agree=1  then offices.male_staff ELSE 0 END) as totalMale,
-            sum(case when  offices.agree=1  then offices.female_staff ELSE 0 END) as female_staff,
+            sum(case when  offices.agree=1  then 1  END) as updateOffice,
+            sum(case when  offices.agree=1  then offices.total_staff  END) as totalStuff,
+            sum(case when  offices.agree=1  then offices.male_staff  END) as totalMale,
+            sum(case when  offices.agree=1  then offices.female_staff  END) as female_staff,
             cast(0 as UNSIGNED) as malepp2,cast(0 as UNSIGNED) as femalepp2,cast(0 as UNSIGNED) as pp2started
              FROM (subdivisions INNER JOIN block_munis ON subdivisions.id=block_munis.subdivision_id)
             INNER JOIN offices ON offices.block_muni_id = block_munis.id where offices.district_id='".$this->district."'
@@ -197,8 +199,8 @@ class PollingPersonelProgressController extends Controller
 
            $pp2="SELECT block_munis.id as block_munis_id,
            count(distinct(personnel.office_id)) as officepp2,
-           sum(case when personnel.gender='M' and offices.agree=1 then 1 else 0 end) as pp2M,
-           sum(case when personnel.gender='F' and offices.agree=1 then 1 else 0 end) as pp2F
+           sum(case when personnel.gender='M' and offices.agree=1 then 1  end) as pp2M,
+           sum(case when personnel.gender='F' and offices.agree=1 then 1  end) as pp2F
            FROM (subdivisions INNER JOIN block_munis ON subdivisions.id=block_munis.subdivision_id)
            INNER JOIN offices ON offices.block_muni_id = block_munis.id
            INNER JOIN  personnel on offices.id=personnel.office_id where offices.district_id='".$this->district."'
@@ -222,27 +224,25 @@ class PollingPersonelProgressController extends Controller
 
 
            return response()->json($result['pp1'],201);
-            }
-        }else{
-
+        
         }
        }
 
  public function districtWisePPstatistic(){
      if($this->level==2){
    $sql_pp1="SELECT districts.name, COUNT(CASE WHEN offices.agree = 0 THEN 1 END) AS PP1_Not_Updated,
-   COUNT(CASE WHEN offices.agree = 1 THEN 1 else 0 END) AS PP1_Updated, COUNT(*) AS Total_Offices,
-   SUM(CASE WHEN offices.agree = 1 THEN offices.male_staff else 0 END) AS Male_PP_Declared,
-   SUM(CASE WHEN offices.agree = 1 THEN offices.female_staff else 0 END) AS Female_PP_Declared,
-   SUM(CASE WHEN offices.agree = 1 THEN offices.total_staff else 0  END) AS Total_PP_Declared
+   COUNT(CASE WHEN offices.agree = 1 THEN 1  END) AS PP1_Updated, COUNT(*) AS Total_Offices,
+   SUM(CASE WHEN offices.agree = 1 THEN offices.male_staff END) AS Male_PP_Declared,
+   SUM(CASE WHEN offices.agree = 1 THEN offices.female_staff  END) AS Female_PP_Declared,
+   SUM(CASE WHEN offices.agree = 1 THEN offices.total_staff   END) AS Total_PP_Declared
    FROM districts INNER JOIN offices ON districts.id = offices.district_id
    GROUP BY districts.name order by districts.id";
      }else if($this->level===3 || $this->level===4 || $this->level===12 || $this->level===5){
-        $sql_pp1="SELECT districts.name, COUNT(CASE WHEN offices.agree = 0 THEN 1 END) AS PP1_Not_Updated,
-        COUNT(CASE WHEN offices.agree = 1 THEN 1 else 0 END) AS PP1_Updated, COUNT(*) AS Total_Offices,
-        SUM(CASE WHEN offices.agree = 1 THEN offices.male_staff else 0 END) AS Male_PP_Declared,
-        SUM(CASE WHEN offices.agree = 1 THEN offices.female_staff else 0 END) AS Female_PP_Declared,
-        SUM(CASE WHEN offices.agree = 1 THEN offices.total_staff else 0  END) AS Total_PP_Declared
+    $sql_pp1="SELECT districts.name, COUNT(CASE WHEN offices.agree = 0 THEN 1 END) AS PP1_Not_Updated,
+        COUNT(CASE WHEN offices.agree = 1 THEN 1  END) AS PP1_Updated, COUNT(*) AS Total_Offices,
+        SUM(CASE WHEN offices.agree = 1 THEN offices.male_staff  END) AS Male_PP_Declared,
+        SUM(CASE WHEN offices.agree = 1 THEN offices.female_staff  END) AS Female_PP_Declared,
+        SUM(CASE WHEN offices.agree = 1 THEN offices.total_staff   END) AS Total_PP_Declared
         FROM districts INNER JOIN offices ON districts.id = offices.district_id where districts.id='$this->district'";
      }else{
    //
@@ -250,13 +250,13 @@ class PollingPersonelProgressController extends Controller
    $results['pp1']=DB::select($sql_pp1);
    if($this->level==2){
    $sql_pp2="SELECT districts.name, COUNT(CASE WHEN personnel.gender = 'M' THEN 1 END) AS Male_PP_Added,
-   COUNT(CASE WHEN personnel.gender = 'F' THEN 1 else 0 END) AS Female_PP_Added,
+   COUNT(CASE WHEN personnel.gender = 'F' THEN 1  END) AS Female_PP_Added,
    COUNT(*) AS Total_PP_Added
    FROM (districts INNER JOIN offices ON districts.id = offices.district_id) INNER JOIN
    personnel ON offices.id = personnel.office_id GROUP BY districts.name order by districts.id";
    }else if($this->level===3 || $this->level===4 || $this->level===12 || $this->level===5){
     $sql_pp2="SELECT districts.name, COUNT(CASE WHEN personnel.gender = 'M' THEN 1 END) AS Male_PP_Added,
-    COUNT(CASE WHEN personnel.gender = 'F' THEN 1 else 0 END) AS Female_PP_Added,
+    COUNT(CASE WHEN personnel.gender = 'F' THEN 1  END) AS Female_PP_Added,
     COUNT(*) AS Total_PP_Added
     FROM (districts INNER JOIN offices ON districts.id = offices.district_id) INNER JOIN
     personnel ON offices.id = personnel.office_id where districts.id='$this->district'";
@@ -273,12 +273,7 @@ class PollingPersonelProgressController extends Controller
        $pp1->Female_PP_Added=$pp2->Female_PP_Added;
        $pp1->Total_PP_Added=$pp2->Total_PP_Added;
     }
-    else{
-       $pp1->Male_PP_Added=0;
-       $pp1->Female_PP_Added=0;
-       $pp1->Total_PP_Added=0;
-    }
-
+    
     }
  }
  return response()->json($results['pp1'],201);

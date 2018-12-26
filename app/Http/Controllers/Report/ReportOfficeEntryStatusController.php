@@ -58,7 +58,6 @@ class ReportOfficeEntryStatusController extends Controller
             join subdivisions on offices.subdivision_id=subdivisions.id
             join block_munis on offices.block_muni_id=block_munis.id
             join police_stations on offices.police_station_id= police_stations.id
-            
             where offices.district_id='".$this->district."' and offices.agree=1  and offices.block_muni_id='".$block_muni_id."' and offices.id not in(select distinct office_id from personnel)";
             
             $status=DB::select($sql);
@@ -146,7 +145,7 @@ class ReportOfficeEntryStatusController extends Controller
 
         }elseif($this->level==7){
             $block_muni_id= substr($this->userID,7,10);
-            $sql="select distinct(offices.id) as officeId,offices.name as officeName,
+           $sql="select distinct(offices.id) as officeId,offices.name as officeName,
             offices.mobile,offices.total_staff as totalStuff,
             offices.identification_code as identification_code,
             offices.address as address,offices.post_office as post_office,
@@ -161,7 +160,8 @@ class ReportOfficeEntryStatusController extends Controller
             join block_munis on offices.block_muni_id=block_munis.id
             join police_stations on offices.police_station_id= police_stations.id
             where offices.district_id='".$this->district."' and offices.agree=1 and offices.block_muni_id='".$block_muni_id."'";
-               $offices=DB::select( $sql);
+
+            $offices=DB::select( $sql);
                for($i=0;$i<count($offices);$i++){
                 $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district' and offices.block_muni_id='$block_muni_id' and personnel.office_id=".$offices[$i]->officeId);
                 // print_r($personnel->totpersonnel);
@@ -455,6 +455,35 @@ class ReportOfficeEntryStatusController extends Controller
             $status=DB::select($sql);
           return response()->json($status,201);
             
+    }else if($this->level==6){
+        $subdivision_id= substr($this->userID,7,10);
+         $sql="select offices.id ,offices.name,offices.mobile,
+            offices.identification_code,offices.address,offices.post_office,
+            offices.pin,offices.subdivision_id as subdivisionId,subdivisions.name as subdivision,
+            offices.block_muni_id as blockmuniId,block_munis.name as block,offices.police_station_id as policcstationId,police_stations.name as policestations from offices 
+            join subdivisions on offices.subdivision_id=subdivisions.id
+            join block_munis on offices.block_muni_id=block_munis.id
+            join police_stations on offices.police_station_id= police_stations.id
+            where offices.district_id='".$this->district."' and offices.agree=0  and  offices.subdivision_id='".$subdivision_id."' and offices.id not in(select distinct office_id from personnel)";
+            $status=DB::select($sql);
+          return response()->json($status,201);
+        
+    }else if($this->level==7){
+        $block_muni_id= substr($this->userID,7,10);
+      echo  $sql="select offices.id ,offices.name,offices.mobile,
+        offices.identification_code,offices.address,offices.post_office,
+        offices.pin,offices.subdivision_id as subdivisionId,subdivisions.name as subdivision,
+        offices.block_muni_id as blockmuniId,block_munis.name as block,offices.police_station_id as policcstationId,police_stations.name as policestations from offices 
+        join subdivisions on offices.subdivision_id=subdivisions.id
+        join block_munis on offices.block_muni_id=block_munis.id
+        join police_stations on offices.police_station_id= police_stations.id
+        where offices.district_id='".$this->district."' and offices.agree=0 and offices.block_muni_id='".$block_muni_id."' and offices.id not in(select distinct office_id from personnel)";
+       exit; $status=DB::select($sql);
+      return response()->json($status,201);
+
+    }else{
+
+        return response()->json('Not Allowed',401);  
     }
    }
 }
