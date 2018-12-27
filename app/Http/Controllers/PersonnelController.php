@@ -298,7 +298,7 @@ class PersonnelController extends Controller
     }
     public function getRemarks(){
 
-		$remarks=DB::select('SELECT id,name FROM `remarks` where id not in(12) order by id asc');
+		$remarks=DB::select('SELECT id,name FROM `remarks` where id not in(12,13,14,15,17,18) order by id asc');
 		 return response()->json($remarks,201);
     }
 

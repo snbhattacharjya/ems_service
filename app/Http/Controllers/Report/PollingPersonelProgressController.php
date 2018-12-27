@@ -170,10 +170,30 @@ class PollingPersonelProgressController extends Controller
                     INNER JOIN offices ON offices.block_muni_id = block_munis.id where offices.district_id='".$this->district."'
                     and block_munis.id='".$block_muni_id."'
                     GROUP BY subdivisions.id, subdivisions.name, block_munis.id, block_munis.name ORDER BY subdivisions.id";
-                
+                  $result['pp1']= DB::select($qr);
 
-                 $result= DB::select($qr);
-                   return response()->json($result,201);
+                  $pp2="SELECT block_munis.id as block_munis_id,
+                  count(distinct(personnel.office_id)) as officepp2,
+                  sum(case when personnel.gender='M' and offices.agree=1 then 1  end) as pp2M,
+                  sum(case when personnel.gender='F' and offices.agree=1 then 1  end) as pp2F
+                  FROM (subdivisions INNER JOIN block_munis ON subdivisions.id=block_munis.subdivision_id)
+                  INNER JOIN offices ON offices.block_muni_id = block_munis.id
+                  INNER JOIN  personnel on offices.id=personnel.office_id where offices.district_id='".$this->district."'
+                  and block_munis.id='".$block_muni_id."'  GROUP BY subdivisions.id, subdivisions.name, block_munis.id, block_munis.name ORDER BY subdivisions.id";
+                 $result['pp2']= DB::select($pp2);
+                
+                 foreach($result['pp1'] as  $pp1){
+                    foreach($result['pp2'] as $pp2){
+                    if($pp1->block_munis_id==$pp2->block_munis_id){
+                       $pp1->malepp2=$pp2->pp2M;
+                       $pp1->femalepp2=$pp2->pp2F;
+                       $pp1->pp2started=$pp2->officepp2;
+                    }
+           
+                    }
+           
+                }
+             return response()->json($result['pp1'],201);
 
             }else{
 
