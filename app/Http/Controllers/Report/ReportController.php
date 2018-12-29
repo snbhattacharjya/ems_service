@@ -12,6 +12,14 @@ use Illuminate\Support\Facades\Auth;
 class ReportController extends Controller
 {
             
+              public function __construct()
+              {
+                  if(Auth::guard('api')->check()){
+                  $this->userID=auth('api')->user()->user_id;
+                  $this->level=auth('api')->user()->level;
+                  $this->district=auth('api')->user()->area;
+                  }
+              }
 
             public function report(Request $request){
               $arr=array();
@@ -36,9 +44,8 @@ class ReportController extends Controller
             inner join categories cat on f.category_id=cat.id
             inner join institutes ins on f.institute_id=ins.id
             where f.id='".$officeid."'");
-
-            
-             $arr['actualEMpEntry']= DB::select('select  SUM(CASE WHEN p.gender="M" THEN 1 ELSE 0 END) AS maleEntry,
+ 
+            $arr['actualEMpEntry']= DB::select('select  SUM(CASE WHEN p.gender="M" THEN 1 ELSE 0 END) AS maleEntry,
              SUM(CASE WHEN p.gender="F" THEN 1 ELSE 0 END) AS femaleEntry
              from offices f join personnel p on f.id=p.office_id
              where f.id="'.$officeid.'"');
@@ -111,6 +118,26 @@ class ReportController extends Controller
             }
 
          } 
+
+ 
        
+     public function officeCategopryWisePPadded(){
+       if( $this->level==12){
+  $arr['available']= DB::select("SELECT categories.name, COUNT(CASE WHEN personnel.gender = 'M' THEN 1 END) AS male, 
+        COUNT(CASE WHEN personnel.gender = 'F' THEN 1 END) AS female, 
+        COUNT(personnel.id) AS total
+        FROM (categories INNER JOIN offices ON categories.id = offices.category_id) INNER JOIN 
+        personnel ON offices.id = personnel.office_id WHERE offices.district_id = '".$this->district."' 
+        GROUP BY categories.name");
+
+        return response()->json($arr,201);
+
+       }else{
+
+        return response()->json('Not Allowed',401);
+       }
+
+    } 
+
 
 }

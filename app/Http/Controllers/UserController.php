@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\User;
+use App\userManual;
 use App\Subdivision;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -485,7 +486,7 @@ class UserController extends Controller
 
   public function createPassword(){
 		
-	User::where('area','15')->where('level','10')->get()->each(function($user){
+	userManual::where('area','24')->where('level','10')->get()->each(function($user){
 		    $pass=$this->random_password();
 			$user->password = bcrypt($pass);
 			$user->save();

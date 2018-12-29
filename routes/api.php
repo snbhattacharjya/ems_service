@@ -91,7 +91,7 @@ Route::get('/officecompletestatus', 'Report\ReportOfficeEntryStatusController@ge
 Route::get('/officenotstarted', 'Report\ReportOfficeEntryStatusController@officeNotStarted');
 Route::get('/remarkwise_report', 'Report\RemarksWiseController@RemarksWisePersonnelStatus');
 Route::get('/personelProgressstatus', 'Report\PollingPersonelProgressController@districtWisePPstatistic');
-
+Route::get('/officeCategoryWise_pp2', 'Report\ReportController@officeCategopryWisePPadded');
 //PP Category
 Route::post('/setrule', 'categorization\PoststatController@saveRule');
 Route::post('/officebysubdivision', 'categorization\PoststatController@getOfficeBySubCat');
@@ -118,4 +118,4 @@ Route::get('/gettrashedOffice', 'officeDeletionRestoreController@trashedOffice')
 
 });
 
-
+//Route::get('/createpassword', 'UserController@createPassword');
