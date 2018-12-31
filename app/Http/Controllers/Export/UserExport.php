@@ -8,23 +8,23 @@ use App\Personnel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
-use Auth;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Auth;
 
 class UserExport extends Controller
 {
     private $user;
-
-
-    public function __construct(Request $request)
+  public function __construct(Request $request)
     {
-      $this->user=json_decode($this->checkAuth($request));
- // echo '<pre>';
-     // print_r(json_decode($this->user));exit;
-        // $this->userID=auth('api')->user()->user_id;
-        // $this->level=auth('api')->user()->level;
-        // $this->district=auth('api')->user()->area;
+     // $this->user=json_decode($this->checkAuth($request));
+        // echo '<pre>';
+        if(Auth::guard('api')->check()){
+            $this->userID=auth('api')->user()->user_id;
+            $this->level=auth('api')->user()->level;
+             $this->district=auth('api')->user()->area;
+            $area=auth('api')->user()->area;
+            }
     }
 
    public function checkAuth($request){
@@ -38,7 +38,7 @@ class UserExport extends Controller
         'Accept'        => 'application/json',
     ];
 
-    $response = $client->request('GET', 'http://wbppms.gov.in/ems_service/public/index.php/api/userauth',[
+    $response = $client->request('GET', 'http://service.ems.test/api/userauth',[
         'headers' => $headers
     ]);
 
@@ -52,12 +52,9 @@ class UserExport extends Controller
 
    }
 
-   public function userexport(Request $request)
-    {
+   public function userexport(Request $request){
 
-        if(isset($this->user))
-            {
-                if($request->mode=="office" && ($this->user->level===3 || $this->user->level===4|| $this->user->level===12 )){
+    if($request->mode=="office" && ($this->user->level===3 || $this->user->level===4|| $this->user->level===12 )){
 
 
                     $data=User::select('offices.name','offices.email','rand_id','subdivisions.name as subdiv','block_munis.name as blk','police_stations.name as ps','address','post_office','pin','offices.mobile','rand_password')
@@ -108,29 +105,22 @@ class UserExport extends Controller
                     return  response()->json('Error',401);
                 }
             }
-            else{
-                return response()->json('Unauthorised Access',401);
-            }
 
-    }
 
-   public function export(){
+public function personnelExport(){
+    if($this->level===3 || $this->level===4|| $this->level===12){
+    $data=Personnel::select('id','office_id','name','designation','dob','gender','present_address','permanent_address',
+    'mobile','phone','email','basic_pay','grade_pay','pay_level','emp_group','post_stat','qualification_id','language_id','epic','part_no','sl_no','assembly_temp_id','assembly_perm_id','assembly_off_id','block_muni_temp_id','block_muni_perm_id','block_muni_off_id','subdivision_id','branch_ifsc','bank_account_no','remark_id','remark_reason')
 
-  /*  $data=Personnel::select('office_id','name','designation','dob','gender','present_address','permanent_address',
-    'mobile','phone','email','basic_pay','grade_pay','pay_level','emp_group','post_stat')
-
-    ->where('district_id','13')
+    ->where('district_id',$this->district)
     ->orderBy('office_id')
+    //->limit(5)
     ->get();
 
-    $csvExporter = new \Laracsv\Export();
-    $file='personnel_'.date('Y-m-d-H-i-s').'-'.'13';
-    $csvExporter->build($data, ['office_id'=>'Office Code', 'name'=>'Name','designation'=>'Designation',
-    'dob'=>'DOB','gender'=>'Gender','mobile'=>'Mobile Number','phone'=>'Phone','present_address'=>'Present Address',
-    'permanent_address'=>'Permanent Address','email'=>'Email','basic_pay'=>'Basic Pay','emp_group'=>'Group','post_stat'=>'post Status'])->download( $file.'.csv');
-*/
-   }
 
+ return  response()->json($data,201);
+    }
+}
 
 
 }

@@ -51,6 +51,7 @@ Route::post('/office', 'OfficeController@store');
 Route::post('/office/update', 'OfficeController@update');
 Route::get('/officetype/{officeId}', 'OfficeController@getOfficeType');
 Route::post('/officesearch', 'OfficeController@searchOffice');
+Route::post('/exportoffice', 'Export/UserExport@officeExport');
 //Personnel Routes
 Route::get('/personnelbyoffice/{officeid}', 'PersonnelController@getAllPersonnelbyoffice');
 Route::post('/personnel', 'PersonnelController@store');
