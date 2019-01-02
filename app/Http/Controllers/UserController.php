@@ -504,7 +504,7 @@ class UserController extends Controller
 
  public function editUser(Request $request){
 	    $request->validate([
-		'name' => 'required|string|max:40',
+		'name' => 'required|string|max:50',
 		'email' => 'required|email',
 	   // 'mobile' => 'required|number|max:10',
 		//'aadhaar' => 'required',
