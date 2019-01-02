@@ -34,15 +34,15 @@ class ReportController extends Controller
             f.address,f.post_office,f.pin,f.email,f.mobile,f.phone,f.fax,f.total_staff,
             f.male_staff,f.female_staff,sdv.name as subdivision,blm.name as block,
             ps.name as police,ac.name as acname,pc.name as pcname,ds.name as district,
-            cat.name as category,ins.name as institute from offices f 
-            inner join subdivisions sdv on f.subdivision_id=sdv.id 
-            inner join block_munis blm on f.block_muni_id=blm.id 
-            inner join police_stations ps on f.police_station_id=ps.id
-            inner join assembly_constituencies ac on f.ac_id=ac.id
-            inner join parliamentary_constituencies pc on f.pc_id=pc.id
-            inner join districts ds on f.district_id=ds.id
-            inner join categories cat on f.category_id=cat.id
-            inner join institutes ins on f.institute_id=ins.id
+            cat.name as category,ins.name as institute,f.updated_at as updated_at from offices f 
+            left inner join subdivisions sdv on f.subdivision_id=sdv.id 
+            left inner join block_munis blm on f.block_muni_id=blm.id 
+            left inner join police_stations ps on f.police_station_id=ps.id
+            left inner join assembly_constituencies ac on f.ac_id=ac.id
+            left inner join parliamentary_constituencies pc on f.pc_id=pc.id
+            left inner join districts ds on f.district_id=ds.id
+            left inner join categories cat on f.category_id=cat.id
+            left inner join institutes ins on f.institute_id=ins.id
             where f.id='".$officeid."'");
  
             $arr['actualEMpEntry']= DB::select('select  SUM(CASE WHEN p.gender="M" THEN 1 ELSE 0 END) AS maleEntry,
@@ -59,20 +59,20 @@ class ReportController extends Controller
                  $result['personel']= DB::select('SELECT p.office_id,p.name as empname,p.designation,p.present_address,p.permanent_address,p.dob,p.gender,p.scale,
                 p.basic_pay,p.grade_pay,p.emp_group,p.working_status,p.email,p.phone,p.mobile,p.epic,p.part_no,p.sl_no,p.post_stat,
                 p.branch_ifsc,p.bank_account_no,p.remark_id,p.qualification_id,p.subdivision_id,p.assembly_temp_id,p.assembly_perm_id,p.assembly_off_id
-                from  personnel p join offices o on p.office_id=o.id where p.office_id='.$officeid.'');
+                from  personnel p  left join offices o on p.office_id=o.id where p.office_id='.$officeid.'');
 
                 $result['qualification']= DB::select('SELECT q.name as qualification,q.id as qid,rmrks.name as remark,rmrks.id as rid
-                from  personnel p join offices o on p.office_id=o.id
-                join qualifications q on p.qualification_id=q.id
-                join remarks rmrks on  p.remark_id=rmrks.id
+                from  personnel p left join offices o on p.office_id=o.id
+                left join qualifications q on p.qualification_id=q.id
+                left join remarks rmrks on  p.remark_id=rmrks.id
                 where p.office_id='.$officeid.'');
 
                $result['assembly']= DB::select('SELECT sdv.name as subdivision, sdv.id as sdvid,actemp.name as actemp, actemp.id as actempid,acperm.name as acpermanent,acperm.id as acpermid,acoffice.name as acofficename, acoffice.id as acoffid
-               from  personnel p join offices o on p.office_id=o.id
-               join subdivisions sdv on p.subdivision_id=sdv.id
-               join assembly_constituencies actemp on  p.assembly_temp_id=actemp.id
-               join assembly_constituencies acperm on  p.assembly_perm_id=acperm.id
-               join assembly_constituencies acoffice on  p.assembly_off_id=acoffice.id
+               from  personnel p left join offices o on p.office_id=o.id
+               left join subdivisions sdv on p.subdivision_id=sdv.id
+               left join assembly_constituencies actemp on  p.assembly_temp_id=actemp.id
+               left join assembly_constituencies acperm on  p.assembly_perm_id=acperm.id
+               left join assembly_constituencies acoffice on  p.assembly_off_id=acoffice.id
                where p.office_id='.$officeid.'');
               $arr=array();
               $arr=$result['personel'];
@@ -98,23 +98,7 @@ class ReportController extends Controller
                
               return response()->json($arr,201);
             }else{
-
-              // $officeid=$request->officeId;
-              // $result['personel']= DB::select("SELECT p.office_id,p.name as empname,p.designation,p.present_address,p.permanent_address,p.dob,p.gender,p.scale,
-              // p.basic_pay,p.grade_pay,p.emp_group,p.working_status,p.email,p.phone,p.mobile,p.epic,p.part_no,p.sl_no,p.post_stat,
-              // p.branch_ifsc,p.bank_account_no,q.name as qualification,ln.name as languagename,
-              // sdv.name as subdivision,actemp.name as actemp,acperm.name as acpermanent,acoffice.name as acofficename,
-              // rmrks.name as remark
-              // from  personnel p join offices o on p.office_id=o.id
-              // join qualifications q on p.qualification_id=q.id 
-              //  join languages ln on p.language_id=ln.id
-              //  join subdivisions sdv on p.subdivision_id=sdv.id
-              // join assembly_constituencies actemp on  p.assembly_temp_id=actemp.id
-              // join assembly_constituencies acperm on  p.assembly_perm_id=acperm.id
-              //  join assembly_constituencies acoffice on  p.assembly_off_id=acoffice.id
-              //  join remarks rmrks on  p.remark_id=rmrks.id
-              //   where p.office_id='1301010003'");
-              //    return response()->json($result,201);
+              return response()->json('Not Allowed',401); 
             }
 
          } 
