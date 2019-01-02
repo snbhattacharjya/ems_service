@@ -97,6 +97,7 @@ Route::get('/personelProgressstatus', 'Report\PollingPersonelProgressController@
 Route::get('/officeCategoryWise_pp2', 'Report\ReportController@officeCategopryWisePPadded');
 Route::get('/poststatusWise_pp', 'Report\ReportController@officeCategopryWisePostStatus');
 Route::get('/macrolevel_statistics', 'Report\ReportController@macroLevelStatictis');
+Route::get('/allpoststatus', 'categorization\PoststatController@PollingPost');
 
 //PP Category
 Route::post('/setrule', 'categorization\PoststatController@saveRule');
@@ -113,6 +114,7 @@ Route::get('/revokerule/{RuleID}', 'categorization\PoststatController@revokeRule
 Route::get('/queryrule/{RuleID}', 'categorization\PoststatController@queryRule');
 Route::post('/setpoststat', 'categorization\ManualPoststatSetController@GetPersonnelByOfficeAndPoststat');
 Route::post('/savepoststatmanual', 'categorization\ManualPoststatSetController@postStatManualSave');
+
 //Analytics
 Route::get('/analytics', 'AnalyticsController@totalUsers');
 //Office delete

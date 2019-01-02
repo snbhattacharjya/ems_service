@@ -7,6 +7,7 @@ use App\Http\Controllers\SubdivisionController;
 use App\Http\Controllers\OfficeController;
 use App\Category;
 use App\Pppostrules;
+use App\PollingPost;
 use Illuminate\Support\Facades\DB;
 class PoststatController extends Controller
 {
@@ -18,6 +19,10 @@ class PoststatController extends Controller
 					$this->district=auth('api')->user()->area;
 					}
 				}
+
+		   public function PollingPost(){
+			   return PollingPost::get();
+		   }		
 	       public function getSubdivisionCat(){
 			  $arr=array();
 			  $arr['subdivision']=(new SubdivisionController)->getSubdivisions();
@@ -683,7 +688,7 @@ public function revokeRule(Request $request){
 			$clause.=" AND personnel.post_stat='$post_stat_to'";
 	
 			if($post_stat_from == 'NA')
-	        $post_stat_from='';
+	        $post_stat_from='NA';
 			$clause.=" AND DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(personnel.dob, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(personnel.dob, '00-%m-%d')) < 60";
 
 			$today = date("Y-m-d H:i:s");
