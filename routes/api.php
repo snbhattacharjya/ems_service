@@ -52,6 +52,8 @@ Route::post('/office/update', 'OfficeController@update');
 Route::get('/officetype/{officeId}', 'OfficeController@getOfficeType');
 Route::post('/officesearch', 'OfficeController@searchOffice');
 Route::post('/exportoffice', 'Export/UserExport@officeExport');
+
+
 //Personnel Routes
 Route::get('/personnelbyoffice/{officeid}', 'PersonnelController@getAllPersonnelbyoffice');
 Route::post('/personnel', 'PersonnelController@store');
@@ -93,6 +95,9 @@ Route::get('/officenotstarted', 'Report\ReportOfficeEntryStatusController@office
 Route::get('/remarkwise_report', 'Report\RemarksWiseController@RemarksWisePersonnelStatus');
 Route::get('/personelProgressstatus', 'Report\PollingPersonelProgressController@districtWisePPstatistic');
 Route::get('/officeCategoryWise_pp2', 'Report\ReportController@officeCategopryWisePPadded');
+Route::get('/poststatusWise_pp', 'Report\ReportController@officeCategopryWisePostStatus');
+Route::get('/macrolevel_statistics', 'Report\ReportController@macroLevelStatictis');
+
 //PP Category
 Route::post('/setrule', 'categorization\PoststatController@saveRule');
 Route::post('/officebysubdivision', 'categorization\PoststatController@getOfficeBySubCat');

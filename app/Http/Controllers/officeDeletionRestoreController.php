@@ -7,6 +7,7 @@ use App\User;
 use App\Office;
 use App\officeDeleteRestore;
 use App\userDeleteRestore;
+use App\Personnel;
 use \Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -43,10 +44,17 @@ class officeDeletionRestoreController extends Controller
         return DB::table('offices_deleted')->where('district_id',$this->district)->get();
 
     }
+   public function isPersonnelExists($officeId){
+    if(Personnel::where('office_id',$officeId)->where('district_id',$this->district)->exists()){
+        return true;
+    }else{
+        return false;
+    }
 
+   }
    public function  deleteOffice(Request $request){
 
-
+    if($this->isPersonnelExists($request->id)==false){
     if(Office::where('id',$request->id )->where('district_id',$this->district)->exists() && $this->level===12 ){
 
     $officeDeleted= Office::where('id',$request->id)->get();
@@ -101,9 +109,13 @@ class officeDeletionRestoreController extends Controller
    Office::where('id',$request->id)->delete();
    User::where('user_id',$request->id)->delete();
     $arr=array('msg'=>'Deleted Completed','id'=>$request->id);
-    return response()->json($arr);
-    }
-  }
+    return response()->json($arr,201);
+       }
+    }else{
+        $arr=array('msg'=>'Personnel Exists');
+        return response()->json($arr,401);
+    } 
+ }
 
   public function  restoreDeletedOffice(Request $request){
     if(officeDeleteRestore::where('id',$request->id )->where('district_id',$this->district)->exists() && $this->level===12){

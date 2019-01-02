@@ -121,6 +121,18 @@ public function personnelExport(){
  return  response()->json($data,201);
     }
 }
+public function officeExport(){
+    if($this->level===3 || $this->level===4|| $this->level===12){
+        $data=Office::select('id','name','email','phone','mobile','identification_code',
+        'address','post_office','pin','ac_id','pc_id','subdivision_id','block_muni_id','police_station_id',
+        'category_id','institute_id')
+        ->where('district_id',$this->district)
+        ->orderBy('id')
+        //->limit(5)
+        ->get();
+     return  response()->json($data,201);
+        }
+    }
 
 
 }

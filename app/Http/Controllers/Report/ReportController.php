@@ -138,6 +138,46 @@ class ReportController extends Controller
        }
 
     } 
+  
+    public function officeCategopryWisePostStatus(){
+      if($this->level==12){
+        $arr['available']= DB::select("SELECT categories.name,
+        COUNT(CASE WHEN personnel.post_stat = 'PR' THEN 1 END) AS PR,
+        COUNT(CASE WHEN personnel.post_stat = 'P1' THEN 1 END) AS P1, 
+        COUNT(CASE WHEN personnel.post_stat = 'P2' THEN 1 END) AS P2, 
+        COUNT(CASE WHEN personnel.post_stat = 'P3' THEN 1 END) AS P3
+       FROM (categories INNER JOIN offices ON categories.id = offices.category_id) INNER JOIN 
+       personnel ON offices.id = personnel.office_id WHERE offices.district_id = '".$this->district."' 
+       GROUP BY categories.name");
+
+       return response()->json($arr,201);
+
+      }else{
+
+       return response()->json('Not Allowed',401);
+      }
+
+   } 
+ 
+ public function macroLevelStatictis(){
+   if($this->level==12){
+    $arr['available']=DB::select("SELECT personnel.post_stat, personnel.designation, qualifications.name AS qualification, remarks.name AS remarks, 
+    MIN(personnel.basic_pay) AS MinBasic, MAX(personnel.basic_pay) AS MaxBasic, 
+    MIN(personnel.grade_pay) AS MinGrade, MAX(personnel.grade_pay) AS MaxGrade, 
+    MIN(personnel.pay_level) AS MinPayLevel, MAX(personnel.pay_level) AS MaxPayLevel, 
+    MIN(DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(personnel.dob, '%Y')) AS MinAge, 
+    MAX(DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(personnel.dob, '%Y')) AS MaxAge, 
+    COUNT(personnel.id) AS TotalAvialable 
+    FROM (personnel INNER JOIN qualifications ON qualifications.id = personnel.qualification_id) 
+    INNER JOIN remarks ON remarks.id = personnel.remark_id where personnel.district_id='".$this->district."'
+    GROUP BY personnel.post_stat, personnel.designation, qualifications.name, remarks.name 
+    ORDER BY personnel.post_stat, personnel.designation, qualifications.name, remarks.name");
+    return response()->json($arr,201);
+    }else{
+      return response()->json('Not Allowed',401);
+    }
+
+}
 
 
 }

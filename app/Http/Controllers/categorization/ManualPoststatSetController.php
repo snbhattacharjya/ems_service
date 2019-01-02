@@ -19,7 +19,6 @@ class ManualPoststatSetController extends Controller
     public function GetPersonnelByOfficeAndPoststat(Request $request){//acccessable only district level
        $office_id=$request->office_id;
        $post_stat=$request->post_stat;
-      // echo $this->level;exit;
        if(!empty($office_id) && empty($post_stat) && ($this->level===3 || $this->level===4|| $this->level===12)){
                 return Personnel:: where('district_id','=',$this->district)
                                     ->where('office_id' ,'=',$office_id)

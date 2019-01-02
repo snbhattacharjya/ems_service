@@ -595,7 +595,7 @@ if(!empty($grantRule)){
 		if($post_stat_from != 'NA')
 			$clause.="AND personnel.post_stat='".$post_stat_from."'";
 		else
-			$clause.=" AND personnel.post_stat=''";
+			$clause.=" AND personnel.post_stat IS Null";
 			
 		$clause.=" AND DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(personnel.dob, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(personnel.dob, '00-%m-%d')) < 60";
 
@@ -767,13 +767,14 @@ public function revokeRule(Request $request){
 			if($post_stat_from != 'NA')
 				$clause.="AND personnel.post_stat='".$post_stat_from."'";
 			else
-				$clause.=" AND personnel.post_stat=''";
+				$clause.=" AND personnel.post_stat IS Null";
 				
 			$clause.=" AND DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(personnel.dob, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(personnel.dob, '00-%m-%d')) < 60";
 	
 			$today = date("Y-m-d H:i:s");
 		$grant_rule_query="SELECT COUNT(personnel.id) AS PPCount from personnel INNER JOIN offices ON personnel.office_id=offices.id  WHERE $clause";
 	
+		//echo $grant_rule_query;exit;
 	
 			$affected =collect(DB::select($grant_rule_query))->toArray(); 
 			$arr['query']=array('queryval'=>$affected[0]->PPCount,'querydate'=>$today);

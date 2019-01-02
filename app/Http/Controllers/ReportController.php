@@ -22,16 +22,16 @@ class ReportController extends Controller
 	 if($this->district=='' && ($this->userID="WBCEO" || $this->userID=="WBCEONODAL")){
 	//echo 'For Wb CEO';exit;
 		$sqlAvailable='SELECT d.name,p.district_id,
-                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1  END) AS MO_M, 
-                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" THEN 1  END) AS P1_M, 
-                    SUM(CASE WHEN p.post_stat = "P2" and p.gender="M" THEN 1  END) AS P2_M,
-                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="M" THEN 1  END) AS P3_M, 
-                    SUM(CASE WHEN p.post_stat = "PR" and p.gender="M" THEN 1  END) AS PR_M,
-                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="F"  THEN 1  END) AS MO_F, 
-                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" THEN 1  END) AS P1_F, 
-                    SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" THEN 1  END) AS P2_F,
-                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" THEN 1  END) AS P3_F, 
-                    SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" THEN 1  END) AS PR_F
+                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"   THEN 1 ELSE 0  END) AS MO_M, 
+                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="M"  THEN 1 ELSE 0  END) AS P1_M, 
+                    SUM(CASE WHEN p.post_stat = "P2" and p.gender="M"  THEN 1 ELSE 0  END) AS P2_M,
+                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="M"  THEN 1 ELSE 0  END) AS P3_M, 
+                    SUM(CASE WHEN p.post_stat = "PR" and p.gender="M"  THEN 1 ELSE 0  END) AS PR_M,
+                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="F"   THEN 1 ELSE 0  END) AS MO_F, 
+                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="F"  THEN 1 ELSE 0  END) AS P1_F, 
+                    SUM(CASE WHEN p.post_stat = "P2" and p.gender="F"  THEN 1 ELSE 0  END) AS P2_F,
+                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="F"  THEN 1 ELSE 0  END) AS P3_F, 
+                    SUM(CASE WHEN p.post_stat = "PR" and p.gender="F"  THEN 1 ELSE 0  END) AS PR_F
                     FROM personnel p inner join districts d on d.id=p.district_id 
                     group by p.district_id,d.name order by p.district_id ';
 		
@@ -69,16 +69,16 @@ class ReportController extends Controller
 	 }else if($this->district!='' && ($this->level===3 || $this->level===4|| $this->level===12 || $this->level===6)){// For District User
 		
 		 $sqlAvailable='SELECT d.name,
-                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1  END) AS MO_M, 
-                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" THEN 1  END) AS P1_M, 
-                    SUM(CASE WHEN p.post_stat = "P2" and p.gender="M" THEN 1  END) AS P2_M,
-                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="M" THEN 1  END) AS P3_M, 
-                    SUM(CASE WHEN p.post_stat = "PR" and p.gender="M" THEN 1  END) AS PR_M,
-                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="F"  THEN 1  END) AS MO_F, 
-                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" THEN 1  END) AS P1_F, 
-                    SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" THEN 1  END) AS P2_F,
-                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" THEN 1  END) AS P3_F, 
-                    SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" THEN 1  END) AS PR_F
+                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"   THEN 1 ELSE 0  END) AS MO_M, 
+                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="M"  THEN 1 ELSE 0  END) AS P1_M, 
+                    SUM(CASE WHEN p.post_stat = "P2" and p.gender="M"  THEN 1 ELSE 0  END) AS P2_M,
+                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="M"  THEN 1 ELSE 0  END) AS P3_M, 
+                    SUM(CASE WHEN p.post_stat = "PR" and p.gender="M"  THEN 1 ELSE 0  END) AS PR_M,
+                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="F"   THEN 1 ELSE 0  END) AS MO_F, 
+                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="F"  THEN 1 ELSE 0  END) AS P1_F, 
+                    SUM(CASE WHEN p.post_stat = "P2" and p.gender="F"  THEN 1 ELSE 0  END) AS P2_F,
+                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="F"  THEN 1 ELSE 0  END) AS P3_F, 
+                    SUM(CASE WHEN p.post_stat = "PR" and p.gender="F"  THEN 1 ELSE 0  END) AS PR_F
                     FROM personnel p inner join districts d on  d.id=p.district_id where p.district_id="'.$this->district.'" 
                     group by d.name';
 						
