@@ -85,6 +85,7 @@ class ReportOfficeEntryStatusController extends Controller
     join police_stations on offices.police_station_id= police_stations.id
     where offices.district_id='".$this->district."' and offices.agree=1 ";
        $offices=DB::select( $sql);
+       if(count($offices)>0){
        for($i=0;$i<count($offices);$i++){
         $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district'  and personnel.office_id=".$offices[$i]->officeId);
         // print_r($personnel->totpersonnel);
@@ -103,7 +104,11 @@ class ReportOfficeEntryStatusController extends Controller
                }
         }
          $arr['totalpartialoffice']=count($arr['officelist']);
-        return response()->json($arr,201);
+        }else{
+            $arr['totalpartialoffice']=array(); 
+        }
+      return response()->json($arr,201);
+
             }elseif($this->level==6){
             $subdivision_id= substr($this->userID,7,10);
             
@@ -123,6 +128,7 @@ class ReportOfficeEntryStatusController extends Controller
     join police_stations on offices.police_station_id= police_stations.id
     where offices.district_id='".$this->district."' and offices.agree=1 and offices.subdivision_id='".$subdivision_id."'";
        $offices=DB::select( $sql);
+       if(count($offices)>0){
        for($i=0;$i<count($offices);$i++){
         $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district' and offices.subdivision_id='$subdivision_id' and personnel.office_id=".$offices[$i]->officeId);
         // print_r($personnel->totpersonnel);
@@ -141,6 +147,9 @@ class ReportOfficeEntryStatusController extends Controller
                }
         }
          $arr['totalpartialoffice']=count($arr['officelist']);
+       }else{
+        $arr['totalpartialoffice']=array();
+       }
         return response()->json($arr,201);
 
         }elseif($this->level==7){
@@ -162,6 +171,7 @@ class ReportOfficeEntryStatusController extends Controller
             where offices.district_id='".$this->district."' and offices.agree=1 and offices.block_muni_id='".$block_muni_id."'";
 
             $offices=DB::select( $sql);
+            if(count($offices)>0){
                for($i=0;$i<count($offices);$i++){
                 $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district' and offices.block_muni_id='$block_muni_id' and personnel.office_id=".$offices[$i]->officeId);
                 // print_r($personnel->totpersonnel);
@@ -180,6 +190,9 @@ class ReportOfficeEntryStatusController extends Controller
                        }
                 }
                  $arr['totalpartialoffice']=count($arr['officelist']);
+              }else{
+                $arr['totalpartialoffice']=array();
+              }
                 return response()->json($arr,201);
            }elseif($this->level==8){
 
@@ -202,6 +215,7 @@ class ReportOfficeEntryStatusController extends Controller
                 join police_stations on offices.police_station_id= police_stations.id
                 where offices.district_id='".$this->district."' and offices.agree=1";
                    $offices=DB::select( $sql);
+                   if(count($offices)>0){
                    for($i=0;$i<count($offices);$i++){
                     $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district'  and personnel.office_id=".$offices[$i]->officeId);
                     // print_r($personnel->totpersonnel);
@@ -220,7 +234,12 @@ class ReportOfficeEntryStatusController extends Controller
                            }
                     }
                      $arr['totalpartialoffice']=count($arr['officelist']);
+                   }else{
+                    $arr['totalpartialoffice']=array(); 
+                   }
                     return response()->json($arr,201);
+
+
                         }elseif($this->level==6){
                         $subdivision_id= substr($this->userID,7,10);
                         
@@ -240,6 +259,7 @@ class ReportOfficeEntryStatusController extends Controller
                 join police_stations on offices.police_station_id= police_stations.id
                 where offices.district_id='".$this->district."' and offices.agree=1 and offices.subdivision_id='".$subdivision_id."'";
                    $offices=DB::select( $sql);
+                   if(count($offices)>0){
                    for($i=0;$i<count($offices);$i++){
                     $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district' and offices.subdivision_id='$subdivision_id' and personnel.office_id=".$offices[$i]->officeId);
                     // print_r($personnel->totpersonnel);
@@ -257,7 +277,11 @@ class ReportOfficeEntryStatusController extends Controller
                      'policestations'=>$offices[$i]->policestations);
                            }
                     }
-                     $arr['totalpartialoffice']=count($arr['officelist']);
+                    $arr['totalpartialoffice']=count($arr['officelist']);
+                }else{
+                    $arr['totalpartialoffice']=array();
+                }
+                     
                     return response()->json($arr,201);
 
               }else{
@@ -279,6 +303,7 @@ class ReportOfficeEntryStatusController extends Controller
             join police_stations on offices.police_station_id= police_stations.id
             where offices.district_id='".$this->district."' and offices.agree=1 and offices.subdivision_id='".$subdivision_id."'";
                $offices=DB::select( $sql);
+               if(count($offices)>0){
                for($i=0;$i<count($offices);$i++){
                 $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district' and offices.subdivision_id='$subdivision_id' and personnel.office_id=".$offices[$i]->officeId);
                 // print_r($personnel->totpersonnel);
@@ -297,6 +322,9 @@ class ReportOfficeEntryStatusController extends Controller
                        }
                 }
                  $arr['totalpartialoffice']=count($arr['officelist']);
+            }else{
+                $arr['totalpartialoffice']=array(); 
+            }
                 return response()->json($arr,201);
                 }
            }else{
