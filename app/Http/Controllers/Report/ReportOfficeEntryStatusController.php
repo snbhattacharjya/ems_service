@@ -10,7 +10,7 @@ class ReportOfficeEntryStatusController extends Controller
 {
     //
     public function __construct()
-    {	
+    {
         if(Auth::guard('api')->check()){
         $this->userID=auth('api')->user()->user_id;
         $this->level=auth('api')->user()->level;
@@ -23,13 +23,13 @@ class ReportOfficeEntryStatusController extends Controller
             $sql="select offices.id ,offices.name,offices.mobile,
             offices.identification_code,offices.address,offices.post_office,
             offices.pin,offices.subdivision_id as subdivisionId,subdivisions.name as subdivision,
-            offices.block_muni_id as blockmuniId,block_munis.name as block,offices.police_station_id as policcstationId,police_stations.name as policestations from offices 
+            offices.block_muni_id as blockmuniId,block_munis.name as block,offices.police_station_id as policcstationId,police_stations.name as policestations from offices
             join subdivisions on offices.subdivision_id=subdivisions.id
             join block_munis on offices.block_muni_id=block_munis.id
             join police_stations on offices.police_station_id= police_stations.id
-            
+
             where offices.district_id='".$this->district."' and offices.agree=1  and offices.id not in(select distinct office_id from personnel)";
-        
+
             $status=DB::select($sql);
           return response()->json($status,201);
          }else if($this->level==6){
@@ -38,11 +38,11 @@ class ReportOfficeEntryStatusController extends Controller
          $sql="select offices.id ,offices.name,offices.mobile,
          offices.identification_code,offices.address,offices.post_office,
          offices.pin,offices.subdivision_id as subdivisionId,subdivisions.name as subdivision,
-         offices.block_muni_id as blockmuniId,block_munis.name as block,offices.police_station_id as policcstationId,police_stations.name as policestations from offices 
+         offices.block_muni_id as blockmuniId,block_munis.name as block,offices.police_station_id as policcstationId,police_stations.name as policestations from offices
          join subdivisions on offices.subdivision_id=subdivisions.id
          join block_munis on offices.block_muni_id=block_munis.id
          join police_stations on offices.police_station_id= police_stations.id
-         
+
          where offices.district_id='".$this->district."' and offices.agree=1 and offices.subdivision_id='".$subdivision_id."' and offices.id not in(select distinct office_id from personnel)";
 
 
@@ -54,12 +54,12 @@ class ReportOfficeEntryStatusController extends Controller
             $sql="select offices.id ,offices.name,offices.mobile,
             offices.identification_code,offices.address,offices.post_office,
             offices.pin,offices.subdivision_id as subdivisionId,subdivisions.name as subdivision,
-            offices.block_muni_id as blockmuniId,block_munis.name as block,offices.police_station_id as policcstationId,police_stations.name as policestations from offices 
+            offices.block_muni_id as blockmuniId,block_munis.name as block,offices.police_station_id as policcstationId,police_stations.name as policestations from offices
             join subdivisions on offices.subdivision_id=subdivisions.id
             join block_munis on offices.block_muni_id=block_munis.id
             join police_stations on offices.police_station_id= police_stations.id
             where offices.district_id='".$this->district."' and offices.agree=1  and offices.block_muni_id='".$block_muni_id."' and offices.id not in(select distinct office_id from personnel)";
-            
+
             $status=DB::select($sql);
             return response()->json($status,201);
          }else{
@@ -78,8 +78,8 @@ class ReportOfficeEntryStatusController extends Controller
     offices.block_muni_id as blockmuniId,
     block_munis.name as block,offices.police_station_id as policcstationId,
     police_stations.name as policestations
-    from offices 
-    join personnel on offices.id=personnel.office_id 
+    from offices
+    join personnel on offices.id=personnel.office_id
     join subdivisions on offices.subdivision_id=subdivisions.id
     join block_munis on offices.block_muni_id=block_munis.id
     join police_stations on offices.police_station_id= police_stations.id
@@ -103,15 +103,15 @@ class ReportOfficeEntryStatusController extends Controller
          'policestations'=>$offices[$i]->policestations);
                }
         }
-         $arr['totalpartialoffice']=count($arr['officelist']);
+         $arr['totalpartialoffice']=$arr['officelist'];
         }else{
-            $arr['totalpartialoffice']=array(); 
+            $arr['totalpartialoffice']=array();
         }
       return response()->json($arr,201);
 
             }elseif($this->level==6){
             $subdivision_id= substr($this->userID,7,10);
-            
+
             $sql="select distinct(offices.id) as officeId,offices.name as officeName,
     offices.mobile,offices.total_staff as totalStuff,
     offices.identification_code as identification_code,
@@ -121,8 +121,8 @@ class ReportOfficeEntryStatusController extends Controller
     offices.block_muni_id as blockmuniId,
     block_munis.name as block,offices.police_station_id as policcstationId,
     police_stations.name as policestations
-    from offices 
-    join personnel on offices.id=personnel.office_id 
+    from offices
+    join personnel on offices.id=personnel.office_id
     join subdivisions on offices.subdivision_id=subdivisions.id
     join block_munis on offices.block_muni_id=block_munis.id
     join police_stations on offices.police_station_id= police_stations.id
@@ -146,7 +146,7 @@ class ReportOfficeEntryStatusController extends Controller
          'policestations'=>$offices[$i]->policestations);
                }
         }
-         $arr['totalpartialoffice']=count($arr['officelist']);
+         $arr['totalpartialoffice']=$arr['officelist'];
        }else{
         $arr['totalpartialoffice']=array();
        }
@@ -163,8 +163,8 @@ class ReportOfficeEntryStatusController extends Controller
             offices.block_muni_id as blockmuniId,
             block_munis.name as block,offices.police_station_id as policcstationId,
             police_stations.name as policestations
-            from offices 
-            join personnel on offices.id=personnel.office_id 
+            from offices
+            join personnel on offices.id=personnel.office_id
             join subdivisions on offices.subdivision_id=subdivisions.id
             join block_munis on offices.block_muni_id=block_munis.id
             join police_stations on offices.police_station_id= police_stations.id
@@ -189,7 +189,7 @@ class ReportOfficeEntryStatusController extends Controller
                  'policestations'=>$offices[$i]->policestations);
                        }
                 }
-                 $arr['totalpartialoffice']=count($arr['officelist']);
+                 $arr['totalpartialoffice']=$arr['officelist'];
               }else{
                 $arr['totalpartialoffice']=array();
               }
@@ -197,7 +197,7 @@ class ReportOfficeEntryStatusController extends Controller
            }elseif($this->level==8){
 
               $usertype=substr($this->userID,4,4);
- 
+
               if($usertype=="DTOC"){
                 $sql="select distinct(offices.id) as officeId,offices.name as officeName,
                 offices.mobile,offices.total_staff as totalStuff,
@@ -208,8 +208,8 @@ class ReportOfficeEntryStatusController extends Controller
                 offices.block_muni_id as blockmuniId,
                 block_munis.name as block,offices.police_station_id as policcstationId,
                 police_stations.name as policestations
-                from offices 
-                join personnel on offices.id=personnel.office_id 
+                from offices
+                join personnel on offices.id=personnel.office_id
                 join subdivisions on offices.subdivision_id=subdivisions.id
                 join block_munis on offices.block_muni_id=block_munis.id
                 join police_stations on offices.police_station_id= police_stations.id
@@ -233,16 +233,16 @@ class ReportOfficeEntryStatusController extends Controller
                      'policestations'=>$offices[$i]->policestations);
                            }
                     }
-                     $arr['totalpartialoffice']=count($arr['officelist']);
+                     $arr['totalpartialoffice']=$arr['officelist'];
                    }else{
-                    $arr['totalpartialoffice']=array(); 
+                    $arr['totalpartialoffice']=array();
                    }
                     return response()->json($arr,201);
 
 
                         }elseif($this->level==6){
                         $subdivision_id= substr($this->userID,7,10);
-                        
+
                         $sql="select distinct(offices.id) as officeId,offices.name as officeName,
                 offices.mobile,offices.total_staff as totalStuff,
                 offices.identification_code as identification_code,
@@ -252,8 +252,8 @@ class ReportOfficeEntryStatusController extends Controller
                 offices.block_muni_id as blockmuniId,
                 block_munis.name as block,offices.police_station_id as policcstationId,
                 police_stations.name as policestations
-                from offices 
-                join personnel on offices.id=personnel.office_id 
+                from offices
+                join personnel on offices.id=personnel.office_id
                 join subdivisions on offices.subdivision_id=subdivisions.id
                 join block_munis on offices.block_muni_id=block_munis.id
                 join police_stations on offices.police_station_id= police_stations.id
@@ -277,11 +277,11 @@ class ReportOfficeEntryStatusController extends Controller
                      'policestations'=>$offices[$i]->policestations);
                            }
                     }
-                    $arr['totalpartialoffice']=count($arr['officelist']);
+                    $arr['totalpartialoffice']=$arr['officelist'];
                 }else{
                     $arr['totalpartialoffice']=array();
                 }
-                     
+
                     return response()->json($arr,201);
 
               }else{
@@ -296,8 +296,8 @@ class ReportOfficeEntryStatusController extends Controller
             offices.block_muni_id as blockmuniId,
             block_munis.name as block,offices.police_station_id as policcstationId,
             police_stations.name as policestations
-            from offices 
-            join personnel on offices.id=personnel.office_id 
+            from offices
+            join personnel on offices.id=personnel.office_id
             join subdivisions on offices.subdivision_id=subdivisions.id
             join block_munis on offices.block_muni_id=block_munis.id
             join police_stations on offices.police_station_id= police_stations.id
@@ -321,9 +321,9 @@ class ReportOfficeEntryStatusController extends Controller
                  'policestations'=>$offices[$i]->policestations);
                        }
                 }
-                 $arr['totalpartialoffice']=count($arr['officelist']);
+                 $arr['totalpartialoffice']=$arr['officelist'];
             }else{
-                $arr['totalpartialoffice']=array(); 
+                $arr['totalpartialoffice']=array();
             }
                 return response()->json($arr,201);
                 }
@@ -342,8 +342,8 @@ class ReportOfficeEntryStatusController extends Controller
     offices.block_muni_id as blockmuniId,
     block_munis.name as block,offices.police_station_id as policcstationId,
     police_stations.name as policestations
-    from offices 
-    join personnel on offices.id=personnel.office_id 
+    from offices
+    join personnel on offices.id=personnel.office_id
     join subdivisions on offices.subdivision_id=subdivisions.id
     join block_munis on offices.block_muni_id=block_munis.id
     join police_stations on offices.police_station_id= police_stations.id
@@ -367,13 +367,13 @@ class ReportOfficeEntryStatusController extends Controller
      'policestations'=>$offices[$i]->policestations);
     }
    }
-  
 
- $arr['totalpartialoffice']=count($arr['officelist']);
+
+ $arr['officelist']=$arr['officelist'];
 }else{
-    $arr['totalpartialoffice']=array();  
+    $arr['officelist']=array();
 }
-    return response()->json($arr,201);  
+    return response()->json($arr,201);
 }elseif($this->level==6){
     $subdivision_id= substr($this->userID,7,10);
     $sql="select distinct(offices.id) as officeId,offices.name as officeName,
@@ -385,8 +385,8 @@ class ReportOfficeEntryStatusController extends Controller
     offices.block_muni_id as blockmuniId,
     block_munis.name as block,offices.police_station_id as policcstationId,
     police_stations.name as policestations
-    from offices 
-    join personnel on offices.id=personnel.office_id 
+    from offices
+    join personnel on offices.id=personnel.office_id
     join subdivisions on offices.subdivision_id=subdivisions.id
     join block_munis on offices.block_muni_id=block_munis.id
     join police_stations on offices.police_station_id= police_stations.id
@@ -410,14 +410,14 @@ class ReportOfficeEntryStatusController extends Controller
      'policestations'=>$offices[$i]->policestations);
     }
    }
-    $arr['totalpartialoffice']=count($arr['officelist']);
+    $arr['officelist']=$arr['officelist'];
 }else{
-    $arr['totalpartialoffice']=array();
+    $arr['officelist']=array();
 }
-    return response()->json($arr,201);  
- 
+    return response()->json($arr,201);
+
 }elseif($this->level==7){
-    
+
     $block_muni_id= substr($this->userID,7,10);
     $sql="select distinct(offices.id) as officeId,offices.name as officeName,
     offices.mobile,offices.total_staff as totalStuff,
@@ -428,8 +428,8 @@ class ReportOfficeEntryStatusController extends Controller
     offices.block_muni_id as blockmuniId,
     block_munis.name as block,offices.police_station_id as policcstationId,
     police_stations.name as policestations
-    from offices 
-    join personnel on offices.id=personnel.office_id 
+    from offices
+    join personnel on offices.id=personnel.office_id
     join subdivisions on offices.subdivision_id=subdivisions.id
     join block_munis on offices.block_muni_id=block_munis.id
     join police_stations on offices.police_station_id= police_stations.id
@@ -453,11 +453,11 @@ class ReportOfficeEntryStatusController extends Controller
      'policestations'=>$offices[$i]->policestations);
     }
    }
-    $arr['totalpartialoffice']=count($arr['officelist']);
+    $arr['officelist']=$arr['officelist'];
 }else{
-    $arr['totalpartialoffice']=array();
+    $arr['officelist']=array();
 }
-    return response()->json($arr,201);  
+    return response()->json($arr,201);
 
 }else{
 
@@ -476,44 +476,44 @@ class ReportOfficeEntryStatusController extends Controller
             'mobile'=>$offices[$i]->mobile,'totalStuff'=>$offices[$i]->totalStuff ,'personelenty'=>$personnel[0]->totpersonnel );
         }
        }
-      
-    
+
+
      $arr['totalpartialoffice']=count($arr['officelist']);
-        return response()->json($arr,201);   
+        return response()->json($arr,201);
         }
-  
+
     public function officeNotStarted(){
         if($this->level==3 || $this->level==4 || $this->level==5 || $this->level==12){
             $sql="select offices.id ,offices.name,offices.mobile,
             offices.identification_code,offices.address,offices.post_office,
             offices.pin,offices.subdivision_id as subdivisionId,subdivisions.name as subdivision,
-            offices.block_muni_id as blockmuniId,block_munis.name as block,offices.police_station_id as policcstationId,police_stations.name as policestations from offices 
+            offices.block_muni_id as blockmuniId,block_munis.name as block,offices.police_station_id as policcstationId,police_stations.name as policestations from offices
             join subdivisions on offices.subdivision_id=subdivisions.id
             join block_munis on offices.block_muni_id=block_munis.id
             join police_stations on offices.police_station_id= police_stations.id
             where offices.district_id='".$this->district."' and offices.agree=0  and offices.id not in(select distinct office_id from personnel)";
             $status=DB::select($sql);
           return response()->json($status,201);
-            
+
     }else if($this->level==6){
         $subdivision_id= substr($this->userID,7,10);
          $sql="select offices.id ,offices.name,offices.mobile,
             offices.identification_code,offices.address,offices.post_office,
             offices.pin,offices.subdivision_id as subdivisionId,subdivisions.name as subdivision,
-            offices.block_muni_id as blockmuniId,block_munis.name as block,offices.police_station_id as policcstationId,police_stations.name as policestations from offices 
+            offices.block_muni_id as blockmuniId,block_munis.name as block,offices.police_station_id as policcstationId,police_stations.name as policestations from offices
             join subdivisions on offices.subdivision_id=subdivisions.id
             join block_munis on offices.block_muni_id=block_munis.id
             join police_stations on offices.police_station_id= police_stations.id
             where offices.district_id='".$this->district."' and offices.agree=0  and  offices.subdivision_id='".$subdivision_id."' and offices.id not in(select distinct office_id from personnel)";
             $status=DB::select($sql);
           return response()->json($status,201);
-        
+
     }else if($this->level==7){
         $block_muni_id= substr($this->userID,7,10);
         $sql="select offices.id ,offices.name,offices.mobile,
         offices.identification_code,offices.address,offices.post_office,
         offices.pin,offices.subdivision_id as subdivisionId,subdivisions.name as subdivision,
-        offices.block_muni_id as blockmuniId,block_munis.name as block,offices.police_station_id as policcstationId,police_stations.name as policestations from offices 
+        offices.block_muni_id as blockmuniId,block_munis.name as block,offices.police_station_id as policcstationId,police_stations.name as policestations from offices
         join subdivisions on offices.subdivision_id=subdivisions.id
         join block_munis on offices.block_muni_id=block_munis.id
         join police_stations on offices.police_station_id= police_stations.id
@@ -523,7 +523,7 @@ class ReportOfficeEntryStatusController extends Controller
 
     }else{
 
-        return response()->json('Not Allowed',401);  
+        return response()->json('Not Allowed',401);
     }
    }
 }
