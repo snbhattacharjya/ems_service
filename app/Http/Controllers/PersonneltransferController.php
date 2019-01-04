@@ -1,19 +1,17 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Personnel;
 use App\Personneltransfer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use \Illuminate\Http\Response;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class PersonneltransferController extends Controller
 {
     //
     public function __construct()
-    {  
+    {
         if(Auth::guard('api')->check()){
         $this->userID=auth('api')->user()->user_id;
         $this->level=auth('api')->user()->level;
@@ -24,20 +22,20 @@ class PersonneltransferController extends Controller
 
    public function getTransferList(){
     if($this->level===12 ){
-    return Personnel:: where(['district_id',$this->district],
-                            ['remark_id',17]
-                           )->get();
+    return Personnel:: where('district_id',$this->district)
+                          ->where('remark_id',17)
+                           ->get();
     }else{
-        return response()->json('Unauthenticat',201);    
+        return response()->json('Unauthenticat',201);
     }
     }
     public function doTransfer(Request $request){
         if($this->level===12 ){
-        $personnel =Personnel::where(['district_id',$this->district],
-                                     ['id',$request->personnel_id],
-                                     ['remark_id',17]
-                                     )->get();
-        if(!empty($personnel)){                            
+        $personnel =Personnel::where('district_id',$this->district)
+                                ->where('id',$request->personnel_id)
+                                ->where('remark_id',17)
+                                ->get();
+        if(!empty($personnel)){
         $Personneltransfer=new Personneltransfer;
         $Personneltransfer->id=$personnel[0]->id;
         $Personneltransfer->office_id=$personnel[0]->office_id;
@@ -77,23 +75,23 @@ class PersonneltransferController extends Controller
         $Personneltransfer->created_at =date('Y-m-d H:i:s');
         $Personneltransfer->memo_date =strip_tags($request->memo_date,'');
         $Personneltransfer->memo_no =strip_tags($request->memo_no,'');
-        $Personneltransfer->save();   
+        $Personneltransfer->save();
         if($Personneltransfer->id){
-        Personnel::where('id',$request->personnel_id)->delete(); 
+        Personnel::where('id',$request->personnel_id)->delete();
         $arr=array('msg'=>'Successfully Deleted','id'=>$request->personnel_id);
         return response()->json($arr,201);
         }else{
             $arr=array('msg'=>'Can not Delete,Please Try Again','id'=>$request->personnel_id);
-            return response()->json($arr,201); 
+            return response()->json($arr,201);
         }
        }else{
         $arr=array('msg'=>'Can not find Personnel,Please Try Again','id'=>$request->personnel_id);
-        return response()->json($arr,201); 
+        return response()->json($arr,201);
     }
 
 
     }else{
-        return response()->json('Unauthenticat',201);    
+        return response()->json('Unauthenticat',201);
     }
 }
 
