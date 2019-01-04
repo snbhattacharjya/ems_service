@@ -141,6 +141,10 @@ Route::get('/isdelete/{id}', 'officeDeletionRestoreController@deleteOffice');
 Route::get('/isrestore/{id}', 'officeDeletionRestoreController@restoreDeletedOffice');
 Route::get('/gettrashedOffice', 'officeDeletionRestoreController@trashedOffice');
 Route::get('/pollingPost', 'categorization\PoststatController@PollingPost');
+//Transfer Personnel
+Route::get('/transferlist', 'PersonneltransferController@getTransferList');
+Route::post('/dotransfer', 'PersonneltransferController@doTransfer');
+
 });
 
 //Route::post('/deo', 'UserController@diocreation');
