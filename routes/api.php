@@ -144,7 +144,9 @@ Route::get('/pollingPost', 'categorization\PoststatController@PollingPost');
 //Transfer Personnel
 Route::get('/transferlist', 'PersonneltransferController@getTransferList');
 Route::post('/dotransfer', 'PersonneltransferController@doTransfer');
-
+//Excemption 
+Route::post('/getpersonnnelforexcemption', 'ExcemptionController@SearchForExemption');
+Route::post('/doexception', 'ExcemptionController@doExcemption');
 });
 
 //Route::post('/deo', 'UserController@diocreation');

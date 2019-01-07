@@ -19,21 +19,42 @@ class ExcemptionController extends Controller
     }
     public function SearchForExemption(Request $request){
       if($this->level===12 ){
+              $arr=array();
              if($request->mode=='office'){
-            return PersonnelController::where([
+            $arr['count']= PersonnelController::where([
+                ['district_id', $this->district],
+                ['office_id', $request->s]
+            ])->count();
+
+            $arr['excemptionList']=PersonnelController::select('id','office_id','name','designation')
+            ->where([
                 ['district_id', $this->district],
                 ['office_id', $request->s]
             ])->get();
-        }elseif($request->mode=='office'){
-            return PersonnelController::where([
+            return response()->json($arr,201);
+         }elseif($request->mode=='personnel'){
+            // $arr['count']= PersonnelController::where([
+            //     ['district_id', $this->district],
+            //     ['id', $request->s]
+            // ])->count();
+
+          $arr['excemptionList']=PersonnelController::select('id','office_id','name','designation')
+            ->where([
                 ['id',$request->s],
                 ['district_id', $this->district],
             ])->get();
-        }elseif($request->mode=='office'){
-                return PersonnelController::where([
-                ['remark_id',$request->s],
+            return response()->json($arr,201);
+        }elseif($request->mode=='remarks'){
+            $arr['count']= PersonnelController::where([
                 ['district_id', $this->district],
-            ])->get();
+                ['remark_id', $request->s]
+            ])->count();
+            // $arr['excemptionList']= PersonnelController::select('id','office_id','name','designation')
+            //     ->where([
+            //     ['remark_id',$request->s],
+            //     ['district_id', $this->district],
+            // ])->get();
+            return response()->json($arr,201);
         }else{
           //////
           return response()->json('No Mode Selected',401);
@@ -44,9 +65,54 @@ class ExcemptionController extends Controller
 }
     public function doExcemption(Request $request){
     // 
-    
-
-    }
+    if($this->level==12){
+        if($request->mode=='office'){
+                    if($request->personnl_selected=='ALL' && $request->office_id!='' && $request->reason!=''){
+                        $update = [
+                                ['excempted' => 'Yes'],
+                                ['exmp_category' => '1'],
+                                ['excmp_reason' => $request->reason],
+                                ];   
+                        PersonnelController::where('office_id',$request->office_id)
+                                        ->where('district_id', $this->district)
+                                            ->update($update);
+                        return response()->json('Successfully Updated',201);                    
+                     }else{
+                        $update = [
+                            ['excempted' => 'Yes'],
+                            ['exmp_category' => '1'],
+                            ['excmp_reason' => $request->reason],
+                            ];   
+                    PersonnelController::whereIn('id',$request->personnl_selected)
+                                    ->where('district_id', $this->district)
+                                    ->update($update);   
+                    return response()->json('Successfully Updated',201);   
+                    }             
+   }elseif($request->mode=='personnel' && $request->reason!=''){
+                        $update = [
+                            ['excempted' => 'Yes'],
+                            ['exmp_category' => '2'],
+                            ['excmp_reason' => $request->reason],
+                            ];   
+                    PersonnelController::where('id',$request->personnl_selected)
+                                    ->where('district_id', $this->district)
+                                    ->update($update);   
+                    return response()->json('Successfully Updated',201);
+   }elseif($request->mode=='remarks' && $request->reason!=''){
+                        $update = [
+                            ['excempted' => 'Yes'],
+                            ['exmp_category' => '3'],
+                            ['excmp_reason' => $request->reason],
+                            ];   
+                    PersonnelController::where('remark_id',$request->remark_id)
+                                    ->where('district_id', $this->district)
+                                    ->update($update); 
+                    return response()->json('Successfully Updated',201);                     
+   }else{
+        return response()->json('No Mode Selected',401);
+     }   
+   }
+ }
 
 
 }
