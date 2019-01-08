@@ -600,7 +600,7 @@ if(!empty($grantRule)){
 		if($post_stat_from != 'NA')
 			$clause.="AND personnel.post_stat='".$post_stat_from."'";
 		else
-			$clause.=" AND personnel.post_stat IS Null";
+			$clause.=" AND personnel.post_stat='NA'";
 			
 		$clause.=" AND DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(personnel.dob, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(personnel.dob, '00-%m-%d')) < 60";
 
@@ -772,7 +772,7 @@ public function revokeRule(Request $request){
 			if($post_stat_from != 'NA')
 				$clause.="AND personnel.post_stat='".$post_stat_from."'";
 			else
-				$clause.=" AND personnel.post_stat IS Null";
+				$clause.=" AND personnel.post_stat='NA'";
 				
 			$clause.=" AND DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(personnel.dob, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(personnel.dob, '00-%m-%d')) < 60";
 	
