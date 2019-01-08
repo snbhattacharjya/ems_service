@@ -6,6 +6,7 @@ use \Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Personnel;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -54,49 +55,56 @@ class ReportController extends Controller
 
               return response()->json($arr,201);
             }else if($reportMode=='pp2'){
-              $result=array();
-                $officeid=$request->officeId;
-                 $result['personel']= DB::select('SELECT p.office_id,p.id as id,p.name as empname,p.designation,p.present_address,p.permanent_address,p.dob,p.gender,p.scale,
-                p.basic_pay,p.grade_pay,p.emp_group,p.working_status,p.email,p.phone,p.mobile,p.epic,p.part_no,p.sl_no,p.post_stat,
-                p.branch_ifsc,p.bank_account_no,p.remark_id,p.qualification_id,p.subdivision_id,p.assembly_temp_id,p.assembly_perm_id,p.assembly_off_id
-                from  personnel p  left join offices o on p.office_id=o.id where p.office_id='.$officeid.'');
+                $time = Carbon::now();
+                $morning = Carbon::create($time->year, $time->month, $time->day, 6, 30, 0); //set time to 06:30
+                $evening = Carbon::create($time->year, $time->month, $time->day, 17, 30, 0); //set time to 05:30
+                if($time->between($evening, $morning, true)) {
+                                //current time is between evening and morning
+                                return response()->json('Checklist will be available from 5:30 pm to 6:30 am Everyday',201);
+                } else {
+                    //current time is earlier than evening
+                    $result=array();
+                    $officeid=$request->officeId;
+                    $result['personel']= DB::select('SELECT p.office_id,p.id as id,p.name as empname,p.designation,p.present_address,p.permanent_address,p.dob,p.gender,p.scale,
+                    p.basic_pay,p.grade_pay,p.emp_group,p.working_status,p.email,p.phone,p.mobile,p.epic,p.part_no,p.sl_no,p.post_stat,
+                    p.branch_ifsc,p.bank_account_no,p.remark_id,p.qualification_id,p.subdivision_id,p.assembly_temp_id,p.assembly_perm_id,p.assembly_off_id
+                    from  personnel p  left join offices o on p.office_id=o.id where p.office_id='.$officeid.'');
 
-                $result['qualification']= DB::select('SELECT q.name as qualification,q.id as qid,rmrks.name as remark,rmrks.id as rid
+                    $result['qualification']= DB::select('SELECT q.name as qualification,q.id as qid,rmrks.name as remark,rmrks.id as rid
+                    from  personnel p left join offices o on p.office_id=o.id
+                    left join qualifications q on p.qualification_id=q.id
+                    left join remarks rmrks on  p.remark_id=rmrks.id
+                    where p.office_id='.$officeid.'');
+
+                $result['assembly']= DB::select('SELECT sdv.name as subdivision, sdv.id as sdvid,actemp.name as actemp, actemp.id as actempid,acperm.name as acpermanent,acperm.id as acpermid,acoffice.name as acofficename, acoffice.id as acoffid
                 from  personnel p left join offices o on p.office_id=o.id
-                left join qualifications q on p.qualification_id=q.id
-                left join remarks rmrks on  p.remark_id=rmrks.id
+                left join subdivisions sdv on p.subdivision_id=sdv.id
+                left join assembly_constituencies actemp on  p.assembly_temp_id=actemp.id
+                left join assembly_constituencies acperm on  p.assembly_perm_id=acperm.id
+                left join assembly_constituencies acoffice on  p.assembly_off_id=acoffice.id
                 where p.office_id='.$officeid.'');
+                $arr=array();
+                $arr=$result['personel'];
+                $i=0;
+                foreach($arr as $a){
+                foreach($result['qualification'] as $q){
+                    if($a->remark_id == $q->rid){$a->remark=$q->remark;}
+                    if($a->qualification_id == $q->qid){$a->qualification=$q->qualification;}
 
-               $result['assembly']= DB::select('SELECT sdv.name as subdivision, sdv.id as sdvid,actemp.name as actemp, actemp.id as actempid,acperm.name as acpermanent,acperm.id as acpermid,acoffice.name as acofficename, acoffice.id as acoffid
-               from  personnel p left join offices o on p.office_id=o.id
-               left join subdivisions sdv on p.subdivision_id=sdv.id
-               left join assembly_constituencies actemp on  p.assembly_temp_id=actemp.id
-               left join assembly_constituencies acperm on  p.assembly_perm_id=acperm.id
-               left join assembly_constituencies acoffice on  p.assembly_off_id=acoffice.id
-               where p.office_id='.$officeid.'');
-              $arr=array();
-              $arr=$result['personel'];
-              $i=0;
-             foreach($arr as $a){
-               foreach($result['qualification'] as $q){
-                if($a->remark_id == $q->rid){$a->remark=$q->remark;}
-                if($a->qualification_id == $q->qid){$a->qualification=$q->qualification;}
+                }
+                }
+                foreach($arr as $a){
+                foreach($result['assembly'] as $as){
+                    if($a->subdivision_id == $as->sdvid){$a->subdivision=$as->subdivision;}
+                    if($a->assembly_temp_id == $as->actempid){$a->actemp=$as->actemp;}
+                    if($a->assembly_perm_id == $as->acpermid){$a->acpermanent=$as->acpermanent;}
+                    if($a->assembly_off_id == $as->acoffid){$a->acofficename=$as->acofficename;}
+                }
+                }
+                return response()->json($arr,201);
 
-               }
-            }
-             foreach($arr as $a){
-              foreach($result['assembly'] as $as){
-                if($a->subdivision_id == $as->sdvid){$a->subdivision=$as->subdivision;}
-                if($a->assembly_temp_id == $as->actempid){$a->actemp=$as->actemp;}
-                if($a->assembly_perm_id == $as->acpermid){$a->acpermanent=$as->acpermanent;}
-                if($a->assembly_off_id == $as->acoffid){$a->acofficename=$as->acofficename;}
-              }
-            }
+                }
 
-
-
-
-              return response()->json($arr,201);
             }else{
               return response()->json('Not Allowed',401);
             }
