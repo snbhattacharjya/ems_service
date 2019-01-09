@@ -56,11 +56,11 @@ class ReportController extends Controller
               return response()->json($arr,201);
             }else if($reportMode=='pp2'){
                 $time = Carbon::now();
-                $morning = Carbon::create($time->year, $time->month, $time->day, 6, 30, 0); //set time to 06:30
-                $evening = Carbon::create($time->year, $time->month, $time->day, 17, 30, 0); //set time to 05:30
+                $morning = Carbon::create($time->year, $time->month, $time->day, 10, 00, 0); //set time to 06:30
+                $evening = Carbon::create($time->year, $time->month, $time->day, 17, 00, 0); //set time to 05:30
                 if($time->between($evening, $morning, true)) {
                                 //current time is between evening and morning
-                                return response()->json('Checklist will be available from 5:30 pm to 6:30 am Everyday',201);
+                                return response()->json('Checklist will be available from 5:00 pm to 10:00 am Everyday',201);
                 } else {
                     //current time is earlier than evening
                     $result=array();
