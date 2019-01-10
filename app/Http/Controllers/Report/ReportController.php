@@ -139,7 +139,8 @@ class ReportController extends Controller
         COUNT(CASE WHEN personnel.post_stat = 'PR' and personnel.gender='M' THEN 1 END) AS PR,
         COUNT(CASE WHEN personnel.post_stat = 'P1' and personnel.gender='M' THEN 1 END) AS P1,
         COUNT(CASE WHEN personnel.post_stat = 'P2' and personnel.gender='M' THEN 1 END) AS P2,
-        COUNT(CASE WHEN personnel.post_stat = 'P3' and personnel.gender='M' THEN 1 END) AS P3
+        COUNT(CASE WHEN personnel.post_stat = 'P3' and personnel.gender='M' THEN 1 END) AS P3,
+        COUNT(CASE WHEN personnel.post_stat = 'MO' and personnel.gender='M' THEN 1 END) AS MO
        FROM (categories INNER JOIN offices ON categories.id = offices.category_id) INNER JOIN
        personnel ON offices.id = personnel.office_id WHERE offices.district_id = '".$this->district."'
        GROUP BY categories.name");
@@ -150,7 +151,8 @@ class ReportController extends Controller
       COUNT(CASE WHEN personnel.post_stat = 'PR' and personnel.gender='F' THEN 1 END) AS PR,
       COUNT(CASE WHEN personnel.post_stat = 'P1' and personnel.gender='F' THEN 1 END) AS P1,
       COUNT(CASE WHEN personnel.post_stat = 'P2' and personnel.gender='F' THEN 1 END) AS P2,
-      COUNT(CASE WHEN personnel.post_stat = 'P3' and personnel.gender='F' THEN 1 END) AS P3
+      COUNT(CASE WHEN personnel.post_stat = 'P3' and personnel.gender='F' THEN 1 END) AS P3,
+      COUNT(CASE WHEN personnel.post_stat = 'MO' and personnel.gender='F' THEN 1 END) AS MO
       FROM (categories INNER JOIN offices ON categories.id = offices.category_id) INNER JOIN
       personnel ON offices.id = personnel.office_id WHERE offices.district_id = '".$this->district."'
       GROUP BY categories.name");
