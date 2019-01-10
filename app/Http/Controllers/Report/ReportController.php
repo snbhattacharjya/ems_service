@@ -133,14 +133,28 @@ class ReportController extends Controller
 
     public function officeCategopryWisePostStatus(){
       if($this->level==12){
-        $arr['available']= DB::select("SELECT categories.name,
-        COUNT(CASE WHEN personnel.post_stat = 'PR' THEN 1 END) AS PR,
-        COUNT(CASE WHEN personnel.post_stat = 'P1' THEN 1 END) AS P1,
-        COUNT(CASE WHEN personnel.post_stat = 'P2' THEN 1 END) AS P2,
-        COUNT(CASE WHEN personnel.post_stat = 'P3' THEN 1 END) AS P3
+        $arr['availableMale']= DB::select("SELECT categories.name,
+        COUNT(CASE WHEN personnel.post_stat = 'NA' and personnel.gender='M'  THEN 1 END) AS NA,
+        COUNT(CASE WHEN personnel.post_stat = 'AEO' and personnel.gender='M' THEN 1 END) AS AEO,
+        COUNT(CASE WHEN personnel.post_stat = 'PR' and personnel.gender='M' THEN 1 END) AS PR,
+        COUNT(CASE WHEN personnel.post_stat = 'P1' and personnel.gender='M' THEN 1 END) AS P1,
+        COUNT(CASE WHEN personnel.post_stat = 'P2' and personnel.gender='M' THEN 1 END) AS P2,
+        COUNT(CASE WHEN personnel.post_stat = 'P3' and personnel.gender='M' THEN 1 END) AS P3
        FROM (categories INNER JOIN offices ON categories.id = offices.category_id) INNER JOIN
        personnel ON offices.id = personnel.office_id WHERE offices.district_id = '".$this->district."'
        GROUP BY categories.name");
+
+      $arr['availableFemale']= DB::select("SELECT categories.name,
+      COUNT(CASE WHEN personnel.post_stat = 'NA' and personnel.gender='F'  THEN 1 END) AS NA,
+      COUNT(CASE WHEN personnel.post_stat = 'AEO' and personnel.gender='F' THEN 1 END) AS AEO,
+      COUNT(CASE WHEN personnel.post_stat = 'PR' and personnel.gender='F' THEN 1 END) AS PR,
+      COUNT(CASE WHEN personnel.post_stat = 'P1' and personnel.gender='F' THEN 1 END) AS P1,
+      COUNT(CASE WHEN personnel.post_stat = 'P2' and personnel.gender='F' THEN 1 END) AS P2,
+      COUNT(CASE WHEN personnel.post_stat = 'P3' and personnel.gender='F' THEN 1 END) AS P3
+      FROM (categories INNER JOIN offices ON categories.id = offices.category_id) INNER JOIN
+      personnel ON offices.id = personnel.office_id WHERE offices.district_id = '".$this->district."'
+      GROUP BY categories.name");
+
 
        return response()->json($arr,201);
 

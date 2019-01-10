@@ -22,10 +22,14 @@ class PersonneltransferController extends Controller
 
    public function getTransferList(){
     if($this->level===12 ){
-    return Personnel:: where('district_id',$this->district)
-                          ->where('remark_id',17)
-                           ->get();
-    }else{
+    return Personnel::select('personnel.id','personnel.office_id','personnel.name','personnel.designation',
+                             'personnel.email','personnel.mobile','personnel.bank_account_no','officeBlock.name as block','permanentBlock.name as permblock')
+                      ->join('block_munis as officeBlock', 'personnel.block_muni_off_id', '=', 'officeBlock.id')
+                      ->join('block_munis as permanentBlock', 'personnel.block_muni_perm_id', '=', 'permanentBlock.id')
+                      ->where('district_id',$this->district)
+                      ->where('remark_id',17)
+                      ->get();
+     }else{
         return response()->json('Unauthenticat',201);
     }
     }
