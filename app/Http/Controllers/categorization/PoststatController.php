@@ -359,9 +359,16 @@ class PoststatController extends Controller
       $clause=$clause." AND offices.category_id IN ($category_clause)";
     if($office_clause != 'ALL')
      $clause=$clause." AND offices.id IN ($office_clause)";
-
+	
+	 if($request->post_stat_to=='PR' || $request->post_stat_to=='P1')
+	  $clause=$clause." AND remarks.id NOT IN ('02','03','07','10','22')";
+	 if($request->post_stat_to=='P2')
+	  $clause=$clause." AND remarks.id NOT IN ('07')";    
+     if($request->post_stat_to=='P3')
+	   $clause=$clause." AND remarks.id NOT IN ('23')"; 
+	
 	$sql="SELECT remarks.id AS RemarksCode, remarks.name AS RemarksName, COUNT(*) AS PPCount FROM (personnel INNER JOIN offices ON personnel.office_id=offices.id) INNER JOIN remarks ON personnel.remark_id=remarks.id WHERE $clause GROUP BY remarks.id, remarks.name ORDER BY remarks.id";
-	//dd($sql);
+
 	$arr['remarks']=collect(DB::select($sql))->toArray();
 	return response()->json($arr,200);
 
@@ -599,8 +606,18 @@ if(!empty($grantRule)){
 			$clause.=" AND offices.category_id IN ($govt)";
 		if($officecd != 'ALL')
 			$clause.=" AND offices.id IN ($officecd)";
+
+
+		if($post_stat_to=='PR' || $post_stat_to=='P1')
+			$clause=$clause." AND personnel.remark_id NOT IN ('02','03','07','10','22')";
+		if($post_stat_to=='P2')
+			$clause=$clause." AND personnel.remark_id NOT IN ('07')";    
+		if($post_stat_to=='P3')
+			 $clause=$clause." AND personnel.remark_id NOT IN ('23')"; 	
+
+
 		if($post_stat_from != 'NA')
-			$clause.="AND personnel.post_stat='".$post_stat_from."'";
+			$clause.="AND personnel.post_stat='".$post_stat_from."'";	
 		else
 			$clause.=" AND personnel.post_stat='NA'";
 			
@@ -644,8 +661,8 @@ public function revokeRule(Request $request){
 			$District=$ruleSet[0]['District'];
 			$govt=$ruleSet[0]['OfficeCategory'];
 			$officecd=$ruleSet[0]['Office'];
-			 $post_stat_from=$ruleSet[0]['PostStatFrom'];
-			 $post_stat_to=$ruleSet[0]['PostStatTo'];
+			$post_stat_from=$ruleSet[0]['PostStatFrom'];
+			$post_stat_to=$ruleSet[0]['PostStatTo'];
 
 			$basic_pay=explode("-",$basic_pay);
 			
@@ -684,6 +701,13 @@ public function revokeRule(Request $request){
 				$clause.=" AND offices.category_id IN ($govt)";
 			if($officecd != 'ALL')
 				$clause.=" AND offices.id IN ($officecd)";
+			   
+			if($post_stat_to=='PR' || $post_stat_to=='P1')
+				$clause=$clause." AND personnel.remark_id NOT IN ('02','03','07','10','22')";
+			if($post_stat_to=='P2')
+				$clause=$clause." AND personnel.remark_id NOT IN ('07')";    
+			if($post_stat_to=='P3')
+				 $clause=$clause." AND personnel.remark_id NOT IN ('23')"; 
 			if($post_stat_from != 'NA')
 			$clause.="AND personnel.post_stat='".$post_stat_to."'";
 			else
@@ -771,6 +795,13 @@ public function revokeRule(Request $request){
 				$clause.=" AND offices.category_id IN ($govt)";
 			if($officecd != 'ALL')
 				$clause.=" AND offices.id IN ($officecd)";
+			
+			  if($post_stat_to=='PR' || $post_stat_to=='P1')
+				$clause=$clause." AND personnel.remark_id NOT IN ('02','03','07','10','22')";
+			if($post_stat_to=='P2')
+				$clause=$clause." AND personnel.remark_id NOT IN ('07')";    
+			if($post_stat_to=='P3')
+				 $clause=$clause." AND personnel.remark_id NOT IN ('23')"; 	
 			if($post_stat_from != 'NA')
 				$clause.="AND personnel.post_stat='".$post_stat_from."'";
 			else
