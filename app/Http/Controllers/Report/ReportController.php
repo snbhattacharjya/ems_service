@@ -114,7 +114,7 @@ class ReportController extends Controller
 
 
      public function officeCategopryWisePPadded(){
-       if( $this->level==12){
+       if( $this->level==12 || $this->level==5){
   $arr['available']= DB::select("SELECT categories.name, COUNT(CASE WHEN personnel.gender = 'M' THEN 1 END) AS male,
         COUNT(CASE WHEN personnel.gender = 'F' THEN 1 END) AS female,
         COUNT(personnel.id) AS total
@@ -132,7 +132,7 @@ class ReportController extends Controller
     }
 
     public function officeCategopryWisePostStatus(){
-      if($this->level==12){
+      if($this->level==12 || $this->level===5){
         $arr['availableMale']= DB::select("SELECT categories.name,
         COUNT(CASE WHEN personnel.post_stat = 'NA' and personnel.gender='M'  THEN 1 END) AS NA,
         COUNT(CASE WHEN personnel.post_stat = 'AEO' and personnel.gender='M' THEN 1 END) AS AEO,
@@ -168,7 +168,7 @@ class ReportController extends Controller
    }
 
  public function macroLevelStatictis(){
-   if($this->level==12){
+   if($this->level==12 || $this->level===5){
     $arr['available']=DB::select("SELECT personnel.post_stat, personnel.designation, qualifications.name AS qualification, remarks.name AS remarks,
     MIN(personnel.basic_pay) AS MinBasic, MAX(personnel.basic_pay) AS MaxBasic,
     MIN(personnel.grade_pay) AS MinGrade, MAX(personnel.grade_pay) AS MaxGrade,

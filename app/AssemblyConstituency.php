@@ -11,6 +11,6 @@ class AssemblyConstituency extends Model
 
     public function assemblyParty()
     {
-        return $this->hasOne('App\AssemblyParty','id','assembly_id');
+        return $this->hasOne('AssemblyParty');
     }
 }

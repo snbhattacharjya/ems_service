@@ -70,7 +70,7 @@ class ReportController extends Controller
 			 }
 		   }
 		return response()->json($reportAvailable,200);
-	 }else if($this->district!='' && ($this->level===3 || $this->level===4|| $this->level===12 || $this->level===6)){// For District User
+	 }else if($this->district!='' && ($this->level===3 || $this->level===4|| $this->level===12 || $this->level===6 || $this->level===5)){// For District User
 		
 		 $sqlAvailable='SELECT d.name,
 		            SUM(CASE WHEN p.post_stat = "NA" and p.gender="M"   THEN 1 ELSE 0  END) AS NA_M, 

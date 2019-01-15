@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 class OfficeController extends Controller
 {
     public function __construct()
-    {	
+    {
         if(Auth::guard('api')->check()){
         $this->userID=auth('api')->user()->user_id;
         $this->level=auth('api')->user()->level;
@@ -25,7 +25,7 @@ class OfficeController extends Controller
     {
        // echo $this->level;
      if($this->level===3 || $this->level===12 || $this->level===8 || $this->level===5){ //DIO and DEO
-       
+
              $sdo=substr($this->userID,4,3);
 			 $deo=substr($this->userID,11,3);
 			 if($sdo=='SDO' && $deo=='DEO'){
@@ -40,11 +40,11 @@ class OfficeController extends Controller
 	                 ->get();
 
             }else{
-                return Office::where('district_id',$this->district)->get();   
+                return Office::where('district_id',$this->district)->get();
             }
-       
-       
-    
+
+
+
          }elseif($this->level===6){//SDO
 		 $subdivision_id=substr($this->userID,-4);
 	     return Office::where('district_id',$this->district)
@@ -67,18 +67,18 @@ class OfficeController extends Controller
     {
 	   if($this->level===3 || $this->level===12 || $this->level===8 || $this->level===5){//DIO	and DEO
             if($request->subdivision_id=='admin'){
-              
+
                 return User::where('area' ,'=',$this->district)
                 ->whereIn('level' ,[5,6,7,8])
-                ->get();  
-               
+                ->get();
 
-            }else{ 
+
+            }else{
             $subdivision_id=$request->subdivision_id;
 	        return Office::where('district_id' ,'=',$this->district)
                    ->where('subdivision_id' ,'=', $subdivision_id)
                    ->get();
-                   
+
             }
 
 	   }elseif($this->level===6){//SDO
@@ -210,9 +210,9 @@ class OfficeController extends Controller
         DB::table('user_random_password')->insert(
         ['rand_id' =>$user_id  , 'rand_password' => $pass,'created_at'=>now()]
           );
-        
+
         }
-        return $pass; 
+        return $pass;
       }
 
 
@@ -346,7 +346,7 @@ class OfficeController extends Controller
     }
    }
   public function searchOffice(Request $request){
- 
+
   $identification_code=$request['identification_code'];
   $mobile=$request['mobile'];
   $name=$request['name'];
@@ -386,21 +386,21 @@ class OfficeController extends Controller
  public function ppAgree(Request $request){
    $agree=$request->pp_agree;
    if($agree==1){
-    Office::update('pp_agree',$agree)
-          ->where('id',$this->userID)
-          ->where('district_id',$this->district);
-    return response()->json('Successfully Updated',200);     
+    $office=Office::find($this->userID);
+    $office->pp_agree=1;
+    $office->save();
+    return response()->json('Successfully Updated',200);
      }
   }
- 
+
   public function getppAgree(Request $request){
-    
+
     return Office::select('pp_agree')
            ->where('id',$this->userID)
-           ->where('district_id',$this->district);
-         
+           ->where('district_id',$this->district)->get();
+
    }
-  
- 
+
+
 
 }

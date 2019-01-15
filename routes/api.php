@@ -53,7 +53,7 @@ Route::post('/office/update', 'OfficeController@update');
 Route::get('/officetype/{officeId}', 'OfficeController@getOfficeType');
 Route::post('/officesearch', 'OfficeController@searchOffice');
 Route::post('/ppagree', 'OfficeController@ppAgree');
-Route::post('/getppagree', 'OfficeController@getppAgree');
+Route::get('/getppagree', 'OfficeController@getppAgree');
 //Personnel Routes
 
 Route::get('/personnelbyoffice/{officeid}', 'PersonnelController@getAllPersonnelbyoffice');
@@ -150,9 +150,9 @@ Route::post('/dotransfer', 'PersonneltransferController@doTransfer');
 Route::post('/getpersonnnelforexcemption', 'ExcemptionController@SearchForExemption');
 Route::post('/doexception', 'ExcemptionController@doExcemption');
 //Data Sharing
-//Route::get('/datasharing', 'DatasharingController@getAvailability');
-});
 
+});
+Route::get('/datasharing', 'DatasharingController@getAvailability');
 //Route::post('/deo', 'UserController@diocreation');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
  // Route::get('/createpassword', 'UserController@createPassword');

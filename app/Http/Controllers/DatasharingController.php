@@ -27,8 +27,9 @@ class DatasharingController extends Controller
         $requirement=$request->requirement;
 
     }
+
     public function getAvailability(){
-       $acList= AssemblyConstituency::with('assemblyParty')->get();
+       $acList= AssemblyConstituency::where('district_id',13)->get();
        return response()->json($acList,200);
     }
 
