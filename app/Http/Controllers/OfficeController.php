@@ -383,6 +383,24 @@ class OfficeController extends Controller
            }
      }
      }
-
+ public function ppAgree(Request $request){
+   $agree=$request->pp_agree;
+   if($agree==1){
+    Office::update('pp_agree',$agree)
+          ->where('id',$this->userID)
+          ->where('district_id',$this->district);
+    return response()->json('Successfully Updated',200);     
+     }
+  }
+ 
+  public function getppAgree(Request $request){
+    
+    return Office::select('pp_agree')
+           ->where('id',$this->userID)
+           ->where('district_id',$this->district);
+         
+   }
+  
+ 
 
 }
