@@ -103,6 +103,7 @@ Route::get('/personelProgressReport', 'Report\PollingPersonelProgressController@
 Route::get('/subdivisionwiseassemblyreport', 'SudivreportController@subdivisionWiseAssemblyReport');
 Route::get('/officepartialentrystatus', 'Report\ReportOfficeEntryStatusController@getOfficePartialEntryStatus');
 Route::get('/officecompletestatus', 'Report\ReportOfficeEntryStatusController@getOfficeEntryComplete');
+Route::get('/groupwisepp', 'Report\ReportController@groupWisePP');
 //29122018
 Route::get('/personnelExport', 'Export\UserExport@personnelExport');
 Route::get('/officeCategoryWise_pp2', 'Report\ReportController@officeCategopryWisePPadded');
@@ -152,7 +153,7 @@ Route::post('/doexception', 'ExcemptionController@doExcemption');
 //Data Sharing
 Route::post('/getsharerequiremnet', 'DatasharingController@queryForDataShare');
 Route::post('/instructforshare', 'DatasharingController@instructForDataShare');
-Route::post('/instructlist', 'DatasharingController@getInstructionForDataShare');
+Route::get('/instructlist', 'DatasharingController@getInstructionForDataShare');
 });
 
 //Route::post('/deo', 'UserController@diocreation');
