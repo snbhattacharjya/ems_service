@@ -150,9 +150,11 @@ Route::post('/dotransfer', 'PersonneltransferController@doTransfer');
 Route::post('/getpersonnnelforexcemption', 'ExcemptionController@SearchForExemption');
 Route::post('/doexception', 'ExcemptionController@doExcemption');
 //Data Sharing
-
+Route::post('/getsharerequiremnet', 'DatasharingController@queryForDataShare');
+Route::post('/instructforshare', 'DatasharingController@instructForDataShare');
+Route::post('/instructlist', 'DatasharingController@getInstructionForDataShare');
 });
-Route::get('/datasharing', 'DatasharingController@getAvailability');
+
 //Route::post('/deo', 'UserController@diocreation');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
  // Route::get('/createpassword', 'UserController@createPassword');
@@ -160,7 +162,7 @@ Route::get('/datasharing', 'DatasharingController@getAvailability');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
 //Route::get('/generateletter', 'GenerateLetterController@generateLetter');
 //Route::get('/allassemblies', 'AssemblyConstituencyController@getAssembliesAll');
- Route::get('/export/{mode}/{token}', 'Export\UserExport@userexport');
- Route::get('/checkuser/{mode}/{token}', 'Export\UserExport@checkAuth');
- Route::get('/exportpersonnel', 'Export\UserExport@export');
- Route::get('/permission', 'UserController@getDefaultMenuPermission_To_assignPermission');
+//  Route::get('/export/{mode}/{token}', 'Export\UserExport@userexport');
+//  Route::get('/checkuser/{mode}/{token}', 'Export\UserExport@checkAuth');
+//  Route::get('/exportpersonnel', 'Export\UserExport@export');
+//  Route::get('/permission', 'UserController@getDefaultMenuPermission_To_assignPermission');

@@ -9,8 +9,5 @@ class AssemblyConstituency extends Model
     protected $table = 'assembly_constituencies';
     public $incrementing = false;
 
-    public function assemblyParty()
-    {
-        return $this->hasOne('AssemblyParty');
-    }
+
 }
