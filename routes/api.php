@@ -154,6 +154,11 @@ Route::post('/doexception', 'ExcemptionController@doExcemption');
 Route::post('/getsharerequiremnet', 'DatasharingController@queryForDataShare');
 Route::post('/instructforshare', 'DatasharingController@instructForDataShare');
 Route::get('/instructlist', 'DatasharingController@getInstructionForDataShare');
+Route::get('/getdeoshareinstruction', 'DatasharingController@getShareRequest');
+Route::get('/getcategorywisedistrictrequirement', 'DatasharingController@getRequirementAvailability');
+Route::post('/processtosharedata', 'DatasharingController@doDataShare');
+
+
 });
 
 //Route::post('/deo', 'UserController@diocreation');

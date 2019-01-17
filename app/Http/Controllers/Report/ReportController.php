@@ -188,7 +188,7 @@ class ReportController extends Controller
 }
 
 public function groupWisePP(){
-  if($this->level==12 || $this->level===5){
+  if($this->level==12 || $this->level==5){
   $arr['ávailable']=DB::select("SELECT distinct(categories.name),
   count(CASE WHEN personnel.gender='M' and personnel.emp_group='A'  THEN 1 END) as A_M,
   count(CASE WHEN personnel.gender='M' and personnel.emp_group='B'  THEN 1 END) as B_M,
