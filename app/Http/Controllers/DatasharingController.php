@@ -101,6 +101,7 @@ class DatasharingController extends Controller
         if($this->level==12){
         $arr=array();
         $transfer_category=$request->category; //PR,MO,P1 type=POST
+        $gender=$request->gender; 
         //$transfer_category=$getCeoRequest[0]->category;
 
         $requirement=AssemblyConstituency::select(\DB::raw('sum(assembly_party.male_party_count) as MalePartyRequirement ,sum(assembly_party.female_party_count) as FemalePartyRequirement'))
@@ -112,6 +113,7 @@ class DatasharingController extends Controller
                            ->where('post_stat',$transfer_category)
                            ->where('district_id',$this->district)
                            ->where('to_district',NULL)
+                           ->where('gender',$gender)
                            ->get();
       $arr['available']= collect($available)->toArray();
 
@@ -142,6 +144,7 @@ class DatasharingController extends Controller
             ->where('post_stat',$transfer_category)
             ->where('district_id',$this->district)
             ->where('to_district',NULL)
+            ->where('gender',$gender)
             ->get();
             $requirement=AssemblyConstituency::select(\DB::raw('sum(assembly_party.male_party_count) as MalePartyRequirement ,sum(assembly_party.female_party_count) as FemalePartyRequirement'))
             ->join('assembly_party','assembly_party.assembly_id','=','assembly_constituencies.id')
@@ -152,6 +155,7 @@ class DatasharingController extends Controller
            if(($available[0]['available']-($requirement[0]['MalePartyRequirement']+$requirement[0]['FemalePartyRequirement']))>$transfer_personnel){
             Personnel::where('post_stat',$transfer_category)
             ->where('district_id',$this->district)
+            ->where('gender',$gender)
             ->inRandomOrder()
             ->limit($transfer_personnel)
             ->update(['to_district' =>$transfer_to_district,'share_date'=>Now()]);
