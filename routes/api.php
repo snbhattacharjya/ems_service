@@ -147,7 +147,7 @@ Route::get('/pollingPost', 'categorization\PoststatController@PollingPost');
 //Transfer Personnel
 Route::get('/transferlist', 'PersonneltransferController@getTransferList');
 Route::post('/dotransfer', 'PersonneltransferController@doTransfer');
-//Excemption 
+//Excemption
 Route::post('/getpersonnnelforexcemption', 'ExcemptionController@SearchForExemption');
 Route::post('/doexception', 'ExcemptionController@doExcemption');
 //Data Sharing
@@ -155,7 +155,7 @@ Route::post('/getsharerequiremnet', 'DatasharingController@queryForDataShare');
 Route::post('/instructforshare', 'DatasharingController@instructForDataShare');
 Route::get('/instructlist', 'DatasharingController@getInstructionForDataShare');
 Route::get('/getdeoshareinstruction', 'DatasharingController@getShareRequest');
-Route::get('/getcategorywisedistrictrequirement', 'DatasharingController@getRequirementAvailability');
+Route::get('/getcategorywisedistrictrequirement/{category}', 'DatasharingController@getRequirementAvailability');
 Route::post('/processtosharedata', 'DatasharingController@doDataShare');
 
 

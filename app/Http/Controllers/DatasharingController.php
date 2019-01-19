@@ -29,7 +29,7 @@ class DatasharingController extends Controller
         $res=$this->getRequirement($from_district,$category);
         return response()->json($res,201);
         }else{
-            return response()->json('Not Allowed',401);  
+            return response()->json('Not Allowed',401);
         }
 
     }
@@ -44,12 +44,13 @@ class DatasharingController extends Controller
       $available=Personnel::select(\DB::raw('sum(gender) as available'))
                          ->where('post_stat',$category)
                          ->where('district_id',$from_district)
+                         ->where('to_district',NULL)
                          ->get();
     $arr['available']= collect($available)->toArray();
 
         return $arr;
         }else{
-            return response()->json('Not Allowed',401);  
+            return response()->json('Not Allowed',401);
         }
     }
     public function instructForDataShare(Request $request){
@@ -69,7 +70,7 @@ class DatasharingController extends Controller
             return response()->json('Successfully Saved',201);
           }
       }else{
-        return response()->json('Not Allowed',401);  
+        return response()->json('Not Allowed',401);
        }
      }
      public function getInstructionForDataShare(Request $request){
@@ -79,10 +80,10 @@ class DatasharingController extends Controller
                           ->join('districts as to_districts','to_districts.id','=','data_sharing.to_district')
                           ->get();
       }else{
-        return response()->json('Not Allowed',401);    
-      }                 
+        return response()->json('Not Allowed',401);
+      }
      }
-     
+
      public function getShareRequest(){ //GET Method
       if($this->level==12){
             return DataSharing::select('data_sharing.id as id','from_districts.name as from_district','to_districts.name as to_district','data_sharing.category as category','data_sharing.no_of_personnel as no_of_personnel','data_sharing.no_of_personnel_shared as no_of_personnel_shared')
@@ -90,9 +91,9 @@ class DatasharingController extends Controller
             ->join('districts as to_districts','to_districts.id','=','data_sharing.to_district')
             ->where('data_sharing.from_district',$this->district)
             ->get();
-            
+
         }else{
-            return response()->json('Not Allowed',401); 
+            return response()->json('Not Allowed',401);
         }
 
      }
@@ -100,7 +101,7 @@ class DatasharingController extends Controller
         if($this->level==12){
         $arr=array();
         $transfer_category=$request->category; //PR,MO,P1 type=POST
-        $transfer_category=$getCeoRequest[0]->category;
+        //$transfer_category=$getCeoRequest[0]->category;
 
         $requirement=AssemblyConstituency::select(\DB::raw('sum(assembly_party.male_party_count) as MalePartyRequirement ,sum(assembly_party.female_party_count) as FemalePartyRequirement'))
                            ->join('assembly_party','assembly_party.assembly_id','=','assembly_constituencies.id')
@@ -110,12 +111,13 @@ class DatasharingController extends Controller
         $available=Personnel::select(\DB::raw('sum(gender) as available'))
                            ->where('post_stat',$transfer_category)
                            ->where('district_id',$this->district)
+                           ->where('to_district',NULL)
                            ->get();
       $arr['available']= collect($available)->toArray();
-  
+
             return $arr;
         }else{
-            return response()->json('Not Allowed',401); 
+            return response()->json('Not Allowed',401);
         }
      }
 
@@ -127,22 +129,43 @@ class DatasharingController extends Controller
             $getCeoRequest=DataSharing::where('id',$data_share_id)
                         ->where('from_district',$this->district)
                         ->get();
-                   
+
             $transfer_to_district=$getCeoRequest[0]->to_district;
             $transfer_category=$getCeoRequest[0]->category;
             $transfer_personnel=$request->no_of_personnel;
+            $personnel_assigned=$getCeoRequest[0]->no_of_personnel;
+            if($personnel_assigned< $transfer_personnel){
+                return response()->json('Number can not be greater than personnel assigned !',401);
+                die();
+            }
+            $available=Personnel::select(\DB::raw('sum(gender) as available'))
+            ->where('post_stat',$transfer_category)
+            ->where('district_id',$this->district)
+            ->where('to_district',NULL)
+            ->get();
+            $requirement=AssemblyConstituency::select(\DB::raw('sum(assembly_party.male_party_count) as MalePartyRequirement ,sum(assembly_party.female_party_count) as FemalePartyRequirement'))
+            ->join('assembly_party','assembly_party.assembly_id','=','assembly_constituencies.id')
+            ->where('district_id',$this->district)
+            ->get();
+
+
+           if(($available[0]['available']-($requirement[0]['MalePartyRequirement']+$requirement[0]['FemalePartyRequirement']))>$transfer_personnel){
             Personnel::where('post_stat',$transfer_category)
-                    ->where('district_id',$this->district)
-                    ->inRandomOrder()
-                    ->limit($transfer_personnel)
-                    ->update(['to_district' =>$transfer_to_district,'share_date'=>Now()]);
+            ->where('district_id',$this->district)
+            ->inRandomOrder()
+            ->limit($transfer_personnel)
+            ->update(['to_district' =>$transfer_to_district,'share_date'=>Now()]);
             DataSharing::where('id',$data_share_id)
-                    ->update(['no_of_personnel_shared' =>$transfer_personnel]);
-            return response()->json('Successfully Shared',201);  
+            ->update(['no_of_personnel_shared' =>$transfer_personnel]);
+           return response()->json('Successfully Shared',201);
+           }else{
+            return response()->json('Number can not be greater than available !',401);
+           }
+
         }else{
-            return response()->json('Not Allowed',401);  
+            return response()->json('Not Allowed',401);
         }
      }
-    
-     
+
+
 }
