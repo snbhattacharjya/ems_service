@@ -25,21 +25,23 @@ class ExcemptionController extends Controller
                                     ->where('office_id', $request->office_id)
                                     ->count();
 
-            $arr['excemptionList']=Personnel::select('id','office_id','name','designation','mobile')
+            $arr['excemptionList']=Personnel::select('id','office_id','name','designation','mobile','exempted','exemp_type','exemp_reason','exemp_date')
             ->where('district_id', $this->district)
             ->where('office_id', $request->office_id)
             ->get();
             return response()->json($arr,201);
          }elseif($request->mode=='personnel'){
-          $arr['excemptionList']=Personnel::select('id','office_id','name','designation','mobile')
+          $arr['excemptionList']=Personnel::select('id','office_id','name','designation','mobile','exempted','exemp_type','exemp_reason','exemp_date')
             ->where('id',$request->personnel_id)
             ->where('district_id', $this->district)
             ->get();
             return response()->json($arr,201);
         }elseif($request->mode=='remarks'){
-            $arr['count']= Personnel::where('district_id', $this->district)
+            $arr['excemptionList']= Personnel::select('id','office_id','name','designation','mobile','exempted','exemp_type','exemp_reason','exemp_date')
+                                    ->where('district_id', $this->district)
+                                    ->where('block_muni_off_id',$request->block_muni_off_id)
                                     ->where('remark_id', $request->remark_id)
-                                    ->count();
+                                    ->get();
             return response()->json($arr,201);
         }else{
           //////
@@ -85,9 +87,11 @@ class ExcemptionController extends Controller
                             ];
                     Personnel::where('id',$request->personnel_id)
                                     ->where('district_id', $this->district)
+                                    ->WhereNull('exempted')
                                     ->update($update);
                     return response()->json('Successfully Updated',201);
-   }elseif($request->mode=='remarks' && $request->reason!=''){
+   }elseif($request->mode=='remarks'){
+       if($request->reason!='' && $request->remark_personnl_selected=='ALL'){
                         $update = [
                             'exempted' => 'Yes',
                             'exemp_type' => '3',
@@ -96,8 +100,22 @@ class ExcemptionController extends Controller
                             ];
                     Personnel::where('remark_id',$request->remark_id)
                                     ->where('district_id', $this->district)
+                                    ->WhereNull('exempted')
                                     ->update($update);
                     return response()->json('Successfully Updated',201);
+       }else{
+        $update = [
+            'exempted' => 'Yes',
+            'exemp_type' => '3',
+            'exemp_reason' => $request->reason,
+            'exemp_date' => NOW(),
+            ];
+    Personnel::whereIn('id',$request->remark_personnl_selected)
+                    ->where('remark_id',$request->remark_id)
+                    ->where('district_id', $this->district)
+                    ->update($update);
+    return response()->json('Successfully Updated',201);
+       }
    }else{
         return response()->json('No Mode Selected',401);
      }

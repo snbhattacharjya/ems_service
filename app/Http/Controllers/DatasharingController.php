@@ -41,7 +41,7 @@ class DatasharingController extends Controller
                          ->where('district_id',$from_district)
                          ->get();
                          $arr['requirement']= collect($requirement)->toArray();
-      $available=Personnel::select(\DB::raw('sum(gender) as available'))
+      $available=Personnel::select(\DB::raw('count(gender) as available'))
                          ->where('post_stat',$category)
                          ->where('district_id',$from_district)
                          ->where('to_district',NULL)
@@ -101,7 +101,6 @@ class DatasharingController extends Controller
         if($this->level==12){
         $arr=array();
         $transfer_category=$request->category; //PR,MO,P1 type=POST
-        $gender=$request->gender; 
         //$transfer_category=$getCeoRequest[0]->category;
 
         $requirement=AssemblyConstituency::select(\DB::raw('sum(assembly_party.male_party_count) as MalePartyRequirement ,sum(assembly_party.female_party_count) as FemalePartyRequirement'))
@@ -109,11 +108,10 @@ class DatasharingController extends Controller
                            ->where('district_id',$this->district)
                            ->get();
                            $arr['requirement']= collect($requirement)->toArray();
-        $available=Personnel::select(\DB::raw('sum(gender) as available'))
+        $available=Personnel::select(\DB::raw('count(gender) as available'))
                            ->where('post_stat',$transfer_category)
                            ->where('district_id',$this->district)
                            ->where('to_district',NULL)
-                           ->where('gender',$gender)
                            ->get();
       $arr['available']= collect($available)->toArray();
 
@@ -135,16 +133,16 @@ class DatasharingController extends Controller
             $transfer_to_district=$getCeoRequest[0]->to_district;
             $transfer_category=$getCeoRequest[0]->category;
             $transfer_personnel=$request->no_of_personnel;
+            $shared_personnel=$getCeoRequest[0]->no_of_personnel_shared == null ? 0 :$getCeoRequest[0]->no_of_personnel_shared;
             $personnel_assigned=$getCeoRequest[0]->no_of_personnel;
             if($personnel_assigned< $transfer_personnel){
-                return response()->json('Number can not be greater than personnel assigned !',401);
+                return response()->json('Number can not be greater than personnel assigned by CEO !',401);
                 die();
             }
-            $available=Personnel::select(\DB::raw('sum(gender) as available'))
+            $available=Personnel::select(\DB::raw('count(gender) as available'))
             ->where('post_stat',$transfer_category)
             ->where('district_id',$this->district)
             ->where('to_district',NULL)
-            ->where('gender',$gender)
             ->get();
             $requirement=AssemblyConstituency::select(\DB::raw('sum(assembly_party.male_party_count) as MalePartyRequirement ,sum(assembly_party.female_party_count) as FemalePartyRequirement'))
             ->join('assembly_party','assembly_party.assembly_id','=','assembly_constituencies.id')
@@ -155,12 +153,13 @@ class DatasharingController extends Controller
            if(($available[0]['available']-($requirement[0]['MalePartyRequirement']+$requirement[0]['FemalePartyRequirement']))>$transfer_personnel){
             Personnel::where('post_stat',$transfer_category)
             ->where('district_id',$this->district)
-            ->where('gender',$gender)
             ->inRandomOrder()
             ->limit($transfer_personnel)
             ->update(['to_district' =>$transfer_to_district,'share_date'=>Now()]);
+
             DataSharing::where('id',$data_share_id)
-            ->update(['no_of_personnel_shared' =>$transfer_personnel]);
+            ->update(['no_of_personnel_shared' =>$shared_personnel+$transfer_personnel]);
+
            return response()->json('Successfully Shared',201);
            }else{
             return response()->json('Number can not be greater than available !',401);

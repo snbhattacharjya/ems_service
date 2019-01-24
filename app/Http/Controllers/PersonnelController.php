@@ -164,7 +164,8 @@ class PersonnelController extends Controller
         $personnel->assembly_temp_id = strip_tags($request->assembly_temp_id,'');
         $personnel->assembly_perm_id = strip_tags($request->assembly_perm_id,'');
         $personnel->assembly_off_id = strip_tags($request->assembly_off_id,'');
-
+       
+        $personnel->post_office_account = strip_tags($request->post_office_account,'');
         $personnel->branch_ifsc = strip_tags($request->branch_ifsc,'');
         $personnel->bank_account_no = strip_tags($request->bank_account_no,'');
         $personnel->remark_id =strip_tags($request->remark_id,'');
@@ -270,7 +271,8 @@ class PersonnelController extends Controller
         $personnel->assembly_temp_id = strip_tags($request->assembly_temp_id,'');
         $personnel->assembly_perm_id = strip_tags($request->assembly_perm_id,'');
         $personnel->assembly_off_id = strip_tags($request->assembly_off_id,'');
-
+        
+        $personnel->post_office_account = strip_tags($request->post_office_account,'');
         $personnel->branch_ifsc = strip_tags($request->branch_ifsc,'');
         $personnel->bank_account_no = strip_tags($request->bank_account_no,'');
         $personnel->remark_id =strip_tags($request->remark_id,'');

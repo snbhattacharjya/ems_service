@@ -353,7 +353,7 @@ class ReportOfficeEntryStatusController extends Controller
     for($i=0;$i<count($offices);$i++){
      $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district'  and personnel.office_id=".$offices[$i]->officeId);
      // print_r($personnel->totpersonnel);
-     if($offices[$i]->totalStuff==$personnel[0]->totpersonnel && $personnel[0]->totpersonnel!=''){
+     if($offices[$i]->totalStuff<=$personnel[0]->totpersonnel && $personnel[0]->totpersonnel!=''){
     $arr['officelist'][]=array('officeId'=>$offices[$i]->officeId,'officeName'=>$offices[$i]->officeName,
         'mobile'=>$offices[$i]->mobile,'totalStuff'=>$offices[$i]->totalStuff ,'personelenty'=>$personnel[0]->totpersonnel,
      'identification_code'=>$offices[$i]->identification_code,
@@ -396,7 +396,7 @@ class ReportOfficeEntryStatusController extends Controller
     for($i=0;$i<count($offices);$i++){
      $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district' and offices.subdivision_id='$subdivision_id' and personnel.office_id=".$offices[$i]->officeId);
      // print_r($personnel->totpersonnel);
-     if($offices[$i]->totalStuff==$personnel[0]->totpersonnel && $personnel[0]->totpersonnel!=''){
+     if($offices[$i]->totalStuff<=$personnel[0]->totpersonnel && $personnel[0]->totpersonnel!=''){
     $arr['officelist'][]=array('officeId'=>$offices[$i]->officeId,'officeName'=>$offices[$i]->officeName,
         'mobile'=>$offices[$i]->mobile,'totalStuff'=>$offices[$i]->totalStuff ,'personelenty'=>$personnel[0]->totpersonnel,
      'identification_code'=>$offices[$i]->identification_code,
@@ -439,7 +439,7 @@ class ReportOfficeEntryStatusController extends Controller
     for($i=0;$i<count($offices);$i++){
      $personnel=DB::select("select count(personnel.id) as totpersonnel  from offices join personnel on offices.id=personnel.office_id where offices.district_id='$this->district' and offices.block_muni_id='$block_muni_id' and personnel.office_id=".$offices[$i]->officeId);
      // print_r($personnel->totpersonnel);
-     if($offices[$i]->totalStuff==$personnel[0]->totpersonnel && $personnel[0]->totpersonnel!=''){
+     if($offices[$i]->totalStuff<=$personnel[0]->totpersonnel && $personnel[0]->totpersonnel!=''){
     $arr['officelist'][]=array('officeId'=>$offices[$i]->officeId,'officeName'=>$offices[$i]->officeName,
         'mobile'=>$offices[$i]->mobile,'totalStuff'=>$offices[$i]->totalStuff ,'personelenty'=>$personnel[0]->totpersonnel,
      'identification_code'=>$offices[$i]->identification_code,

@@ -28,22 +28,21 @@ class SudivreportController extends Controller
 	  $district_id=$request->district_id;//exit;
 		 $arr['district']=$this->getDistrictName($district_id);
          $sqlAvailable='SELECT sd.name,p.subdivision_id,
-		              SUM(CASE WHEN p.post_stat = "NA" and p.gender="M"   THEN 1 ELSE 0  END) AS NA_M, 
-		              SUM(CASE WHEN p.post_stat = "AEO" and p.gender="M"   THEN 1 ELSE 0  END) AS AEO_M,
-					  SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1 ELSE 0 END) AS MO_M, 
-                      SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" THEN 1 ELSE 0 END) AS P1_M, 
-                      SUM(CASE WHEN p.post_stat = "P2" and p.gender="M" THEN 1 ELSE 0 END) AS P2_M,
-                      SUM(CASE WHEN p.post_stat = "P3" and p.gender="M" THEN 1 ELSE 0 END) AS P3_M, 
-                      SUM(CASE WHEN p.post_stat = "PR" and p.gender="M" THEN 1 ELSE 0 END) AS PR_M,
-					  SUM(CASE WHEN p.post_stat = "NA" and p.gender="F"   THEN 1 ELSE 0  END) AS NA_F, 
-		              SUM(CASE WHEN p.post_stat = "AEO" and p.gender="F"   THEN 1 ELSE 0  END) AS AEO_F,
-                      SUM(CASE WHEN p.post_stat = "MO" and p.gender="F"  THEN 1 ELSE 0 END) AS MO_F, 
-                      SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" THEN 1 ELSE 0 END) AS P1_F, 
-                      SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" THEN 1 ELSE 0 END) AS P2_F,
-                      SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" THEN 1 ELSE 0 END) AS P3_F, 
-                      SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" THEN 1 ELSE 0 END) AS PR_F
-						FROM personnel p inner join subdivisions sd on sd.id=p.subdivision_id and sd.district_id="'.$district_id.'"
-					    group by p.subdivision_id,sd.name';
+		              SUM(CASE WHEN p.post_stat = "NA" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS NA_M, 
+		              SUM(CASE WHEN p.post_stat = "AEO" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS AEO_M,
+					  SUM(CASE WHEN p.post_stat = "MO" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS MO_M, 
+                      SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P1_M, 
+                      SUM(CASE WHEN p.post_stat = "P2" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P2_M,
+                      SUM(CASE WHEN p.post_stat = "P3" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P3_M, 
+                      SUM(CASE WHEN p.post_stat = "PR" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS PR_M,
+					  SUM(CASE WHEN p.post_stat = "NA" and p.gender="F"  and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS NA_F, 
+		              SUM(CASE WHEN p.post_stat = "AEO" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS AEO_F,
+                      SUM(CASE WHEN p.post_stat = "MO" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS MO_F, 
+                      SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P1_F, 
+                      SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P2_F,
+                      SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P3_F, 
+                      SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS PR_F
+					  FROM personnel p inner join subdivisions sd on sd.id=p.subdivision_id and sd.district_id="'.$district_id.'"  group by p.subdivision_id,sd.name';
 						
 		(array)$reportAvailable['available']=DB::select($sqlAvailable);	
 		       $reportAvailable['district']=$this->getDistrictName($district_id);
@@ -84,21 +83,21 @@ class SudivreportController extends Controller
 		 
 	  }elseif($this->district!='' & ($this->level===3 || $this->level===4 || $this->level===12)){
 		
-		$sqlAvailable='SELECT sd.name,p.subdivision_id,
-		             SUM(CASE WHEN p.post_stat = "NA" and p.gender="M"   THEN 1 ELSE 0  END) AS NA_M, 
-		             SUM(CASE WHEN p.post_stat = "AEO" and p.gender="M"   THEN 1 ELSE 0  END) AS AEO_M,
-					 SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1 ELSE 0 END) AS MO_M, 
-                       SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" THEN 1 ELSE 0 END) AS P1_M, 
-                       SUM(CASE WHEN p.post_stat = "P2" and p.gender="M" THEN 1 ELSE 0 END) AS P2_M,
-                      SUM(CASE WHEN p.post_stat = "P3" and p.gender="M" THEN 1 ELSE 0 END) AS P3_M, 
-                      SUM(CASE WHEN p.post_stat = "PR" and p.gender="M" THEN 1 ELSE 0 END) AS PR_M,
-					  SUM(CASE WHEN p.post_stat = "NA" and p.gender="F"   THEN 1 ELSE 0  END) AS NA_F, 
-		              SUM(CASE WHEN p.post_stat = "AEO" and p.gender="F"   THEN 1 ELSE 0  END) AS AEO_F,
-                      SUM(CASE WHEN p.post_stat = "MO" and p.gender="F"  THEN 1 ELSE 0 END) AS MO_F, 
-                      SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" THEN 1 ELSE 0 END) AS P1_F, 
-                      SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" THEN 1 ELSE 0 END) AS P2_F,
-                      SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" THEN 1 ELSE 0 END) AS P3_F, 
-                      SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" THEN 1 ELSE 0 END) AS PR_F
+		 $sqlAvailable='SELECT sd.name,p.subdivision_id,
+		             SUM(CASE WHEN p.post_stat = "NA" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS NA_M, 
+		             SUM(CASE WHEN p.post_stat = "AEO" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS AEO_M,
+					 SUM(CASE WHEN p.post_stat = "MO" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS MO_M, 
+                       SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P1_M, 
+                       SUM(CASE WHEN p.post_stat = "P2" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P2_M,
+                      SUM(CASE WHEN p.post_stat = "P3" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P3_M, 
+                      SUM(CASE WHEN p.post_stat = "PR" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS PR_M,
+					  SUM(CASE WHEN p.post_stat = "NA" and p.gender="F"  and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS NA_F, 
+		              SUM(CASE WHEN p.post_stat = "AEO" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS AEO_F,
+                      SUM(CASE WHEN p.post_stat = "MO" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS MO_F, 
+                      SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P1_F, 
+                      SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P2_F,
+                      SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P3_F, 
+                      SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS PR_F
 						FROM personnel p inner join subdivisions sd on sd.id=p.subdivision_id and sd.district_id="'.$this->district.'"
 					    group by p.subdivision_id,sd.name';
 						
@@ -142,20 +141,20 @@ class SudivreportController extends Controller
 	  }elseif($this->level===6){
 	   $subdivision_id= substr($this->userID,7,4);
 	   $sqlAvailable='SELECT sd.name,p.subdivision_id,
-	    SUM(CASE WHEN p.post_stat = "NA" and p.gender="M"   THEN 1 ELSE 0  END) AS NA_M, 
-		SUM(CASE WHEN p.post_stat = "AEO" and p.gender="M"   THEN 1 ELSE 0  END) AS AEO_M,
-		SUM(CASE WHEN p.post_stat = "MO" and p.gender="M"  THEN 1 ELSE 0 END) AS MO_M, 
-	   SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" THEN 1 ELSE 0 END) AS P1_M, 
-	   SUM(CASE WHEN p.post_stat = "P2" and p.gender="M" THEN 1 ELSE 0 END) AS P2_M,
-	  SUM(CASE WHEN p.post_stat = "P3" and p.gender="M" THEN 1 ELSE 0 END) AS P3_M, 
-	  SUM(CASE WHEN p.post_stat = "PR" and p.gender="M" THEN 1 ELSE 0 END) AS PR_M,
-	  SUM(CASE WHEN p.post_stat = "NA" and p.gender="F"   THEN 1 ELSE 0  END) AS NA_F, 
-	  SUM(CASE WHEN p.post_stat = "AEO" and p.gender="F"   THEN 1 ELSE 0  END) AS AEO_F,
-	  SUM(CASE WHEN p.post_stat = "MO" and p.gender="F"  THEN 1 ELSE 0 END) AS MO_F, 
-	  SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" THEN 1 ELSE 0 END) AS P1_F, 
-	  SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" THEN 1 ELSE 0 END) AS P2_F,
-	  SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" THEN 1 ELSE 0 END) AS P3_F, 
-	  SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" THEN 1 ELSE 0 END) AS PR_F
+	    SUM(CASE WHEN p.post_stat = "NA" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS NA_M, 
+		SUM(CASE WHEN p.post_stat = "AEO" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS AEO_M,
+		SUM(CASE WHEN p.post_stat = "MO" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS MO_M, 
+	   SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P1_M, 
+	   SUM(CASE WHEN p.post_stat = "P2" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P2_M,
+	  SUM(CASE WHEN p.post_stat = "P3" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0 END) AS P3_M, 
+	  SUM(CASE WHEN p.post_stat = "PR" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS PR_M,
+	  SUM(CASE WHEN p.post_stat = "NA" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS NA_F, 
+	  SUM(CASE WHEN p.post_stat = "AEO" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS AEO_F,
+	  SUM(CASE WHEN p.post_stat = "MO" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS MO_F, 
+	  SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P1_F, 
+	  SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P2_F,
+	  SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P3_F, 
+	  SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0 END) AS PR_F
 		FROM personnel p inner join subdivisions sd on sd.id=p.subdivision_id and sd.district_id="'.$this->district.'" and sd.id="'. $subdivision_id.'"
 		group by p.subdivision_id,sd.name';
 		
