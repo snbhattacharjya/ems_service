@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Personnel;
+use Illuminate\Support\Facades\DB;
 class ExcemptionController extends Controller
 {
     //
@@ -17,6 +18,16 @@ class ExcemptionController extends Controller
         }
 
     }
+
+    public function getExemptedList(){
+         $arr['excemptedList']=Personnel::select('personnel.id','personnel.office_id','personnel.name','personnel.designation','personnel.mobile','personnel.exempted','personnel.exemp_type','personnel.exemp_reason','personnel.exemp_date','remarks.name as remark')
+            ->leftJoin('remarks','remarks.id','=','personnel.remark_id')
+            ->whereIn('exemp_type',array(1, 2, 3))
+            ->where('district_id', $this->district)
+            ->get();
+
+            return response()->json($arr,201);
+    }
     public function SearchForExemption(Request $request){
       if($this->level===12 ){
               $arr=array();
@@ -25,25 +36,25 @@ class ExcemptionController extends Controller
                                     ->where('office_id', $request->office_id)
                                     ->count();
 
-            $arr['excemptionList']=Personnel::select('id','office_id','name','designation','mobile','exempted','exemp_type','exemp_reason','exemp_date','remarks.name as remark')
+            $arr['excemptionList']=Personnel::select('personnel.id','personnel.office_id','personnel.name','personnel.designation','personnel.mobile','personnel.exempted','personnel.exemp_type','personnel.exemp_reason','personnel.exemp_date','remarks.name as remark')
             ->join('remarks','remarks.id','=','personnel.remark_id')
             ->where('district_id', $this->district)
             ->where('office_id', $request->office_id)
             ->get();
             return response()->json($arr,201);
-         
+
         }elseif($request->mode=='personnel'){
 
-          $arr['excemptionList']=Personnel::select('id','office_id','name','designation','mobile','exempted','exemp_type','exemp_reason','exemp_date','remarks.name as remark')
+          $arr['excemptionList']=Personnel::select('personnel.id','personnel.office_id','personnel.name','personnel.designation','personnel.mobile','personnel.exempted','personnel.exemp_type','personnel.exemp_reason','personnel.exemp_date','remarks.name as remark')
             ->join('remarks','remarks.id','=','personnel.remark_id')
-            ->where('id',$request->personnel_id)
+            ->where('personnel.id',$request->personnel_id)
             ->where('district_id', $this->district)
             ->get();
             return response()->json($arr,201);
 
         }elseif($request->mode=='remarks'){
 
-            $arr['excemptionList']= Personnel::select('id','office_id','name','designation','mobile','exempted','exemp_type','exemp_reason','exemp_date','remarks.name as remark')
+            $arr['excemptionList']= Personnel::select('personnel.id','personnel.office_id','personnel.name','personnel.designation','personnel.mobile','personnel.exempted','personnel.exemp_type','personnel.exemp_reason','personnel.exemp_date','remarks.name as remark')
                                     ->join('remarks','remarks.id','=','personnel.remark_id')
                                     ->where('district_id', $this->district)
                                     ->where('subdivision_id',$request->subdivision_id)

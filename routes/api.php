@@ -135,7 +135,7 @@ Route::get('/revokerule/{RuleID}', 'categorization\PoststatController@revokeRule
 Route::get('/queryrule/{RuleID}', 'categorization\PoststatController@queryRule');
 Route::post('/setpoststat', 'categorization\ManualPoststatSetController@GetPersonnelByOfficeAndPoststat');
 Route::post('/savepoststatmanual', 'categorization\ManualPoststatSetController@postStatManualSave');
-Route::get('/deleterule', 'categorization\PoststatController@deleteRule');
+Route::get('/deleterule/{id}', 'categorization\PoststatController@deleteRule');
 //Analytics
 
 Route::get('/analytics', 'AnalyticsController@totalUsers');
@@ -152,6 +152,7 @@ Route::post('/dotransfer', 'PersonneltransferController@doTransfer');
 Route::post('/getpersonnnelforexcemption', 'ExcemptionController@SearchForExemption');
 Route::post('/doexception', 'ExcemptionController@doExcemption');
 Route::get('/remarkforexcemption', 'ExcemptionController@getRemarks');
+Route::get('/getexemptedlist', 'ExcemptionController@getExemptedList');
 
 //Data Sharing
 Route::post('/getsharerequiremnet', 'DatasharingController@queryForDataShare');
