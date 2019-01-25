@@ -25,21 +25,28 @@ class ExcemptionController extends Controller
                                     ->where('office_id', $request->office_id)
                                     ->count();
 
-            $arr['excemptionList']=Personnel::select('id','office_id','name','designation','mobile','exempted','exemp_type','exemp_reason','exemp_date')
+            $arr['excemptionList']=Personnel::select('id','office_id','name','designation','mobile','exempted','exemp_type','exemp_reason','exemp_date','remarks.name as remark')
+            ->join('remarks','remarks.id','=','personnel.remark_id')
             ->where('district_id', $this->district)
             ->where('office_id', $request->office_id)
             ->get();
             return response()->json($arr,201);
-         }elseif($request->mode=='personnel'){
-          $arr['excemptionList']=Personnel::select('id','office_id','name','designation','mobile','exempted','exemp_type','exemp_reason','exemp_date')
+         
+        }elseif($request->mode=='personnel'){
+
+          $arr['excemptionList']=Personnel::select('id','office_id','name','designation','mobile','exempted','exemp_type','exemp_reason','exemp_date','remarks.name as remark')
+            ->join('remarks','remarks.id','=','personnel.remark_id')
             ->where('id',$request->personnel_id)
             ->where('district_id', $this->district)
             ->get();
             return response()->json($arr,201);
+
         }elseif($request->mode=='remarks'){
-            $arr['excemptionList']= Personnel::select('id','office_id','name','designation','mobile','exempted','exemp_type','exemp_reason','exemp_date')
+
+            $arr['excemptionList']= Personnel::select('id','office_id','name','designation','mobile','exempted','exemp_type','exemp_reason','exemp_date','remarks.name as remark')
+                                    ->join('remarks','remarks.id','=','personnel.remark_id')
                                     ->where('district_id', $this->district)
-                                    ->where('block_muni_off_id',$request->block_muni_off_id)
+                                    ->where('subdivision_id',$request->subdivision_id)
                                     ->where('remark_id', $request->remark_id)
                                     ->get();
             return response()->json($arr,201);
@@ -122,5 +129,10 @@ class ExcemptionController extends Controller
    }
  }
 
+ public function getRemarks(){
+
+    $remarks=DB::select('SELECT id,name FROM `remarks` where id not in(99) order by id asc');
+     return response()->json($remarks,201);
+}
 
 }

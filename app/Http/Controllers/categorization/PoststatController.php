@@ -240,8 +240,8 @@ class PoststatController extends Controller
 		
         $clause=$clause."AND personnel.exempted IS NULL";
 
-	   $sql="SELECT DISTINCT(designation) AS Designation FROM personnel INNER JOIN offices ON personnel.office_id=offices.id WHERE $clause ORDER BY offices.officer_designation";
-   
+	  $sql="SELECT DISTINCT(designation) AS Designation FROM personnel INNER JOIN offices ON personnel.office_id=offices.id WHERE $clause ORDER BY  personnel.designation";
+     
 
 	   $arr['designation']=collect(DB::select($sql))->toArray();
 	   return response()->json($arr,200);
