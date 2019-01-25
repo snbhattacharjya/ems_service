@@ -888,7 +888,17 @@ public function revokeRule(Request $request){
 			 }
 	}
 
-
+    public function deleteRule(Request $request){
+     if($this->level==12){
+		if(Pppostrules::where('RuleID',$request->id)->where('District',$this->district)->delete()){
+	    return response()->json('Successfully Deleted',200);			
+		}else{
+		return response()->json('Unable to Process',401);	
+		}
+	 }else{
+		return response()->json('Unauthenticated',401);
+	 }
+	}
 
 
  }
