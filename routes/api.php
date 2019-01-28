@@ -164,8 +164,13 @@ Route::post('/processtosharedata', 'DatasharingController@doDataShare');
 
 //
 
-
-
+Route::get('/officenotstartedbydistrict/{id}', 'Report\ReportOfficeEntryStatusController@officeNotStartedbydistrict');
+Route::get('/deleterule/{id}', 'categorization\PoststatController@deleteRule');
+Route::post('/getpersonnelbypoststat', 'categorization\ManualPoststatSetController@GetPersonnelByPoststat');
+//
+Route::post('/revokeexcemption', 'ExcemptionController@revokeExcemption');
+Route::post('/getPPListByDistinctDesignation', 'categorization\ManualPoststatSetController@getPPListByDistinctDesignation');
+Route::post('/adhokeppstatus', 'categorization\ManualPoststatSetController@createAdhocRule');
 });
 
 //Route::post('/deo', 'UserController@diocreation');

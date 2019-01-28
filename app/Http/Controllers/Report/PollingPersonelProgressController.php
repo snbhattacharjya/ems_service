@@ -154,7 +154,7 @@ class PollingPersonelProgressController extends Controller
 
      return response()->json($result['pp1'],201);
  }else if($this->level===7){
-     
+
                     $block_muni_id=substr($this->userID,7,6);
                     $qr="SELECT subdivisions.id as subdivision_id,
                     subdivisions.name as subdivision,
@@ -181,7 +181,7 @@ class PollingPersonelProgressController extends Controller
                   INNER JOIN  personnel on offices.id=personnel.office_id where offices.district_id='".$this->district."'
                   and block_munis.id='".$block_muni_id."'  GROUP BY subdivisions.id, subdivisions.name, block_munis.id, block_munis.name ORDER BY subdivisions.id";
                  $result['pp2']= DB::select($pp2);
-                
+
                  foreach($result['pp1'] as  $pp1){
                     foreach($result['pp2'] as $pp2){
                     if($pp1->block_munis_id==$pp2->block_munis_id){
@@ -189,9 +189,9 @@ class PollingPersonelProgressController extends Controller
                        $pp1->femalepp2=$pp2->pp2F;
                        $pp1->pp2started=$pp2->officepp2;
                     }
-           
+
                     }
-           
+
                 }
              return response()->json($result['pp1'],201);
 
@@ -244,21 +244,21 @@ class PollingPersonelProgressController extends Controller
 
 
            return response()->json($result['pp1'],201);
-        
+
         }
        }
 
  public function districtWisePPstatistic(){
      if($this->level==2){
-   $sql_pp1="SELECT districts.name, COUNT(CASE WHEN offices.agree = 0 THEN 1 END) AS PP1_Not_Updated,
-   COUNT(CASE WHEN offices.agree = 1 THEN 1  END) AS PP1_Updated, COUNT(*) AS Total_Offices,
+   $sql_pp1="SELECT districts.name,districts.id,COUNT(CASE WHEN offices.agree = 0 THEN 1 END) AS PP1_Not_Updated,
+   COUNT(CASE WHEN offices.agree = 1 THEN 1  END) AS PP1_Updated,COUNT(*) AS Total_Offices,
    SUM(CASE WHEN offices.agree = 1 THEN offices.male_staff END) AS Male_PP_Declared,
    SUM(CASE WHEN offices.agree = 1 THEN offices.female_staff  END) AS Female_PP_Declared,
    SUM(CASE WHEN offices.agree = 1 THEN offices.total_staff   END) AS Total_PP_Declared
    FROM districts INNER JOIN offices ON districts.id = offices.district_id
-   GROUP BY districts.name order by districts.id";
+   GROUP BY districts.name";
      }else if($this->level===3 || $this->level===4 || $this->level===12 || $this->level===5){
-    $sql_pp1="SELECT districts.name, COUNT(CASE WHEN offices.agree = 0 THEN 1 END) AS PP1_Not_Updated,
+    $sql_pp1="SELECT districts.name,districts.id, COUNT(CASE WHEN offices.agree = 0 THEN 1 END) AS PP1_Not_Updated,
         COUNT(CASE WHEN offices.agree = 1 THEN 1  END) AS PP1_Updated, COUNT(*) AS Total_Offices,
         SUM(CASE WHEN offices.agree = 1 THEN offices.male_staff  END) AS Male_PP_Declared,
         SUM(CASE WHEN offices.agree = 1 THEN offices.female_staff  END) AS Female_PP_Declared,
@@ -293,7 +293,7 @@ class PollingPersonelProgressController extends Controller
        $pp1->Female_PP_Added=$pp2->Female_PP_Added;
        $pp1->Total_PP_Added=$pp2->Total_PP_Added;
     }
-    
+
     }
  }
  return response()->json($results['pp1'],201);

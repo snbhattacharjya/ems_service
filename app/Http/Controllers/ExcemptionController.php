@@ -146,4 +146,21 @@ class ExcemptionController extends Controller
      return response()->json($remarks,201);
 }
 
+ public function revokeExcemption(Request $request){
+if($this->level==12){  
+                $personnelId=$request->personnel_id; 
+                $update = [
+                    'exempted' => NULL,
+                    'exemp_type' => NULL,
+                    'exemp_reason' => NULL,
+                    'exemp_date' =>NULL,
+                    ];
+                Personnel::where('id',$personnelId)
+                            ->where('district_id', $this->district)
+                            ->update($update);
+                return response()->json('Successfully Updated',201);             
+            }else{
+               return response()->json('Unauthenticated',401);  
+         }
+   }
 }
