@@ -205,4 +205,22 @@ public function groupWisePP(){
   }
 }
 
+public function instituteWisePP(){
+  if($this->level==12 || $this->level==5){
+  $arr['ávailable']=DB::select("SELECT distinct(institutes.name),
+  count(CASE WHEN personnel.gender='M' and personnel.emp_group='A'  THEN 1 END) as A_M,
+  count(CASE WHEN personnel.gender='M' and personnel.emp_group='B'  THEN 1 END) as B_M,
+  count(CASE WHEN personnel.gender='M' and personnel.emp_group='C'  THEN 1 END) as C_M,
+  count(CASE WHEN personnel.gender='M' and personnel.emp_group='D'  THEN 1 END) as D_M,
+  count(CASE WHEN personnel.gender='F' and personnel.emp_group='A'  THEN 1 END) as A_F,
+  count(CASE WHEN personnel.gender='F' and personnel.emp_group='B'  THEN 1 END) as B_F,
+  count(CASE WHEN personnel.gender='F' and personnel.emp_group='C'  THEN 1 END) as C_F,
+  count(CASE WHEN personnel.gender='F' and personnel.emp_group='D'  THEN 1 END) as D_F
+  FROM (institutes INNER JOIN offices ON institutes.id = offices.institute_id) INNER JOIN
+  personnel ON offices.id = personnel.office_id WHERE offices.district_id = '".$this->district."'
+  GROUP BY institutes.name");
+  return response()->json($arr,201);
+  }
+}
+
 }

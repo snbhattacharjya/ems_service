@@ -70,14 +70,11 @@ if(!empty($personnelId)  && !empty($office_id) && ($this->level===3 || $this->le
          }
       public function getPPListByDistinctDesignation(Request $request){
         if($this->level==12 ){
-        return Personnel::select('distinct designation','count(post_stat) as poststatcount','post_stat')
-                        ->where('personnel.district_id','=',$this->district)
-                        ->where('personnel.post_stat' ,'=',$post_stat)
-                        ->groupBy('designation')
-                        ->get();
+         $sql='select distinct(designation),count(post_stat) as poststatcount,post_stat from personnel where district_id="'.$this->district.'" and  post_stat="'.$request->post_stat.'" group by designation';
+         return DB::select($sql);
         }else{
-            return response()->json('Unathunticated',401);  
-        }            
+            return response()->json('Unathunticated',401);
+        }
       }
      public function createAdhocRule(Request $request){
     if($this->level==12 ){
@@ -91,10 +88,10 @@ if(!empty($personnelId)  && !empty($office_id) && ($this->level===3 || $this->le
                 ->where('designation', $designation)
                 ->where('district_id', $this->district)
                 ->update($update);
-                return response()->json('Successfully Updated',201); 
+                return response()->json('Successfully Updated',201);
             }else{
-                return response()->json('Unathunticated',401);  
-            }   
+                return response()->json('Unathunticated',401);
+            }
      }
 
 

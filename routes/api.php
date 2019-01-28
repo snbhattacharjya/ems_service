@@ -171,6 +171,7 @@ Route::post('/getpersonnelbypoststat', 'categorization\ManualPoststatSetControll
 Route::post('/revokeexcemption', 'ExcemptionController@revokeExcemption');
 Route::post('/getPPListByDistinctDesignation', 'categorization\ManualPoststatSetController@getPPListByDistinctDesignation');
 Route::post('/adhokeppstatus', 'categorization\ManualPoststatSetController@createAdhocRule');
+Route::get('/institutewisepp', 'Report\ReportController@instituteWisePP');
 });
 
 //Route::post('/deo', 'UserController@diocreation');
