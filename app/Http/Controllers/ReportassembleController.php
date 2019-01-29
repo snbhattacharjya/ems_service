@@ -122,12 +122,24 @@ class ReportassembleController extends Controller
 	$assembly_id=$request->assembly_id;
 	$male_party_count=$request->male_party_count;
 	$female_party_count=$request->female_party_count;
+	$male_aeo_count=$request->male_aeo_count;
+	$female_aeo_count=$request->female_aeo_count;
+	$male_mo_count=$request->male_mo_count;
+	$female_mo_count=$request->female_mo_count;
 	$district_id=$request->district_id;
 
 if(!empty($assembly_id) && (!empty($district_id)) && ($this->district==$district_id) && ($this->level===3 || $this->level===4|| $this->level===12)){ 
 		
 	DB::table('assembly_party')->where('assembly_id',$assembly_id)
-	->update(['male_party_count' => $male_party_count,'female_party_count' => $female_party_count,'updated_at' => date('Y-m-d H:i:s')]);
+	->update([
+	'male_party_count' => $male_party_count,
+	'female_party_count' => $female_party_count,
+	'male_aeo_count' => $male_aeo_count,
+	'female_aeo_count' => $female_aeo_count,
+	'male_mo_count' => $male_mo_count,
+	'female_mo_count' => $female_mo_count,
+	'updated_at' => date('Y-m-d H:i:s')
+	]);
 	
 	return response()->json('Successfully Updated',201);                 
 }else{

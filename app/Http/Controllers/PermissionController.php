@@ -41,14 +41,15 @@ class PermissionController extends Controller
     $arr['menu'][]=array('parent_menu'=>'About','group'=>'about','menu_link'=>'/dashboard/help','menu_icon_name'=>'help','submenu'=>'null');
 	$arr['menu'][]=array('parent_menu'=>'Contact','group'=>'contact','menu_link'=>'/dashboard/contact','menu_icon_name'=>'contacts','submenu'=>'null');
 	
-	$arr['menu'][]=array('parent_menu'=>'Office','group'=>'office','menu_link'=>'','menu_icon_name'=>'business',
-	'submenu'=>array(
-	array("menu_name"=>'Edit Office',"menu_link"=>'/office/edit',"menu_icon_name"=>'create')));
-   $arr['menu'][]=array('parent_menu'=>'Personnel','group'=>'personnel','menu_link'=>'','menu_icon_name'=>'people',
-	'submenu'=>array(
-	array("menu_name"=>'Create new personnel',"menu_link"=>'/personnel/create',"menu_icon_name"=>'create'),
-	array("menu_name"=>'Personnel Lists',"menu_link"=>'/personnel/list',"menu_icon_name"=>'list_alt')));
-    $arr['menu'][]=array('parent_menu'=>'MIS Report','group'=>'mis_report','menu_link'=>'','menu_icon_name'=>'assessment',
+// 	$arr['menu'][]=array('parent_menu'=>'Office','group'=>'office','menu_link'=>'','menu_icon_name'=>'business',
+// 	'submenu'=>array(
+// 	array("menu_name"=>'Edit Office',"menu_link"=>'/office/edit',"menu_icon_name"=>'create')));
+//    $arr['menu'][]=array('parent_menu'=>'Personnel','group'=>'personnel','menu_link'=>'','menu_icon_name'=>'people',
+// 	'submenu'=>array(
+// 	array("menu_name"=>'Create new personnel',"menu_link"=>'/personnel/create',"menu_icon_name"=>'create'),
+// 	array("menu_name"=>'Personnel Lists',"menu_link"=>'/personnel/list',"menu_icon_name"=>'list_alt')));
+   
+	$arr['menu'][]=array('parent_menu'=>'MIS Report','group'=>'mis_report','menu_link'=>'','menu_icon_name'=>'assessment',
 	'submenu'=>array(
 	array("menu_name"=>'Office Declaration PP1 Format',"menu_link"=>'/misreport/pp1',"menu_icon_name"=>'business'),
 	array("menu_name"=>'Personnel Details  PP2 Format',"menu_link"=>'/misreport/pp2',"menu_icon_name"=>'people')));

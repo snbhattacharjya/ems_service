@@ -115,8 +115,8 @@ class ReportController extends Controller
 
      public function officeCategopryWisePPadded(){
        if( $this->level==12 || $this->level==5){
-  $arr['available']= DB::select("SELECT categories.name, COUNT(CASE WHEN personnel.gender = 'M' THEN 1 END) AS male,
-        COUNT(CASE WHEN personnel.gender = 'F' THEN 1 END) AS female,
+  $arr['available']= DB::select("SELECT categories.name, COUNT(CASE WHEN personnel.gender = 'M' and exempted is NULL and to_district is NULL THEN 1 END) AS male,
+        COUNT(CASE WHEN personnel.gender = 'F' and exempted is NULL and to_district is NULL THEN 1 END) AS female,
         COUNT(personnel.id) AS total
         FROM (categories INNER JOIN offices ON categories.id = offices.category_id) INNER JOIN
         personnel ON offices.id = personnel.office_id WHERE offices.district_id = '".$this->district."'
@@ -134,25 +134,25 @@ class ReportController extends Controller
     public function officeCategopryWisePostStatus(){
       if($this->level==12 || $this->level===5){
         $arr['availableMale']= DB::select("SELECT categories.name,
-        COUNT(CASE WHEN personnel.post_stat = 'NA' and personnel.gender='M'  THEN 1 END) AS NA,
-        COUNT(CASE WHEN personnel.post_stat = 'AEO' and personnel.gender='M' THEN 1 END) AS AEO,
-        COUNT(CASE WHEN personnel.post_stat = 'PR' and personnel.gender='M' THEN 1 END) AS PR,
-        COUNT(CASE WHEN personnel.post_stat = 'P1' and personnel.gender='M' THEN 1 END) AS P1,
-        COUNT(CASE WHEN personnel.post_stat = 'P2' and personnel.gender='M' THEN 1 END) AS P2,
-        COUNT(CASE WHEN personnel.post_stat = 'P3' and personnel.gender='M' THEN 1 END) AS P3,
-        COUNT(CASE WHEN personnel.post_stat = 'MO' and personnel.gender='M' THEN 1 END) AS MO
+        COUNT(CASE WHEN personnel.post_stat = 'NA' and personnel.gender='M' and exempted is NULL and to_district is NULL  THEN 1 END) AS NA,
+        COUNT(CASE WHEN personnel.post_stat = 'AEO' and personnel.gender='M' and exempted is NULL and to_district is NULL THEN 1 END) AS AEO,
+        COUNT(CASE WHEN personnel.post_stat = 'PR' and personnel.gender='M' and exempted is NULL and to_district is NULL THEN 1 END) AS PR,
+        COUNT(CASE WHEN personnel.post_stat = 'P1' and personnel.gender='M' and exempted is NULL and to_district is NULL THEN 1 END) AS P1,
+        COUNT(CASE WHEN personnel.post_stat = 'P2' and personnel.gender='M' and exempted is NULL and to_district is NULL THEN 1 END) AS P2,
+        COUNT(CASE WHEN personnel.post_stat = 'P3' and personnel.gender='M' and exempted is NULL and to_district is NULL THEN 1 END) AS P3,
+        COUNT(CASE WHEN personnel.post_stat = 'MO' and personnel.gender='M' and exempted is NULL and to_district is NULL THEN 1 END) AS MO
        FROM (categories INNER JOIN offices ON categories.id = offices.category_id) INNER JOIN
        personnel ON offices.id = personnel.office_id WHERE offices.district_id = '".$this->district."'
        GROUP BY categories.name");
 
       $arr['availableFemale']= DB::select("SELECT categories.name,
-      COUNT(CASE WHEN personnel.post_stat = 'NA' and personnel.gender='F'  THEN 1 END) AS NA,
-      COUNT(CASE WHEN personnel.post_stat = 'AEO' and personnel.gender='F' THEN 1 END) AS AEO,
-      COUNT(CASE WHEN personnel.post_stat = 'PR' and personnel.gender='F' THEN 1 END) AS PR,
-      COUNT(CASE WHEN personnel.post_stat = 'P1' and personnel.gender='F' THEN 1 END) AS P1,
-      COUNT(CASE WHEN personnel.post_stat = 'P2' and personnel.gender='F' THEN 1 END) AS P2,
-      COUNT(CASE WHEN personnel.post_stat = 'P3' and personnel.gender='F' THEN 1 END) AS P3,
-      COUNT(CASE WHEN personnel.post_stat = 'MO' and personnel.gender='F' THEN 1 END) AS MO
+      COUNT(CASE WHEN personnel.post_stat = 'NA' and personnel.gender='F' and exempted is NULL and to_district is NULL THEN 1 END) AS NA,
+      COUNT(CASE WHEN personnel.post_stat = 'AEO' and personnel.gender='F' and exempted is NULL and to_district is NULL THEN 1 END) AS AEO,
+      COUNT(CASE WHEN personnel.post_stat = 'PR' and personnel.gender='F' and exempted is NULL and to_district is NULL THEN 1 END) AS PR,
+      COUNT(CASE WHEN personnel.post_stat = 'P1' and personnel.gender='F' and exempted is NULL and to_district is NULL THEN 1 END) AS P1,
+      COUNT(CASE WHEN personnel.post_stat = 'P2' and personnel.gender='F' and exempted is NULL and to_district is NULL THEN 1 END) AS P2,
+      COUNT(CASE WHEN personnel.post_stat = 'P3' and personnel.gender='F' and exempted is NULL and to_district is NULL THEN 1 END) AS P3,
+      COUNT(CASE WHEN personnel.post_stat = 'MO' and personnel.gender='F' and exempted is NULL and to_district is NULL THEN 1 END) AS MO
       FROM (categories INNER JOIN offices ON categories.id = offices.category_id) INNER JOIN
       personnel ON offices.id = personnel.office_id WHERE offices.district_id = '".$this->district."'
       GROUP BY categories.name");
@@ -190,14 +190,14 @@ class ReportController extends Controller
 public function groupWisePP(){
   if($this->level==12 || $this->level==5){
   $arr['ávailable']=DB::select("SELECT distinct(categories.name),
-  count(CASE WHEN personnel.gender='M' and personnel.emp_group='A'  THEN 1 END) as A_M,
-  count(CASE WHEN personnel.gender='M' and personnel.emp_group='B'  THEN 1 END) as B_M,
-  count(CASE WHEN personnel.gender='M' and personnel.emp_group='C'  THEN 1 END) as C_M,
-  count(CASE WHEN personnel.gender='M' and personnel.emp_group='D'  THEN 1 END) as D_M,
-  count(CASE WHEN personnel.gender='F' and personnel.emp_group='A'  THEN 1 END) as A_F,
-  count(CASE WHEN personnel.gender='F' and personnel.emp_group='B'  THEN 1 END) as B_F,
-  count(CASE WHEN personnel.gender='F' and personnel.emp_group='C'  THEN 1 END) as C_F,
-  count(CASE WHEN personnel.gender='F' and personnel.emp_group='D'  THEN 1 END) as D_F
+  count(CASE WHEN personnel.gender='M' and personnel.emp_group='A' and exempted is NULL and to_district is NULL THEN 1 END) as A_M,
+  count(CASE WHEN personnel.gender='M' and personnel.emp_group='B' and exempted is NULL and to_district is NULL THEN 1 END) as B_M,
+  count(CASE WHEN personnel.gender='M' and personnel.emp_group='C' and exempted is NULL and to_district is NULL THEN 1 END) as C_M,
+  count(CASE WHEN personnel.gender='M' and personnel.emp_group='D' and exempted is NULL and to_district is NULL THEN 1 END) as D_M,
+  count(CASE WHEN personnel.gender='F' and personnel.emp_group='A' and exempted is NULL and to_district is NULL THEN 1 END) as A_F,
+  count(CASE WHEN personnel.gender='F' and personnel.emp_group='B' and exempted is NULL and to_district is NULL THEN 1 END) as B_F,
+  count(CASE WHEN personnel.gender='F' and personnel.emp_group='C' and exempted is NULL and to_district is NULL THEN 1 END) as C_F,
+  count(CASE WHEN personnel.gender='F' and personnel.emp_group='D' and exempted is NULL and to_district is NULL THEN 1 END) as D_F
   FROM (categories INNER JOIN offices ON categories.id = offices.category_id) INNER JOIN
   personnel ON offices.id = personnel.office_id WHERE offices.district_id = '".$this->district."'
   GROUP BY categories.name");
@@ -208,14 +208,14 @@ public function groupWisePP(){
 public function instituteWisePP(){
   if($this->level==12 || $this->level==5){
   $arr['ávailable']=DB::select("SELECT distinct(institutes.name),
-  count(CASE WHEN personnel.gender='M' and personnel.emp_group='A'  THEN 1 END) as A_M,
-  count(CASE WHEN personnel.gender='M' and personnel.emp_group='B'  THEN 1 END) as B_M,
-  count(CASE WHEN personnel.gender='M' and personnel.emp_group='C'  THEN 1 END) as C_M,
-  count(CASE WHEN personnel.gender='M' and personnel.emp_group='D'  THEN 1 END) as D_M,
-  count(CASE WHEN personnel.gender='F' and personnel.emp_group='A'  THEN 1 END) as A_F,
-  count(CASE WHEN personnel.gender='F' and personnel.emp_group='B'  THEN 1 END) as B_F,
-  count(CASE WHEN personnel.gender='F' and personnel.emp_group='C'  THEN 1 END) as C_F,
-  count(CASE WHEN personnel.gender='F' and personnel.emp_group='D'  THEN 1 END) as D_F
+  count(CASE WHEN personnel.gender='M' and personnel.emp_group='A' and exempted is NULL and to_district is NULL  THEN 1 END) as A_M,
+  count(CASE WHEN personnel.gender='M' and personnel.emp_group='B' and exempted is NULL and to_district is NULL THEN 1 END) as B_M,
+  count(CASE WHEN personnel.gender='M' and personnel.emp_group='C' and exempted is NULL and to_district is NULL THEN 1 END) as C_M,
+  count(CASE WHEN personnel.gender='M' and personnel.emp_group='D' and exempted is NULL and to_district is NULL THEN 1 END) as D_M,
+  count(CASE WHEN personnel.gender='F' and personnel.emp_group='A' and exempted is NULL and to_district is NULL THEN 1 END) as A_F,
+  count(CASE WHEN personnel.gender='F' and personnel.emp_group='B' and exempted is NULL and to_district is NULL THEN 1 END) as B_F,
+  count(CASE WHEN personnel.gender='F' and personnel.emp_group='C' and exempted is NULL and to_district is NULL THEN 1 END) as C_F,
+  count(CASE WHEN personnel.gender='F' and personnel.emp_group='D' and exempted is NULL and to_district is NULL THEN 1 END) as D_F
   FROM (institutes INNER JOIN offices ON institutes.id = offices.institute_id) INNER JOIN
   personnel ON offices.id = personnel.office_id WHERE offices.district_id = '".$this->district."'
   GROUP BY institutes.name");
