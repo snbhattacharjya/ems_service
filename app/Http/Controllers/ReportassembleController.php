@@ -36,7 +36,7 @@ class ReportassembleController extends Controller
 	 if($this->district=='' & ($this->userID=="WBCEO" || $this->userID=="WBCEONODAL")){
 	      $arr['district']=$this->getDistrictName($request->district_id);
 		  $sqlAvailable='SELECT ac.id,ac.name,ap.male_party_count as male_party_count,
-		                ap.female_party_count as female_party_count from 
+		                ap.female_party_count as female_party_count,ap.male_aeo_count as male_aeo_count,ap.female_aeo_count as female_aeo_count,ap.female_mo_count as female_mo_count,ap.male_mo_count as male_mo_count from 
 						assembly_constituencies ac inner join assembly_party ap on (ap.assembly_id=ac.id) 
 						where ac.district_id="'.$request->district_id.'" order by ac.id asc';
 					//echo $sqlAvailable;exit;
@@ -49,7 +49,7 @@ class ReportassembleController extends Controller
 	
 		$arr['district']=$this->getDistrictName($this->district);
 		  $sqlAvailable='SELECT ac.id,ac.name,ap.male_party_count as male_party_count,
-		                ap.female_party_count as female_party_count from 
+		                ap.female_party_count as female_party_count,ap.male_aeo_count as male_aeo_count,ap.female_aeo_count as female_aeo_count,ap.female_mo_count as female_mo_count,ap.male_mo_count as male_mo_count  from 
 						assembly_constituencies ac inner join assembly_party ap on (ap.assembly_id=ac.id) 
 						where ac.district_id="'.$request->district_id.'"   order by ac.id asc';
 		
@@ -65,7 +65,7 @@ class ReportassembleController extends Controller
 		
 		$arr['district']=$this->getDistrictName($this->district);
 		 $sqlAvailable='SELECT ac.id,ac.name,ap.male_party_count as male_party_count,
-					   ap.female_party_count as female_party_count from 
+					   ap.female_party_count as female_party_count,ap.male_aeo_count as male_aeo_count,ap.female_aeo_count as female_aeo_count,ap.female_mo_count as female_mo_count,ap.male_mo_count as male_mo_count from 
 					   assembly_constituencies ac inner join assembly_party ap on (ap.assembly_id=ac.id) 
 					   where ac.district_id="'.$request->district_id.'"  and  ac.subdivision_id="'.$subdivision_id.'" order by ac.id asc';
 	   
@@ -84,7 +84,7 @@ class ReportassembleController extends Controller
         
 		$arr['district']=$this->getDistrictName($this->district);
 		$sqlAvailable='SELECT ac.id,ac.name,ap.male_party_count as male_party_count,
-					  ap.female_party_count as female_party_count from 
+					  ap.female_party_count as female_party_count,ap.male_aeo_count as male_aeo_count,ap.female_aeo_count as female_aeo_count,ap.female_mo_count as female_mo_count,ap.male_mo_count as male_mo_count from 
 					  assembly_constituencies ac inner join assembly_party ap on (ap.assembly_id=ac.id) 
 					  where ac.district_id="'.$request->district_id.'"   order by ac.id asc';
 	  
@@ -101,7 +101,7 @@ class ReportassembleController extends Controller
 		 if($usertype=='OC'){
 		$arr['district']=$this->getDistrictName($this->district);
 		 $sqlAvailable='SELECT ac.id,ac.name,ap.male_party_count as male_party_count,
-					   ap.female_party_count as female_party_count from 
+					   ap.female_party_count as female_party_count,ap.male_aeo_count as male_aeo_count,ap.female_aeo_count as female_aeo_count,ap.female_mo_count as female_mo_count,ap.male_mo_count as male_mo_count from 
 					   assembly_constituencies ac inner join assembly_party ap on (ap.assembly_id=ac.id) 
 					   where ac.district_id="'.$request->district_id.'"  and  ac.subdivision_id="'.$subdivision_id.'" order by ac.id asc';
 	   

@@ -222,5 +222,9 @@ public function instituteWisePP(){
   return response()->json($arr,201);
   }
 }
+public function groupwiseDesignationMismatchReport(){
+  
+}
+
 
 }
