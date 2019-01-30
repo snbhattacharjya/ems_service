@@ -222,9 +222,25 @@ public function instituteWisePP(){
   return response()->json($arr,201);
   }
 }
-public function groupwiseDesignationMismatchReport(){
-  
+public function groupwiseDesignationMismatchReport(Request $request){
+   if($this->level==12 ){
+     $sql='select distinct(designation),count(gender) as pp from personnel where district_id="'.$this->district.'" and emp_group="'.$request->group.'"  group by designation';
+     return DB::select($sql);
+    }else{
+        return response()->json('Unathunticated',401);
+    }
+  } 
+public function getMisMatchList(Request $request){
+  if($this->level==12 ){
+  if((!empty($request->designation)) || (!empty($request->emp_group))){
+  return Personnel::where('designation',$request->designation)
+   ->where('emp_group',$request->emp_group)
+   ->where('district_id',$this->district)
+   ->get();
+  }
+  }else{
+    return response()->json('Unathunticated',401);
+  }
 }
-
 
 }

@@ -172,6 +172,9 @@ Route::post('/revokeexcemption', 'ExcemptionController@revokeExcemption');
 Route::post('/getPPListByDistinctDesignation', 'categorization\ManualPoststatSetController@getPPListByDistinctDesignation');
 Route::post('/adhokeppstatus', 'categorization\ManualPoststatSetController@createAdhocRule');
 Route::get('/institutewisepp', 'Report\ReportController@instituteWisePP');
+//
+Route::get('/mismatchreport', 'Report\ReportController@groupwiseDesignationMismatchReport');
+Route::get('/getmismatchlist','Report\ReportController@getMisMatchList');
 });
 
 //Route::post('/deo', 'UserController@diocreation');
