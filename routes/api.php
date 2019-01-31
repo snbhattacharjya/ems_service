@@ -173,8 +173,8 @@ Route::post('/getPPListByDistinctDesignation', 'categorization\ManualPoststatSet
 Route::post('/adhokeppstatus', 'categorization\ManualPoststatSetController@createAdhocRule');
 Route::get('/institutewisepp', 'Report\ReportController@instituteWisePP');
 //
-Route::get('/mismatchreport', 'Report\ReportController@groupwiseDesignationMismatchReport');
-Route::get('/getmismatchlist','Report\ReportController@getMisMatchList');
+Route::post('/mismatchreport', 'Report\ReportController@groupwiseDesignationMismatchReport');
+Route::get('/getmismatchlist/{designation}/{emp_group}','Report\ReportController@getMisMatchList');
 });
 
 //Route::post('/deo', 'UserController@diocreation');

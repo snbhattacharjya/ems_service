@@ -110,7 +110,7 @@ class UserExport extends Controller
 public function personnelExport(){
     if($this->level===3 || $this->level===4|| $this->level===12){
     $data=Personnel::select('id','office_id','name','designation','dob','gender','present_address','permanent_address',
-    'mobile','phone','email','basic_pay','grade_pay','pay_level','emp_group','post_stat','qualification_id','language_id','epic','part_no','sl_no','assembly_temp_id','assembly_perm_id','assembly_off_id','block_muni_temp_id','block_muni_perm_id','block_muni_off_id','subdivision_id','branch_ifsc','bank_account_no','remark_id','remark_reason')
+    'mobile','phone','email','basic_pay','grade_pay','pay_level','emp_group','post_stat','qualification_id','language_id','epic','part_no','sl_no','assembly_temp_id','assembly_perm_id','assembly_off_id','block_muni_temp_id','block_muni_perm_id','block_muni_off_id','subdivision_id','branch_ifsc','bank_account_no','remark_id','remark_reason','exempted','exemp_reason','exemp_date')
 
     ->where('district_id',$this->district)
     ->orderBy('office_id')

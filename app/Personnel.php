@@ -10,7 +10,7 @@ class Personnel extends Model
 
     protected $fillable = ['id','name','designation','office_id','updated_at'];
 
-    protected $hidden = ['created_at'];
+    protected $hidden = [''];
 
     public $incrementing = false;
 
