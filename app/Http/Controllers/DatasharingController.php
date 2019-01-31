@@ -36,7 +36,12 @@ class DatasharingController extends Controller
     public function getRequirement($from_district,$category){
         if($this->level==2){
       $arr=array();
-      $requirement=AssemblyConstituency::select(\DB::raw('sum(assembly_party.male_party_count) as MalePartyRequirement ,sum(assembly_party.female_party_count) as FemalePartyRequirement'))
+      $requirement=AssemblyConstituency::select(\DB::raw('sum(assembly_party.male_party_count) as MalePartyRequirement ,
+                          sum(assembly_party.female_party_count) as FemalePartyRequirement
+                          ,sum(assembly_party.male_aeo_count) as MaleAeoRequirement
+                          ,sum(assembly_party.female_aeo_count) as FemaleAeoRequirement
+                          ,sum(assembly_party.female_mo_count) as MaleMoRequirement
+                          ,sum(assembly_party.male_mo_count) as FemaleMoRequirement'))
                          ->join('assembly_party','assembly_party.assembly_id','=','assembly_constituencies.id')
                          ->where('district_id',$from_district)
                          ->get();
@@ -103,7 +108,12 @@ class DatasharingController extends Controller
         $transfer_category=$request->category; //PR,MO,P1 type=POST
         //$transfer_category=$getCeoRequest[0]->category;
 
-        $requirement=AssemblyConstituency::select(\DB::raw('sum(assembly_party.male_party_count) as MalePartyRequirement ,sum(assembly_party.female_party_count) as FemalePartyRequirement'))
+        $requirement=AssemblyConstituency::select(\DB::raw('sum(assembly_party.male_party_count) as MalePartyRequirement,
+                            sum(assembly_party.female_party_count) as FemalePartyRequirement
+                            ,sum(assembly_party.male_aeo_count) as MaleAeoRequirement
+                            ,sum(assembly_party.female_aeo_count) as FemaleAeoRequirement
+                            ,sum(assembly_party.female_mo_count) as MaleMoRequirement
+                            ,sum(assembly_party.male_mo_count) as FemaleMoRequirement'))
                            ->join('assembly_party','assembly_party.assembly_id','=','assembly_constituencies.id')
                            ->where('district_id',$this->district)
                            ->get();
@@ -144,7 +154,12 @@ class DatasharingController extends Controller
             ->where('district_id',$this->district)
             ->where('to_district',NULL)
             ->get();
-            $requirement=AssemblyConstituency::select(\DB::raw('sum(assembly_party.male_party_count) as MalePartyRequirement ,sum(assembly_party.female_party_count) as FemalePartyRequirement'))
+            $requirement=AssemblyConstituency::select(\DB::raw('sum(assembly_party.male_party_count) as MalePartyRequirement ,
+                   sum(assembly_party.female_party_count) as FemalePartyRequirement
+                   ,sum(assembly_party.male_aeo_count) as MaleAeoRequirement
+                   ,sum(assembly_party.female_aeo_count) as FemaleAeoRequirement
+                   ,sum(assembly_party.female_mo_count) as MaleMoRequirement
+                   ,sum(assembly_party.male_mo_count) as FemaleMoRequirement'))
             ->join('assembly_party','assembly_party.assembly_id','=','assembly_constituencies.id')
             ->where('district_id',$this->district)
             ->get();
