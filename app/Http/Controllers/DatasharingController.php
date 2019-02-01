@@ -122,6 +122,7 @@ class DatasharingController extends Controller
                            ->where('post_stat',$transfer_category)
                            ->where('district_id',$this->district)
                            ->where('to_district',NULL)
+                           ->where('exempted',NULL)
                            ->get();
       $arr['available']= collect($available)->toArray();
 
@@ -153,6 +154,7 @@ class DatasharingController extends Controller
             ->where('post_stat',$transfer_category)
             ->where('district_id',$this->district)
             ->where('to_district',NULL)
+            ->where('exempted',NULL)
             ->get();
             $requirement=AssemblyConstituency::select(\DB::raw('sum(assembly_party.male_party_count) as MalePartyRequirement ,
                    sum(assembly_party.female_party_count) as FemalePartyRequirement
@@ -164,8 +166,17 @@ class DatasharingController extends Controller
             ->where('district_id',$this->district)
             ->get();
 
+          if($transfer_category=='MO'){
+            $available=$available[0]['available']-($requirement[0]['MaleMoRequirement']+$requirement[0]['FemaleMoRequirement']);
+          }else if($transfer_category=='AEO'){
+            $available=$available[0]['available']-($requirement[0]['MaleAeoRequirement']+$requirement[0]['FemaleAeoRequirement']);
+          }else{
+            $available=$available[0]['available']-($requirement[0]['MalePartyRequirement']+$requirement[0]['FemalePartyRequirement']);
+          }
 
-           if(($available[0]['available']-($requirement[0]['MalePartyRequirement']+$requirement[0]['FemalePartyRequirement']))>$transfer_personnel){
+
+
+           if($available>$transfer_personnel){
             Personnel::where('post_stat',$transfer_category)
             ->where('district_id',$this->district)
             ->inRandomOrder()

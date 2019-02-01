@@ -366,9 +366,8 @@ class OfficeController extends Controller
         if(!empty($mobile)){
             $sql .='or mobile like %'.$mobile.' %';
         }
-      echo  $sql;
-       // $data= DB::select($sql);
-            // return response()->json( $data,201);
+        $data= DB::select($sql);
+        return response()->json( $data,201);
 
   }
 
