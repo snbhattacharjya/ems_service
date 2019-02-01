@@ -84,6 +84,7 @@ class officeDeletionRestoreController extends Controller
     $office->female_staff =   strip_tags($officeDeleted[0]->female_staff,'');
     $office->created_at = date('Y-m-d H:i:s');
     $office->agree = $officeDeleted[0]->agree;
+    $office->pp_agree = $officeDeleted[0]->pp_agree;
     $office->save();
     $office_id= $office->id;
 
@@ -146,9 +147,9 @@ class officeDeletionRestoreController extends Controller
     $office->female_staff =   strip_tags($officeDeleted[0]->female_staff,'');
     $office->created_at = date('Y-m-d H:i:s');
     $office->agree = $officeDeleted[0]->agree;
+    $office->pp_agree = $officeDeleted[0]->pp_agree;
     $office->save();
     $office_id= $office->id;
-
     $UserDeleted=userDeleteRestore::where('user_id',$office_id)->get();
     $userDeleteStore=new User;
     $userDeleteStore->id = $UserDeleted[0]->id;

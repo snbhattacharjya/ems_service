@@ -899,6 +899,20 @@ public function revokeRule(Request $request){
 		return response()->json('Unauthenticated',401);
 	 }
 	}
-
-
+   public function revokePostStat(Request $request){
+	if($this->level==12){
+	   $post_stat=$request->post_stat;
+       if(!empty($post_stat)){
+		$update = [
+            'post_stat' => 'NA'
+            
+            ];
+        Personnel::where('post_stat',$post_stat)
+                 ->where('district_id',$this->district)
+                 ->update($update);   
+	   }
+   }else{
+	return response()->json('Unauthenticated',401);
+    }
+  }
  }

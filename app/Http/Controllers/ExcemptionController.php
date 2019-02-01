@@ -163,4 +163,23 @@ if($this->level==12){
                return response()->json('Unauthenticated',401);  
          }
    }
+ public function revokeExemptionByType(Request $request){
+     
+    if($this->level==12){  
+        $exemp_type=$request->exemp_type; 
+        $update = [
+            'exempted' => NULL,
+            'exemp_type' => NULL,
+            'exemp_reason' => NULL,
+            'exemp_date' =>NULL,
+            ];
+        Personnel::where('exemp_type',$exemp_type)
+                    ->where('district_id', $this->district)
+                    ->update($update);
+        return response()->json('Successfully Updated',201);             
+    }else{
+       return response()->json('Unauthenticated',401);  
+    }
+ }
+
 }

@@ -175,6 +175,10 @@ Route::get('/institutewisepp', 'Report\ReportController@instituteWisePP');
 //
 Route::post('/mismatchreport', 'Report\ReportController@groupwiseDesignationMismatchReport');
 Route::get('/getmismatchlist/{designation}/{emp_group}','Report\ReportController@getMisMatchList');
+//
+Route::get('/revokeexcemptionbytype/{exemp_type}', 'ExcemptionController@revokeExemptionByType');
+Route::get('/revokepoststat/{post_stat}', 'categorization\PoststatController@revokePostStat');
+
 });
 
 //Route::post('/deo', 'UserController@diocreation');

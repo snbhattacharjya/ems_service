@@ -76,9 +76,20 @@ class PersonneltransferController extends Controller
         $Personneltransfer->subdivision_id =$personnel[0]->subdivision_id;
         $Personneltransfer->remark_reason = strip_tags($personnel[0]->remark_reason,'');
         $Personneltransfer->pay_level = strip_tags($personnel[0]->pay_level,'');
+
+        $Personneltransfer->post_office_account =strip_tags($personnel[0]->post_office_account,'');
+        $Personneltransfer->exempted =strip_tags($personnel[0]->exempted,'');
+        $Personneltransfer->exemp_type =strip_tags($personnel[0]->exemp_type,'');
+        $Personneltransfer->exemp_reason =strip_tags($personnel[0]->exemp_reason,'');
+        $Personneltransfer->exemp_date =strip_tags($personnel[0]->exemp_date,'');
+        $Personneltransfer->to_district =strip_tags($personnel[0]->to_district,'');
+        $Personneltransfer->share_date =strip_tags($personnel[0]->share_date,'');
+
         $Personneltransfer->created_at =date('Y-m-d H:i:s');
         $Personneltransfer->memo_date =strip_tags($request->memo_date,'');
         $Personneltransfer->memo_no =strip_tags($request->memo_no,'');
+        
+        
         $Personneltransfer->save();
         if($Personneltransfer->id){
         Personnel::where('id',$request->personnel_id)->delete();
