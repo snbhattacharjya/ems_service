@@ -63,6 +63,7 @@ if(!empty($personnelId)  && !empty($office_id) && ($this->level===3 || $this->le
                 ->leftJoin('categories','categories.id','=','offices.category_id')
                  ->where('personnel.district_id','=',$this->district)
                  ->where('personnel.post_stat' ,'=',$post_stat)
+                 ->whereNull('personnel.exempted')
                  ->get();
             //}else{
             // return response()->json('Error',400);
@@ -70,7 +71,7 @@ if(!empty($personnelId)  && !empty($office_id) && ($this->level===3 || $this->le
          }
       public function getPPListByDistinctDesignation(Request $request){
         if($this->level==12 ){
-         $sql='select distinct(designation),count(post_stat) as poststatcount,post_stat from personnel where district_id="'.$this->district.'" and  post_stat="'.$request->post_stat.'" and exempted is NULL and to_district is NULL group by designation';
+         $sql='select distinct(designation),count(post_stat) as poststatcount,post_stat from personnel where district_id="'.$this->district.'" and  post_stat="'.$request->post_stat.'" and gender="M" and exempted is NULL and to_district is NULL group by designation';
          return DB::select($sql);
         }else{
             return response()->json('Unathunticated',401);
@@ -87,6 +88,7 @@ if(!empty($personnelId)  && !empty($office_id) && ($this->level===3 || $this->le
     Personnel:: where('post_stat', $current_poststat)
                 ->where('designation', $designation)
                 ->where('district_id', $this->district)
+                ->where('gender','M')
                 ->update($update);
                 return response()->json('Successfully Updated',201);
             }else{

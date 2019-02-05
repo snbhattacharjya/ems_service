@@ -337,7 +337,7 @@ class PoststatController extends Controller
 
 
 
-		$designation_clause='';
+	$designation_clause='';
       for($i = 0; $i < count($designation); $i++){
 	if($designation[$i] != 'ALL')
 		$designation_clause.="'".$designation[$i]."',";
@@ -401,14 +401,16 @@ class PoststatController extends Controller
     if($office_clause != 'ALL')
      $clause=$clause." AND offices.id IN ($office_clause)";
 
-	 if($request->post_stat_to=='PR' || $request->post_stat_to=='P1')
-	  $clause=$clause." AND remarks.id NOT IN ('02','03','07','10','22')";
-	 if($request->post_stat_to=='P2')
-	  $clause=$clause." AND remarks.id NOT IN ('07')";
-     if($request->post_stat_to=='P3'){
-	   $clause=$clause." AND remarks.id NOT IN ('23')";
-	 }
-	 $clause=$clause."AND personnel.exempted IS NULL";
+	//  if($request->post_stat_to=='PR' || $request->post_stat_to=='P1')
+	//   $clause=$clause." AND remarks.id NOT IN ('02','03','07','10','22')";
+	//  if($request->post_stat_to=='P2')
+	//   $clause=$clause." AND remarks.id NOT IN ('07')";
+    //  if($request->post_stat_to=='P3'){
+	//    $clause=$clause." AND remarks.id NOT IN ('23')";
+	//  }
+     $clause=$clause."AND personnel.exempted IS NULL";
+     $clause.=" AND YEAR('2019-05-31') - YEAR(personnel.dob) - IF(STR_TO_DATE(CONCAT(YEAR('2019-05-31'), '-', MONTH(personnel.dob), '-', DAY(personnel.dob)) ,'%Y-%c-%e') > '2019-05-31', 1, 0)".$age;
+
 	 $sql="SELECT remarks.id AS RemarksCode, remarks.name AS RemarksName, COUNT(*) AS PPCount FROM (personnel INNER JOIN offices ON personnel.office_id=offices.id) INNER JOIN remarks ON personnel.remark_id=remarks.id WHERE $clause GROUP BY remarks.id, remarks.name ORDER BY remarks.id";
     $arr['remarks']=collect(DB::select($sql))->toArray();
 	return response()->json($arr,200);
@@ -421,6 +423,240 @@ class PoststatController extends Controller
    $arr['poststatus']=DB::select($post_stat_query);
    return response()->json($arr,200);
 
+
+ }
+
+ public function prequeryrule(Request $request){
+        $district=$this->district;
+        $subdiv='ALL';
+        $govt=$request->category_id;
+        $officecd=$request->office_id;
+        $basic_pay=$request->basic_pay;
+        $grade_pay=$request->grade_pay;
+        $qualification=$request->qualification_id;
+        $not_qualification=$request->not_qualification;
+        $desg=$request->designation;
+        $not_designation=$request->not_designation;
+        $gender=$request->gender;
+        $age=$request->age;
+        $remarks=$request->remarks;
+        $not_remarks=$request->not_remarks;
+        $post_stat_from=$request->post_stat_from;
+        $post_stat_to=$request->post_stat_to;
+        $emp_group=$request->emp_group;
+
+
+
+        $govt_clause='';
+        for($i = 0; $i < count($govt); $i++){
+            if($govt[$i] != 'ALL')
+                $govt_clause.="'".$govt[$i]."',";
+            else{
+                $govt_clause='ALL';
+                break;
+            }
+        }
+
+    $govt_clause=rtrim($govt_clause,',');
+
+
+    $officecd_clause='';
+    for($i = 0; $i < count($officecd); $i++){
+    if($officecd[$i] != 'ALL')
+        $officecd_clause.="'".$officecd[$i]."',";
+    else{
+        $officecd_clause='ALL';
+        break;
+    }
+    }
+
+    $officecd_clause=rtrim($officecd_clause,',');
+
+    if(strlen($officecd_clause) > 200){
+    $arr['erorr']="Error in Saving Rule !!! Maximum Fifteen (15) Offices can be selected at One Time";
+    return response()->json($arr,401);
+    }
+    $qualification_clause='';
+    for($i = 0; $i < count($qualification); $i++){
+    if($qualification[$i] != 'ALL')
+        $qualification_clause.="'".$qualification[$i]."',";
+    else{
+        $qualification_clause='ALL';
+        break;
+    }
+    }
+
+    $qualification_clause=rtrim($qualification_clause,',');
+    if(strlen($qualification_clause) > 50){
+    $arr['erorr']="Error in Saving Rule !!! Qualification Selection is too long";
+    return response()->json($arr,401);
+
+    }
+    if($not_qualification == 1 && $qualification_clause == 'ALL'){
+    $arr['erorr']="Error in Qulification Selection!!!";
+    return response()->json($arr,401);
+    }
+
+    $group_clause='';
+    for($i = 0; $i < count($emp_group); $i++){
+      if($emp_group[$i] != 'ALL'){
+       $group_clause.="'".$emp_group[$i]."',";
+      }else{
+          $group_clause='ALL';
+          break;
+     }
+
+    }
+    $group_clause=rtrim($group_clause,',');
+    $desg_clause='';
+    for($i = 0; $i < count($desg); $i++){
+    if($desg[$i] != 'ALL')
+        $desg_clause.="'".$desg[$i]."',";
+    else{
+        $desg_clause='ALL';
+        break;
+    }
+    }
+
+    $desg_clause=rtrim($desg_clause,',');
+    if(strlen($desg_clause) > 200){
+    $arr['erorr']="Error in Saving Rule !!! Designation Selection is too long";
+    return response()->json($arr,401);
+    }
+
+    if($not_designation == 1 && $desg_clause == 'ALL'){
+    $arr['erorr']="Error in Designation Selection!!!";
+    return response()->json($arr,401);
+    }
+
+    $remarks_clause='';
+    if($remarks=='ALL' || in_array('ALL',$remarks)){
+    $remarks_clause="ALL";
+    }else{
+    for($i = 0; $i < count($remarks); $i++){
+        $remarks_clause.="'".$remarks[$i]."',";
+
+    }
+    }
+    $remarks_clause=rtrim($remarks_clause,',');
+    if(strlen($remarks_clause) > 50){
+    $arr['erorr']="Error in Saving Rule !!! Remarks Selection is too long";
+    return response()->json($arr,401);
+    }
+    if($not_remarks == 1 && $remarks_clause == 'ALL'){
+    $arr['erorr']="Error in Remarks Selection!!!";
+    return response()->json($arr,401);
+    }
+
+
+
+
+    $basic_pay_clause=$basic_pay[0].'-'.$basic_pay[1];
+
+    if($grade_pay!=0){
+       $grade_pay_clause=$grade_pay[0].'-'.$grade_pay[1];
+    }else{
+        $grade_pay_clause=0;
+    }
+
+    $ruleSet=[
+ 'District' =>$this->district,
+ 'OfficeCategory' =>$govt_clause,
+ 'Office' => $officecd_clause,
+ 'BasicPay' =>$basic_pay_clause,
+ 'GradePay' =>$grade_pay_clause,
+ 'Qualification' =>$qualification_clause,
+ 'NotQualification' =>$not_qualification,
+ 'Designation' =>$desg_clause,
+ 'NotDesignation' =>$not_designation,
+ 'Emp_group' =>$group_clause,
+ 'Remarks' =>$remarks_clause,
+ 'NotRemarks' =>$not_remarks,
+ 'Gender' =>$gender,
+ 'Age' =>$age,
+ 'PostStatFrom' =>$post_stat_from,
+ 'PostStatTo' =>$post_stat_to];
+
+            $basic_pay=$ruleSet['BasicPay'];
+            $grade_pay=$ruleSet['GradePay'];
+            $qualification=$ruleSet['Qualification'];
+            $not_qualification=$ruleSet['NotQualification'];
+            $desg=$ruleSet['Designation'];
+            $not_designation=$ruleSet['NotDesignation'];
+            $remarks=$ruleSet['Remarks'];
+            $not_remarks=$ruleSet['NotRemarks'];
+            $gender=$ruleSet['Gender'];
+            $District=$ruleSet['District'];
+            $govt=$ruleSet['OfficeCategory'];
+            $officecd=$ruleSet['Office'];
+            $post_stat_from=$ruleSet['PostStatFrom'];
+            $post_stat_to=$ruleSet['PostStatTo'];
+            $emp_group=$ruleSet['Emp_group'];
+            $basic_pay=explode("-",$basic_pay);
+
+			if($grade_pay!=0){
+				$grade_pay=explode("-",$grade_pay);
+				}
+				// if($pay_level!=0){
+				// 	$pay_level=explode("-",$pay_level);
+				// }
+
+			$clause="personnel.id != ''";
+			$clause.=" AND personnel.basic_pay BETWEEN $basic_pay[0] AND $basic_pay[1]";
+			if($grade_pay!=0){
+				$clause.=" AND personnel.grade_pay BETWEEN $grade_pay[0] AND $grade_pay[1]";
+				}
+				// if($pay_level!=0){
+				// 	$clause.=" AND personnel.pay_level BETWEEN $pay_level[0] AND $pay_level[1]";
+				// }
+
+			if($qualification != 'ALL' && $not_qualification == 0)
+				$clause.=" AND personnel.qualification_id IN ($qualification)";
+			if($qualification != 'ALL' && $not_qualification == 1)
+				$clause.=" AND personnel.qualification_id NOT IN ($qualification)";
+			if($emp_group != 'ALL')
+				$clause.=" AND personnel.emp_group IN ($emp_group)";
+			if($desg != 'ALL' && $not_designation == 0)
+				$clause.=" AND personnel.designation IN ($desg)";
+			if($desg != 'ALL' && $not_designation == 1)
+				$clause.=" AND personnel.designation NOT IN ($desg)";
+			if($remarks != 'ALL' && $not_remarks == 0)
+				$clause.=" AND personnel.remark_id IN ($remarks)";
+			if($remarks != 'ALL' && $not_remarks == 1)
+				$clause.=" AND personnel.remark_id NOT IN ($remarks)";
+			if($gender !='ALL')
+				$clause.=" AND personnel.gender='".$gender."'";
+			if($district==$District)
+				$clause.=" AND personnel.district_id='".$District."'";
+			if($govt != 'ALL')
+				$clause.=" AND offices.category_id IN ($govt)";
+			if($officecd != 'ALL')
+				$clause.=" AND offices.id IN ($officecd)";
+
+			// if($post_stat_to=='PR' || $post_stat_to=='P1')
+			// 	$clause=$clause." AND personnel.remark_id NOT IN ('02','03','07','10','22')";
+			// if($post_stat_to=='P2')
+			// 	$clause=$clause." AND personnel.remark_id NOT IN ('07')";
+			// if($post_stat_to=='P3')
+			// 	 $clause=$clause." AND personnel.remark_id NOT IN ('23')";
+
+			if($post_stat_from != 'NA'){
+				$clause.="AND personnel.post_stat='".$post_stat_from."'";
+			}else{
+				$clause.=" AND personnel.post_stat='NA'";
+			}
+			$clause=$clause."AND personnel.exempted IS NULL";
+
+			$clause.=" AND YEAR('2019-05-31') - YEAR(personnel.dob) - IF(STR_TO_DATE(CONCAT(YEAR('2019-05-31'), '-', MONTH(personnel.dob), '-', DAY(personnel.dob)) ,'%Y-%c-%e') > '2019-05-31', 1, 0)".$ruleSet['Age'];
+
+			$today = date("Y-m-d H:i:s");
+		$grant_rule_query="SELECT COUNT(personnel.id) AS PPCount from personnel INNER JOIN offices ON personnel.office_id=offices.id  WHERE $clause";
+
+		//echo $grant_rule_query;exit;
+
+			$affected =collect(DB::select($grant_rule_query))->toArray();
+			$arr['query']=array('queryval'=>$affected[0]->PPCount,'querydate'=>$today);
+			return response()->json($arr,200);
 
  }
 
@@ -441,7 +677,6 @@ class PoststatController extends Controller
     $post_stat_from=$request->post_stat_from;
 	$post_stat_to=$request->post_stat_to;
 	$emp_group=$request->emp_group;
-	// $pay_level=$request->pay_level;
 
 
 
@@ -665,12 +900,12 @@ if(!empty($grantRule)){
 
 
 
-		if($post_stat_to=='PR' || $post_stat_to=='P1')
-			$clause=$clause." AND personnel.remark_id NOT IN ('02','03','07','10','22')";
-		if($post_stat_to=='P2')
-			$clause=$clause." AND personnel.remark_id NOT IN ('07')";
-		if($post_stat_to=='P3')
-			 $clause=$clause." AND personnel.remark_id NOT IN ('23')";
+		// if($post_stat_to=='PR' || $post_stat_to=='P1')
+		// 	$clause=$clause." AND personnel.remark_id NOT IN ('02','03','07','10','22')";
+		// if($post_stat_to=='P2')
+		// 	$clause=$clause." AND personnel.remark_id NOT IN ('07')";
+		// if($post_stat_to=='P3')
+		// 	 $clause=$clause." AND personnel.remark_id NOT IN ('23')";
 
 
 		if($post_stat_from != 'NA'){
@@ -681,7 +916,7 @@ if(!empty($grantRule)){
 
 		$clause=$clause."AND personnel.exempted IS NULL";
 
-		$clause.=" AND DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(personnel.dob, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d')) ".$ruleSet[0]['Age'];
+		$clause.=" AND YEAR('2019-05-31') - YEAR(personnel.dob) - IF(STR_TO_DATE(CONCAT(YEAR('2019-05-31'), '-', MONTH(personnel.dob), '-', DAY(personnel.dob)) ,'%Y-%c-%e') > '2019-05-31', 1, 0) ".$ruleSet[0]['Age'];
 
 		$today = date("Y-m-d H:i:s");
 		 $grant_rule_query="UPDATE personnel INNER JOIN offices ON personnel.office_id=offices.id SET personnel.post_stat='$post_stat_to' WHERE $clause";
@@ -765,12 +1000,13 @@ public function revokeRule(Request $request){
 			if($officecd != 'ALL')
 				$clause.=" AND offices.id IN ($officecd)";
 
-			if($post_stat_to=='PR' || $post_stat_to=='P1')
-				$clause=$clause." AND personnel.remark_id NOT IN ('02','03','07','10','22')";
-			if($post_stat_to=='P2')
-				$clause=$clause." AND personnel.remark_id NOT IN ('07')";
-			if($post_stat_to=='P3')
-				 $clause=$clause." AND personnel.remark_id NOT IN ('23')";
+			// if($post_stat_to=='PR' || $post_stat_to=='P1')
+			// 	$clause=$clause." AND personnel.remark_id NOT IN ('02','03','07','10','22')";
+			// if($post_stat_to=='P2')
+			// 	$clause=$clause." AND personnel.remark_id NOT IN ('07')";
+			// if($post_stat_to=='P3')
+			// 	 $clause=$clause." AND personnel.remark_id NOT IN ('23')";
+				 
 			if($post_stat_from != 'NA')
 			$clause.="AND personnel.post_stat='".$post_stat_to."'";
 			else
@@ -780,7 +1016,7 @@ public function revokeRule(Request $request){
 			$post_stat_from='NA';
 			}
 			$clause=$clause."AND personnel.exempted IS NULL";
-			$clause.=" AND DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(personnel.dob, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d')) ".$ruleSet[0]['Age'];
+			$clause.=" AND YEAR('2019-05-31') - YEAR(personnel.dob) - IF(STR_TO_DATE(CONCAT(YEAR('2019-05-31'), '-', MONTH(personnel.dob), '-', DAY(personnel.dob)) ,'%Y-%c-%e') > '2019-05-31', 1, 0) ".$ruleSet[0]['Age'];
 
 			$today = date("Y-m-d H:i:s");
 		    $grant_rule_query="UPDATE personnel INNER JOIN offices ON personnel.office_id=offices.id SET personnel.post_stat='$post_stat_from' WHERE $clause";
@@ -863,12 +1099,13 @@ public function revokeRule(Request $request){
 			if($officecd != 'ALL')
 				$clause.=" AND offices.id IN ($officecd)";
 
-			  if($post_stat_to=='PR' || $post_stat_to=='P1')
-				$clause=$clause." AND personnel.remark_id NOT IN ('02','03','07','10','22')";
-			if($post_stat_to=='P2')
-				$clause=$clause." AND personnel.remark_id NOT IN ('07')";
-			if($post_stat_to=='P3')
-				 $clause=$clause." AND personnel.remark_id NOT IN ('23')";
+			// if($post_stat_to=='PR' || $post_stat_to=='P1')
+			// 	$clause=$clause." AND personnel.remark_id NOT IN ('02','03','07','10','22')";
+			// if($post_stat_to=='P2')
+			// 	$clause=$clause." AND personnel.remark_id NOT IN ('07')";
+			// if($post_stat_to=='P3')
+			// 	 $clause=$clause." AND personnel.remark_id NOT IN ('23')";
+
 			if($post_stat_from != 'NA'){
 				$clause.="AND personnel.post_stat='".$post_stat_from."'";
 			}else{
@@ -876,7 +1113,7 @@ public function revokeRule(Request $request){
 			}
 			$clause=$clause."AND personnel.exempted IS NULL";
 
-			$clause.=" AND DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(personnel.dob, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d')) ".$ruleSet[0]['Age'];
+			$clause.=" AND YEAR('2019-05-31') - YEAR(personnel.dob) - IF(STR_TO_DATE(CONCAT(YEAR('2019-05-31'), '-', MONTH(personnel.dob), '-', DAY(personnel.dob)) ,'%Y-%c-%e') > '2019-05-31', 1, 0) ".$ruleSet[0]['Age'];
 
 			$today = date("Y-m-d H:i:s");
 		$grant_rule_query="SELECT COUNT(personnel.id) AS PPCount from personnel INNER JOIN offices ON personnel.office_id=offices.id  WHERE $clause";

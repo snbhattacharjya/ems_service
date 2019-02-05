@@ -178,6 +178,10 @@ Route::get('/getmismatchlist/{designation}/{emp_group}','Report\ReportController
 //
 Route::get('/revokeexcemptionbytype/{exemp_type}', 'ExcemptionController@revokeExemptionByType');
 Route::get('/revokepoststat/{post_stat}', 'categorization\PoststatController@revokePostStat');
+//
+Route::post('/prequeryrule', 'categorization\PoststatController@prequeryrule');
+//
+Route::get('/getexcemptionbyage', 'ExcemptionController@getExcemptionByAge');
 
 });
 

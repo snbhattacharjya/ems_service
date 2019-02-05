@@ -42,9 +42,9 @@ class PersonnelController extends Controller
 	public function getAllPersonnelbyoffice(Request $request)
     {
 		 $officeid=$request->officeid;
-        return Personnel:: where('district_id','=',$this->district)
-			                  ->where('office_id' ,'=',$officeid)
-				              ->get();
+        return Personnel::where('district_id','=',$this->district)
+			            ->where('office_id' ,'=',$officeid)
+				        ->get();
 
     }
 
