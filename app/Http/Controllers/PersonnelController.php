@@ -13,7 +13,7 @@ class PersonnelController extends Controller
 
 
     public function __construct()
-    {  
+    {
         if(Auth::guard('api')->check()){
         $this->userID=auth('api')->user()->user_id;
         $this->level=auth('api')->user()->level;
@@ -42,8 +42,10 @@ class PersonnelController extends Controller
 	public function getAllPersonnelbyoffice(Request $request)
     {
 		 $officeid=$request->officeid;
-        return Personnel::where('district_id','=',$this->district)
-			            ->where('office_id' ,'=',$officeid)
+        return Personnel::select('personnel.*','qualifications.name as qualification')
+                        ->where('district_id','=',$this->district)
+                        ->where('office_id' ,'=',$officeid)
+                        ->Leftjoin('qualifications','qualifications.id','=','personnel.qualification_id')
 				        ->get();
 
     }
@@ -164,7 +166,7 @@ class PersonnelController extends Controller
         $personnel->assembly_temp_id = strip_tags($request->assembly_temp_id,'');
         $personnel->assembly_perm_id = strip_tags($request->assembly_perm_id,'');
         $personnel->assembly_off_id = strip_tags($request->assembly_off_id,'');
-       
+
         $personnel->post_office_account = strip_tags($request->post_office_account,'');
         $personnel->branch_ifsc = strip_tags($request->branch_ifsc,'');
         $personnel->bank_account_no = strip_tags($request->bank_account_no,'');
@@ -271,7 +273,7 @@ class PersonnelController extends Controller
         $personnel->assembly_temp_id = strip_tags($request->assembly_temp_id,'');
         $personnel->assembly_perm_id = strip_tags($request->assembly_perm_id,'');
         $personnel->assembly_off_id = strip_tags($request->assembly_off_id,'');
-        
+
         $personnel->post_office_account = strip_tags($request->post_office_account,'');
         $personnel->branch_ifsc = strip_tags($request->branch_ifsc,'');
         $personnel->bank_account_no = strip_tags($request->bank_account_no,'');
@@ -286,7 +288,7 @@ class PersonnelController extends Controller
         $personnel->remark_reason = strip_tags($request->remark_reason,'');
         $personnel->pay_level = strip_tags($request->pay_level,'');
         $personnel->updated_at =date('Y-m-d H:i:s');
-        
+
         $personnel->save();
 
         $personnelId=0;
@@ -355,7 +357,7 @@ class PersonnelController extends Controller
         $subdiv=$acPc[0]->subdivision_id;
         $updated_at=$acPc[0]->updated_at;
         $agree_pp1=$acPc[0]->agree_pp1;
-      
+
         if($ac!='' && $pc!='' && $ps!='' && $subdiv!='' && $updated_at >='2018-12-06' &&  $agree_pp1==1){
             return true;
         }else{

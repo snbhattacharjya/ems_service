@@ -182,7 +182,7 @@ Route::get('/revokepoststat/{post_stat}', 'categorization\PoststatController@rev
 Route::post('/prequeryrule', 'categorization\PoststatController@prequeryrule');
 //
 Route::get('/getexcemptionbyage', 'ExcemptionController@getExcemptionByAge');
-
+Route::post('/getexcemptionbydesignation', 'ExcemptionController@getExemptionListByDesignation');
 });
 
 //Route::post('/deo', 'UserController@diocreation');
