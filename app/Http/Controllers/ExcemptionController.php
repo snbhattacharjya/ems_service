@@ -23,7 +23,7 @@ class ExcemptionController extends Controller
          $arr['excemptedList']=Personnel::select('personnel.id','personnel.office_id','offices.name as officename','personnel.name','personnel.designation','personnel.mobile','personnel.exempted','personnel.exemp_type','personnel.exemp_reason','personnel.exemp_date','remarks.name as remark')
             ->leftJoin('remarks','remarks.id','=','personnel.remark_id')
             ->leftJoin('offices','offices.id','=','personnel.office_id')
-            ->whereIn('personnel.exemp_type',array(1, 2, 3))
+            ->where('personnel.exempted','Yes')
             ->where('personnel.district_id', $this->district)
             ->get();
 
@@ -147,8 +147,9 @@ class ExcemptionController extends Controller
                 //     'exemp_date' => NOW(),
                 //     ];
         $exemp_date =NOW();
-        $sql="update personnel set exempted='Yes',exemp_type='4',exemp_reason='.$request->reason.',exemp_date='.$exemp_date.'  where district_id='.$this->district.' and  AND YEAR('2019-05-31') - YEAR(personnel.dob) - IF(STR_TO_DATE(CONCAT(YEAR('2019-05-31'), '-', MONTH(personnel.dob), '-', DAY(personnel.dob)) ,'%Y-%c-%e') > '2019-05-31', 1, 0) >59";
-        DB::select($sql);
+         $sql="update personnel set exempted='Yes',exemp_type='4',exemp_reason='".$request->reason."',exemp_date='".$exemp_date."'  where district_id='".$this->district."' AND YEAR('2019-05-31') - YEAR(personnel.dob) - IF(STR_TO_DATE(CONCAT(YEAR('2019-05-31'), '-', MONTH(personnel.dob), '-', DAY(personnel.dob)) ,'%Y-%c-%e') > '2019-05-31', 1, 0) >59";
+     
+      DB::select($sql);
             return response()->json('Successfully Updated',201);
         }else{
         $update = [

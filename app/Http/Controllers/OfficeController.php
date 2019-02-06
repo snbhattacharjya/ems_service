@@ -281,10 +281,9 @@ class OfficeController extends Controller
 		if($request->agree==1){
 		$office->agree = 1;
 		}else{
-			$office->agree = 0;
+            return response()->json('Please Confirm Declartion',401);   
         }
-
-        //echo $request->agree;exit;
+    
         $office->save();
 
         $officeId=0;
