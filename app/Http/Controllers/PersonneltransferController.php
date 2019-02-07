@@ -24,8 +24,8 @@ class PersonneltransferController extends Controller
     if($this->level===12 ){
     return Personnel::select('personnel.id','personnel.office_id','personnel.name','personnel.designation',
                              'personnel.email','personnel.mobile','personnel.bank_account_no','officeBlock.name as block','tempBlock.name as tempblock')
-                      ->join('block_munis as officeBlock', 'personnel.block_muni_off_id', '=', 'officeBlock.id')
-                      ->join('block_munis as tempBlock', 'personnel.block_muni_temp_id', '=', 'tempBlock.id')
+                      ->leftjoin('block_munis as officeBlock', 'personnel.block_muni_off_id', '=', 'officeBlock.id')
+                      ->leftjoin('block_munis as tempBlock', 'personnel.block_muni_temp_id', '=', 'tempBlock.id')
                       ->where('district_id',$this->district)
                       ->where('remark_id',17)
                       ->get();
