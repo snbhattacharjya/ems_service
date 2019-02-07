@@ -39,7 +39,7 @@ class ManualPoststatSetController extends Controller
             $personnelId=$request->personnel_id;
             $postStat=$request->poststat;
 
-if(!empty($personnelId)  && !empty($office_id) && ($this->level===3 || $this->level===4|| $this->level===12)){
+if(!empty($personnelId)  && !empty($office_id) && ($this->level===3 || $this->level===4|| $this->level===12 || $this->level===8)){
                 Personnel:: where('district_id','=',$this->district)
                                 ->where('id' ,'=',$personnelId)
                                 ->where('office_id' ,'=',$office_id)

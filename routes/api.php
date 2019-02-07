@@ -183,7 +183,10 @@ Route::post('/prequeryrule', 'categorization\PoststatController@prequeryrule');
 //
 Route::get('/getexcemptionbyage', 'ExcemptionController@getExcemptionByAge');
 Route::post('/getexcemptionbydesignation', 'ExcemptionController@getExemptionListByDesignation');
+//
+Route::get('/blockwiseofficepersonel/{office_blockmuni}', 'Report\ReportController@blockwiseOfficepersonel');
 });
+
 
 //Route::post('/deo', 'UserController@diocreation');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');

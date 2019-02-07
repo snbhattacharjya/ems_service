@@ -230,7 +230,7 @@ if($this->level==12){
                               left join offices on offices.id=personnel.office_id
                               left join qualifications on qualifications.id=personnel.qualification_id
                               WHERE personnel.district_id='".$this->district."'
-                              and YEAR('2019-05-31') - YEAR(personnel.dob) - IF(STR_TO_DATE(CONCAT(YEAR('2019-05-31'), '-', MONTH(personnel.dob), '-', DAY(personnel.dob)) ,'%Y-%c-%e') > '2019-05-31', 1, 0)>59");
+                              and YEAR('2019-05-31') - YEAR(personnel.dob) - IF(STR_TO_DATE(CONCAT(YEAR('2019-05-31'), '-', MONTH(personnel.dob), '-', DAY(personnel.dob)) ,'%Y-%c-%e') > '2019-05-31', 1, 0)>=59");
                               return response()->json($arr,201);
     }
   }

@@ -12,15 +12,28 @@ use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
 {
-
-              public function __construct()
+  public function __construct()
               {
                   if(Auth::guard('api')->check()){
                   $this->userID=auth('api')->user()->user_id;
                   $this->level=auth('api')->user()->level;
                   $this->district=auth('api')->user()->area;
+                  $this->enable=true;
+                  $this->start_hh=12;
+                  $this->start_mm=00;
+                  $this->start_ss=00;
+                  $this->end_hh=16;
+                  $this->end_mm=00;
+                  $this->end_ss=00;
+                  $this->message="Checklist will be available from 4:00 pm to 12:00 am Everyday";
                   }
               }
+            public function timerangeforpp2(){
+                $time = Carbon::now();
+                $morning = Carbon::create($time->year, $time->month, $time->day, $this->start_hh, $this->start_mm,$this->start_ss);
+                $evening = Carbon::create($time->year, $time->month, $time->day, $this->end_hh, $this->end_mm,$this->end_ss);
+                if($time->between($evening, $morning, true)) {return false;}else{ return true;}
+            }
 
             public function report(Request $request){
               $arr=array();
@@ -55,13 +68,11 @@ class ReportController extends Controller
 
               return response()->json($arr,201);
             }else if($reportMode=='pp2'){
-                $time = Carbon::now();
-                $morning = Carbon::create($time->year, $time->month, $time->day, 10, 00, 0); //set time to 06:30
-                $evening = Carbon::create($time->year, $time->month, $time->day, 17, 00, 0); //set time to 05:30
-                if($time->between($evening, $morning, true)) {
-                                //current time is between evening and morning
-                                return response()->json('Checklist will be available from 5:00 pm to 10:00 am Everyday',201);
-                } else {
+
+                if($this->enable==true && $this->timerangeforpp2()==false) {
+                    //current time is between evening and morning
+                    return response()->json(array('message'=>$this->message,'mode'=>'out_of_range'),201);
+                } else  {
                     //current time is earlier than evening
                     $result=array();
                     $officeid=$request->officeId;
@@ -241,6 +252,34 @@ public function getMisMatchList(Request $request){
   }else{
     return response()->json('Unathunticated',401);
   }
+}
+public function blockwiseOfficepersonel(Request $request){
+
+  $arr['blockWiseOfficePersonnel']= Personnel::select(
+    'personnel.id','personnel.office_id','personnel.dob','personnel.post_stat','personnel.gender',
+    'personnel.name','personnel.designation','personnel.mobile','personnel.exempted','personnel.exemp_type',
+    'personnel.exemp_reason','personnel.exemp_date','personnel.scale as scale','personnel.basic_pay as basic_pay',
+    'personnel.grade_pay as grade_pay','personnel.pay_level as pay_level','personnel.emp_group as emp_group',
+    'personnel.email as email','languages.name as languages','personnel.epic as epic','personnel.part_no as part_no',
+    'personnel.sl_no as sl_no','tempac.name as tempac','pertac.name as pertac','offac.name as offac','tempblock.name as tempblock',
+     'perblock.name as permblock','offblock.name as offblock','personnel.branch_ifsc','personnel.bank_account_no',
+     'personnel.post_office_account', 'offices.name as officename','offices.id as officeid','remarks.name as remark',
+    'qualifications.name as qualification')
+    ->leftJoin('remarks','remarks.id','=','personnel.remark_id')
+    ->leftJoin('offices','offices.id','=','personnel.office_id')
+    ->Leftjoin('qualifications','qualifications.id','=','personnel.qualification_id')
+    ->Leftjoin('languages','languages.id','=','personnel.language_id')
+    ->Leftjoin('assembly_constituencies as tempac','tempac.id','=','personnel.assembly_temp_id')
+    ->Leftjoin('assembly_constituencies as pertac','pertac.id','=','personnel.assembly_perm_id')
+    ->Leftjoin('assembly_constituencies as offac','offac.id','=','personnel.assembly_off_id')
+    ->Leftjoin('block_munis as tempblock','tempblock.id','=','personnel.block_muni_temp_id')
+    ->Leftjoin('block_munis as perblock','perblock.id','=','personnel.block_muni_perm_id')
+    ->Leftjoin('block_munis as offblock','offblock.id','=','personnel.block_muni_off_id')
+    ->where('offices.district_id',$this->district)
+    ->where('offices.block_muni_id',$request->office_blockmuni)
+    ->get();
+     return response()->json($arr,201);
+
 }
 
 }
