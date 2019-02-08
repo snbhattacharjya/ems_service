@@ -57,7 +57,7 @@ if(!empty($personnelId)  && !empty($office_id) && ($this->level===3 || $this->le
 
             $post_stat=$request->post_stat;
             //if(!empty($post_stat) && ($this->level===3 || $this->level===4|| $this->level===12)){
-                return DB::table('personnel')->select(DB::raw("personnel.id,personnel.office_id,personnel.name,personnel.designation,personnel.mobile,personnel.designation,personnel.basic_pay,personnel.pay_level,personnel.grade_pay,personnel.emp_group,personnel.dob,TIMESTAMPDIFF(YEAR, DATE(personnel.dob), current_date) AS age,personnel.gender,personnel.post_stat,remarks.name as remark,categories.name as office_category,offices.name as office_name,offices.address as office_address"))
+                return DB::table('personnel')->select(DB::raw("personnel.id,personnel.office_id,personnel.name,personnel.designation,personnel.mobile,personnel.designation,personnel.basic_pay,personnel.pay_level,personnel.grade_pay,personnel.emp_group,personnel.dob,personnel.gender,personnel.post_stat,remarks.name as remark,categories.name as office_category,offices.name as office_name,offices.address as office_address,YEAR('2019-05-31') - YEAR(personnel.dob) - IF(STR_TO_DATE(CONCAT(YEAR('2019-05-31'), '-', MONTH(personnel.dob), '-', DAY(personnel.dob)) ,'%Y-%c-%e') > '2019-05-31', 1, 0) AS age"))
                 ->leftJoin('remarks','remarks.id','=','personnel.remark_id')
                 ->leftJoin('offices','offices.id','=','personnel.office_id')
                 ->leftJoin('categories','categories.id','=','offices.category_id')
