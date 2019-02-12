@@ -97,12 +97,15 @@ class DatasharingController extends Controller
         return response()->json('Successfully Updated',201);
      }
     
-
+   public function deleteInstructForDataShare(){
+    DataSharing::where('id',$request->$request->sharing_id)->delete();
+    return response()->json('Successfully Deleted',201);
+   }
 
 
      public function getInstructionForDataShare(Request $request){
       if($this->level==2){
-       return DataSharing::select('data_sharing.id as id','from_districts.name as from_district','to_districts.name as to_district','data_sharing.category as category','data_sharing.no_of_personnel as no_of_personnel','data_sharing.no_of_personnel_shared as no_of_personnel_shared')
+       return DataSharing::select('data_sharing.id as id','from_districts.name as from_district','to_districts.name as to_district','data_sharing.category as category','data_sharing.no_of_personnel as no_of_personnel','data_sharing.no_of_personnel_shared as no_of_personnel_shared','data_sharing.gender as gender')
                           ->join('districts as from_districts','from_districts.id','=','data_sharing.from_district')
                           ->join('districts as to_districts','to_districts.id','=','data_sharing.to_district')
                           ->get();
@@ -113,7 +116,7 @@ class DatasharingController extends Controller
 
      public function getShareRequest(){ //GET Method
       if($this->level==12){
-            return DataSharing::select('data_sharing.id as id','from_districts.name as from_district','to_districts.name as to_district','data_sharing.category as category','data_sharing.no_of_personnel as no_of_personnel','data_sharing.no_of_personnel_shared as no_of_personnel_shared')
+            return DataSharing::select('data_sharing.id as id','from_districts.name as from_district','to_districts.name as to_district','data_sharing.category as category','data_sharing.no_of_personnel as no_of_personnel','data_sharing.no_of_personnel_shared as no_of_personnel_shared','data_sharing.gender as gender')
             ->join('districts as from_districts','from_districts.id','=','data_sharing.from_district')
             ->join('districts as to_districts','to_districts.id','=','data_sharing.to_district')
             ->where('data_sharing.from_district',$this->district)
@@ -168,6 +171,7 @@ class DatasharingController extends Controller
             $transfer_personnel=$request->no_of_personnel;
             $shared_personnel=$getCeoRequest[0]->no_of_personnel_shared == null ? 0 :$getCeoRequest[0]->no_of_personnel_shared;
             $personnel_assigned=$getCeoRequest[0]->no_of_personnel;
+            $gender=$getCeoRequest[0]->gender;
             if($personnel_assigned< $transfer_personnel){
                 return response()->json('Number can not be greater than personnel assigned by CEO !',401);
                 die();
@@ -175,6 +179,7 @@ class DatasharingController extends Controller
             $available=Personnel::select(\DB::raw('count(gender) as available'))
             ->where('post_stat',$transfer_category)
             ->where('district_id',$this->district)
+            ->where('gender',$gender)
             ->where('to_district',NULL)
             ->where('exempted',NULL)
             ->get();

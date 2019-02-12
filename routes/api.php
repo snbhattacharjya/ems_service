@@ -187,7 +187,8 @@ Route::post('/getexcemptionbydesignation', 'ExcemptionController@getExemptionLis
 Route::get('/blockwiseofficepersonel/{office_blockmuni}', 'Report\ReportController@blockwiseOfficepersonel');
 
 Route::post('/bulkupdatebypoststattype', 'categorization\ManualPoststatSetController@bulkUpdateByPostStatType');
-
+///
+Route::post('/updateshareinstruction', 'DatasharingController@updateInstructForDataShare');
 });
 
 
