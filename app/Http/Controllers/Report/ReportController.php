@@ -263,7 +263,9 @@ public function blockwiseOfficepersonel(Request $request){
     'personnel.email as email','languages.name as languages','personnel.epic as epic','personnel.part_no as part_no',
     'personnel.sl_no as sl_no','tempac.name as tempac','pertac.name as pertac','offac.name as offac','tempblock.name as tempblock',
      'perblock.name as permblock','offblock.name as offblock','personnel.branch_ifsc','personnel.bank_account_no',
-     'personnel.post_office_account', 'offices.name as officename','offices.id as officeid','remarks.name as remark',
+     'personnel.post_office_account', 'offices.name as officename','offices.id as officeid',
+     'offices.address as office_address','offices.post_office as office_post_office','offices.pin as office_pin',
+     'remarks.name as remark','policestations.name as policestations',
     'qualifications.name as qualification')
     ->leftJoin('remarks','remarks.id','=','personnel.remark_id')
     ->leftJoin('offices','offices.id','=','personnel.office_id')
@@ -271,12 +273,14 @@ public function blockwiseOfficepersonel(Request $request){
     ->Leftjoin('languages','languages.id','=','personnel.language_id')
     ->Leftjoin('assembly_constituencies as tempac','tempac.id','=','personnel.assembly_temp_id')
     ->Leftjoin('assembly_constituencies as pertac','pertac.id','=','personnel.assembly_perm_id')
-    ->Leftjoin('assembly_constituencies as offac','offac.id','=','personnel.assembly_off_id')
+    ->Leftjoin('assembly_constituencies as offac','offac.id','=','offices.ac_id')
     ->Leftjoin('block_munis as tempblock','tempblock.id','=','personnel.block_muni_temp_id')
     ->Leftjoin('block_munis as perblock','perblock.id','=','personnel.block_muni_perm_id')
-    ->Leftjoin('block_munis as offblock','offblock.id','=','personnel.block_muni_off_id')
+    ->Leftjoin('block_munis as offblock','offblock.id','=','offices.block_muni_id')
+    ->Leftjoin('police_stations as policestations','policestations.id','=','offices.police_station_id')
     ->where('offices.district_id',$this->district)
     ->where('offices.block_muni_id',$request->office_blockmuni)
+    ->orderBy('offices.id', 'asc')
     ->get();
      return response()->json($arr,201);
 

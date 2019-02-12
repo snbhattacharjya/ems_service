@@ -64,11 +64,13 @@ class DatasharingController extends Controller
         $to_district=$request->to_district;
         $category=$request->category;
         $assign_polling_personnel=$request->assign_polling_personnel;
+        $gender=$request->gender;
 
         $dataShare= new DataSharing;
         $dataShare->from_district=$from_district;
         $dataShare->to_district=$to_district;
         $dataShare->category=$category;
+        $dataShare->gender=$gender;
         $dataShare->no_of_personnel=$assign_polling_personnel;
         $dataShare->save();
         if($dataShare->id!=''){
@@ -78,6 +80,26 @@ class DatasharingController extends Controller
         return response()->json('Not Allowed',401);
        }
      }
+     
+     public function updateInstructForDataShare(){
+        $from_district=$request->from_district;
+        $to_district=$request->to_district;
+        $category=$request->category;
+        $assign_polling_personnel=$request->assign_polling_personnel;
+        $dataShare= DataSharing::find($request->sharing_id);
+        $dataShare->id=$request->sharing_id;
+        $dataShare->from_district=$from_district;
+        $dataShare->to_district=$to_district;
+        $dataShare->category=$category;
+        $dataShare->gender=$gender;
+        $dataShare->no_of_personnel=$assign_polling_personnel;
+        $dataShare->save();
+        return response()->json('Successfully Updated',201);
+     }
+    
+
+
+
      public function getInstructionForDataShare(Request $request){
       if($this->level==2){
        return DataSharing::select('data_sharing.id as id','from_districts.name as from_district','to_districts.name as to_district','data_sharing.category as category','data_sharing.no_of_personnel as no_of_personnel','data_sharing.no_of_personnel_shared as no_of_personnel_shared')

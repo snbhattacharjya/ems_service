@@ -552,12 +552,8 @@ class PoststatController extends Controller
 
 
     $basic_pay_clause=$basic_pay[0].'-'.$basic_pay[1];
-
-    if($grade_pay!=0){
-       $grade_pay_clause=$grade_pay[0].'-'.$grade_pay[1];
-    }else{
-        $grade_pay_clause=0;
-    }
+    $grade_pay_clause=$grade_pay[0].'-'.$grade_pay[1];
+    
 
     $ruleSet=[
  'District' =>$this->district,
@@ -593,19 +589,16 @@ class PoststatController extends Controller
             $post_stat_to=$ruleSet['PostStatTo'];
             $emp_group=$ruleSet['Emp_group'];
             $basic_pay=explode("-",$basic_pay);
-
-			if($grade_pay!=0){
-				$grade_pay=explode("-",$grade_pay);
-				}
+            $grade_pay=explode("-",$grade_pay);
+				
 				// if($pay_level!=0){
 				// 	$pay_level=explode("-",$pay_level);
 				// }
 
 			$clause="personnel.id != ''";
 			$clause.=" AND personnel.basic_pay BETWEEN $basic_pay[0] AND $basic_pay[1]";
-			if($grade_pay!=0){
-				$clause.=" AND personnel.grade_pay BETWEEN $grade_pay[0] AND $grade_pay[1]";
-				}
+		    $clause.=" AND personnel.grade_pay BETWEEN $grade_pay[0] AND $grade_pay[1]";
+				
 				// if($pay_level!=0){
 				// 	$clause.=" AND personnel.pay_level BETWEEN $pay_level[0] AND $pay_level[1]";
 				// }
@@ -785,12 +778,8 @@ return response()->json($arr,401);
 
 
 $basic_pay_clause=$basic_pay[0].'-'.$basic_pay[1];
+$grade_pay_clause=$grade_pay[0].'-'.$grade_pay[1];
 
-if($grade_pay!=0){
-   $grade_pay_clause=$grade_pay[0].'-'.$grade_pay[1];
-}else{
-	$grade_pay_clause=0;
-}
 // if($pay_level!=0){
 //     $pay_level_clause=$pay_level[0].'-'.$pay_level[1];
 // }else{
@@ -861,17 +850,17 @@ if(!empty($grantRule)){
 		$emp_group=$ruleSet[0]['Emp_group'];
 
 		 $basic_pay=explode("-",$basic_pay);
-		 if($grade_pay!=0){
-		   $grade_pay=explode("-",$grade_pay);
-		 }
+		
+		$grade_pay=explode("-",$grade_pay);
+		
 		//  if($pay_level!=0){
 		// 	$pay_level=explode("-",$pay_level);
 		// }
 		$clause="personnel.id != ''";
 		$clause.=" AND personnel.basic_pay BETWEEN $basic_pay[0] AND $basic_pay[1]";
-		if($grade_pay!=0){
+		
 		$clause.=" AND personnel.grade_pay BETWEEN $grade_pay[0] AND $grade_pay[1]";
-		}
+	
 		// if($pay_level!=0){
 		// 	$clause.=" AND personnel.pay_level BETWEEN $pay_level[0] AND $pay_level[1]";
 		// }
@@ -962,17 +951,17 @@ public function revokeRule(Request $request){
 
 			$basic_pay=explode("-",$basic_pay);
 
-				if($grade_pay!=0){
-				$grade_pay=explode("-",$grade_pay);
-				}
+				// if($grade_pay!=0){
+			$grade_pay=explode("-",$grade_pay);
+				// }
 				// if($pay_level!=0){
 				// 	$pay_level=explode("-",$pay_level);
 				// }
 			$clause="personnel.id != ''";
 			$clause.=" AND personnel.basic_pay BETWEEN $basic_pay[0] AND $basic_pay[1]";
-			    if($grade_pay!=0){
-				$clause.=" AND personnel.grade_pay BETWEEN $grade_pay[0] AND $grade_pay[1]";
-				}
+			   
+			$clause.=" AND personnel.grade_pay BETWEEN $grade_pay[0] AND $grade_pay[1]";
+				
 				// if($pay_level!=0){
 				// 	$clause.=" AND personnel.pay_level BETWEEN $pay_level[0] AND $pay_level[1]";
 				// }
@@ -1060,18 +1049,18 @@ public function revokeRule(Request $request){
 			$emp_group=$ruleSet[0]['Emp_group'];
             $basic_pay=explode("-",$basic_pay);
 
-			if($grade_pay!=0){
-				$grade_pay=explode("-",$grade_pay);
-				}
+			// if($grade_pay!=0){
+			 	$grade_pay=explode("-",$grade_pay);
+			// 	}
 				// if($pay_level!=0){
 				// 	$pay_level=explode("-",$pay_level);
 				// }
 
 			$clause="personnel.id != ''";
 			$clause.=" AND personnel.basic_pay BETWEEN $basic_pay[0] AND $basic_pay[1]";
-			if($grade_pay!=0){
-				$clause.=" AND personnel.grade_pay BETWEEN $grade_pay[0] AND $grade_pay[1]";
-				}
+			
+			$clause.=" AND personnel.grade_pay BETWEEN $grade_pay[0] AND $grade_pay[1]";
+				
 				// if($pay_level!=0){
 				// 	$clause.=" AND personnel.pay_level BETWEEN $pay_level[0] AND $pay_level[1]";
 				// }
