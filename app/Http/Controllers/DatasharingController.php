@@ -80,25 +80,26 @@ class DatasharingController extends Controller
         return response()->json('Not Allowed',401);
        }
      }
-     
-     public function updateInstructForDataShare(){
-        $from_district=$request->from_district;
-        $to_district=$request->to_district;
-        $category=$request->category;
+
+     public function updateInstructForDataShare(Request $request){
+        // $from_district=$request->from_district;
+        // $to_district=$request->to_district;
+        // $category=$request->category;
         $assign_polling_personnel=$request->assign_polling_personnel;
+        // $gender=$request->gender;
         $dataShare= DataSharing::find($request->sharing_id);
         $dataShare->id=$request->sharing_id;
-        $dataShare->from_district=$from_district;
-        $dataShare->to_district=$to_district;
-        $dataShare->category=$category;
-        $dataShare->gender=$gender;
+        // $dataShare->from_district=$from_district;
+        // $dataShare->to_district=$to_district;
+        // $dataShare->category=$category;
+        // $dataShare->gender=$gender;
         $dataShare->no_of_personnel=$assign_polling_personnel;
         $dataShare->save();
         return response()->json('Successfully Updated',201);
      }
-    
+
    public function deleteInstructForDataShare(){
-    DataSharing::where('id',$request->$request->sharing_id)->delete();
+    DataSharing::where('id',$request->sharing_id)->delete();
     return response()->json('Successfully Deleted',201);
    }
 
@@ -116,7 +117,7 @@ class DatasharingController extends Controller
 
      public function getShareRequest(){ //GET Method
       if($this->level==12){
-            return DataSharing::select('data_sharing.id as id','from_districts.name as from_district','to_districts.name as to_district','data_sharing.category as category','data_sharing.no_of_personnel as no_of_personnel','data_sharing.no_of_personnel_shared as no_of_personnel_shared','data_sharing.gender as gender')
+            return DataSharing::select('data_sharing.id as id','from_districts.name as from_district','to_districts.name as to_district','data_sharing.category as category','data_sharing.no_of_personnel as no_of_personnel','data_sharing.no_of_personnel_shared as no_of_personnel_shared','data_sharing.gender as gender','data_sharing.created_at as created_at','data_sharing.updated_at as updated_at')
             ->join('districts as from_districts','from_districts.id','=','data_sharing.from_district')
             ->join('districts as to_districts','to_districts.id','=','data_sharing.to_district')
             ->where('data_sharing.from_district',$this->district)
@@ -131,6 +132,7 @@ class DatasharingController extends Controller
         if($this->level==12){
         $arr=array();
         $transfer_category=$request->category; //PR,MO,P1 type=POST
+        $gender=$request->gender;
         //$transfer_category=$getCeoRequest[0]->category;
 
         $requirement=AssemblyConstituency::select(\DB::raw('sum(assembly_party.male_party_count) as MalePartyRequirement,
@@ -147,6 +149,7 @@ class DatasharingController extends Controller
                            ->where('post_stat',$transfer_category)
                            ->where('district_id',$this->district)
                            ->where('to_district',NULL)
+                           ->where('gender',$gender)
                            ->where('exempted',NULL)
                            ->get();
       $arr['available']= collect($available)->toArray();
@@ -206,6 +209,7 @@ class DatasharingController extends Controller
            if($available>$transfer_personnel){
             Personnel::where('post_stat',$transfer_category)
             ->where('district_id',$this->district)
+            ->where('gender',$gender)
             ->inRandomOrder()
             ->limit($transfer_personnel)
             ->update(['to_district' =>$transfer_to_district,'share_date'=>Now()]);

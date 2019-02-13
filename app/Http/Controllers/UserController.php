@@ -514,9 +514,7 @@ class UserController extends Controller
 	 User::where('id',$UserId)->update(['name' => $request->name,'email' => $request->email,'mobile' => $request->mobile,'aadhaar' => $request->aadhaar,'designation'=> $request->designation]);
 	 return response()->json('Updated Successfully',201);
       }	
- public function passwordInsert(){
-	 User::where('area','13')->get();
-	 }
-
+ 
+  
 	
 }

@@ -78,8 +78,8 @@ if(!empty($personnelId)  && !empty($office_id) && ($this->level===3 || $this->le
                  ->whereNull('personnel.exempted')
                  ->get();
 
-            }  
-           
+            }
+
          }
       public function getPPListByDistinctDesignation(Request $request){
         if($this->level==12 ){
@@ -118,13 +118,15 @@ if(!empty($personnelId)  && !empty($office_id) && ($this->level===3 || $this->le
         return response()->json('Successfully Updated',201);
     }else{
     $update = ['post_stat' => $request->poststat_to];
-     Personnel::whereIn('id',$request->personnl_selected)
+    foreach($request->personnl_selected as $p){
+     Personnel::where('id',$p)
                  ->where('district_id', $this->district)
                  ->update($update);
+    }
      return response()->json('Successfully Updated',201);
     }
   }else{
-    return response()->json('Unauthorize',401);  
+    return response()->json('Unauthorize',401);
   }
 
  }

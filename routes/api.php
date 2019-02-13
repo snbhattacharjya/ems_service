@@ -159,7 +159,7 @@ Route::post('/getsharerequiremnet', 'DatasharingController@queryForDataShare');
 Route::post('/instructforshare', 'DatasharingController@instructForDataShare');
 Route::get('/instructlist', 'DatasharingController@getInstructionForDataShare');
 Route::get('/getdeoshareinstruction', 'DatasharingController@getShareRequest');
-Route::get('/getcategorywisedistrictrequirement/{category}', 'DatasharingController@getRequirementAvailability');
+//Route::get('/getcategorywisedistrictrequirement/{category}', 'DatasharingController@getRequirementAvailability');
 Route::post('/processtosharedata', 'DatasharingController@doDataShare');
 
 //
@@ -189,6 +189,12 @@ Route::get('/blockwiseofficepersonel/{office_blockmuni}', 'Report\ReportControll
 Route::post('/bulkupdatebypoststattype', 'categorization\ManualPoststatSetController@bulkUpdateByPostStatType');
 ///
 Route::post('/updateshareinstruction', 'DatasharingController@updateInstructForDataShare');
+Route::get('/getcategorywisedistrictrequirement/{category}/{gender}', 'DatasharingController@getRequirementAvailability');
+
+///
+Route::post('/deleteshareinstruction', 'DatasharingController@deleteInstructForDataShare');
+Route::get('/getcontact', 'PersonnelController@getContact');
+
 });
 
 

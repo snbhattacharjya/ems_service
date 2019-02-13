@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Personnel;
+use App\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -392,5 +393,14 @@ class PersonnelController extends Controller
         }
   }
 }
+
+public function getContact(){
+    User::select('user_id','name','email','mobile','districts.name as districts','districts.id as districtId')
+    ->leftJoin('districts','districts.id','=','users.area')
+    ->whereIn('level',[12,8,5])
+    ->groupBy('districts.name')
+    ->get();
+    }
+
 
 }
