@@ -406,7 +406,7 @@ public function getContact(){
     ->leftJoin('districts','districts.id','=','users.area')
     ->whereIn('users.level',[5])
     ->get();  
-  $data['ADM']= User::select('users.user_id','users.name','users.email','users.mobile',
+  $data['PPCELL']= User::select('users.user_id','users.name','users.email','users.mobile',
     'districts.name as districts','districts.id as districtId','users.area','users.level')
     ->leftJoin('districts','districts.id','=','users.area')
     ->whereIn('users.level',[8])
