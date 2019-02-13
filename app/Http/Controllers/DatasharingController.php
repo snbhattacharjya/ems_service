@@ -26,14 +26,15 @@ class DatasharingController extends Controller
         $from_district=$request->from_district;
         $to_district=$request->to_district;
         $category=$request->category;
-        $res=$this->getRequirement($from_district,$category);
+        $gender=$request->gender;
+        $res=$this->getRequirement($from_district,$category,$gender);
         return response()->json($res,201);
         }else{
             return response()->json('Not Allowed',401);
         }
 
     }
-    public function getRequirement($from_district,$category){
+    public function getRequirement($from_district,$category,$gender){
         if($this->level==2){
       $arr=array();
       $requirement=AssemblyConstituency::select(\DB::raw('sum(assembly_party.male_party_count) as MalePartyRequirement ,
@@ -49,7 +50,9 @@ class DatasharingController extends Controller
       $available=Personnel::select(\DB::raw('count(gender) as available'))
                          ->where('post_stat',$category)
                          ->where('district_id',$from_district)
+                         ->where('gender',$gender)
                          ->where('to_district',NULL)
+                         ->where('exempted',NULL)
                          ->get();
     $arr['available']= collect($available)->toArray();
 
@@ -175,7 +178,8 @@ class DatasharingController extends Controller
             $shared_personnel=$getCeoRequest[0]->no_of_personnel_shared == null ? 0 :$getCeoRequest[0]->no_of_personnel_shared;
             $personnel_assigned=$getCeoRequest[0]->no_of_personnel;
             $gender=$getCeoRequest[0]->gender;
-            if($personnel_assigned< $transfer_personnel){
+
+            if($personnel_assigned< $transfer_personnel +  $shared_personnel){
                 return response()->json('Number can not be greater than personnel assigned by CEO !',401);
                 die();
             }

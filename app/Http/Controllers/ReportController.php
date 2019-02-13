@@ -8,49 +8,49 @@ use Illuminate\Support\Facades\Auth;
 class ReportController extends Controller
 {
     public function __construct()
-    {	
+    {
 		if(Auth::guard('api')->check()){
 	   $this->userID=auth('api')->user()->user_id;
        $this->level=auth('api')->user()->level;
 		$this->district=auth('api')->user()->area;
 		}
     }
-	
-	
+
+
    public function getReport(){
 	  $arr=array();
 	 if($this->district=='' && ($this->userID="WBCEO" || $this->userID=="WBCEONODAL")){
 	//echo 'For Wb CEO';exit;
 		$sqlAvailable='SELECT d.name,p.district_id,
-		            SUM(CASE WHEN p.post_stat = "NA" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS NA_M, 
+		            SUM(CASE WHEN p.post_stat = "NA" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS NA_M,
 		            SUM(CASE WHEN p.post_stat = "AEO" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS AEO_M,
-                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS MO_M, 
-                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS P1_M, 
+                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS MO_M,
+                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS P1_M,
                     SUM(CASE WHEN p.post_stat = "P2" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS P2_M,
-                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS P3_M, 
+                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS P3_M,
                     SUM(CASE WHEN p.post_stat = "PR" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS PR_M,
-					SUM(CASE WHEN p.post_stat = "NA" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS NA_F, 
+					SUM(CASE WHEN p.post_stat = "NA" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS NA_F,
 		            SUM(CASE WHEN p.post_stat = "AEO" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS AEO_F,
-                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS MO_F, 
-                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS P1_F, 
+                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS MO_F,
+                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS P1_F,
                     SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS P2_F,
-                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS P3_F, 
+                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS P3_F,
                     SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS PR_F
-                    FROM personnel p inner join districts d on d.id=p.district_id 
+                    FROM personnel p inner join districts d on d.id=p.district_id
                     group by p.district_id,d.name order by p.district_id ';
-		
-		
-		
+
+
+
 		(array)$reportAvailable=DB::select($sqlAvailable);
 		$arr['available']=$reportAvailable;
-		
-		$sqlRequirement='SELECT d.name,sum(ap.male_party_count) as male_party_count,sum(ap.female_party_count) as female_party_count from districts d 
+
+		$sqlRequirement='SELECT d.name,sum(ap.male_party_count) as male_party_count,sum(ap.female_party_count) as female_party_count from districts d
 						inner join assembly_constituencies ac on (ac.district_id=d.id)
-						inner join assembly_party ap on (ap.assembly_id=ac.id) 
+						inner join assembly_party ap on (ap.assembly_id=ac.id)
 						group by d.id,d.name';
-						
-		(array)$reportRequirement=DB::select($sqlRequirement);	
-		
+
+		(array)$reportRequirement=DB::select($sqlRequirement);
+
 		//$arr['requirement']=$reportRequirement;
 		 foreach($reportAvailable as $report){
 			 foreach($reportRequirement as $requerment){
@@ -64,45 +64,45 @@ class ReportController extends Controller
 					  $report->female_party=$requerment->female_party_count;
 				  }else{
 					  $report->female_party=$requerment->female_party_count;
-				  }  
+				  }
 			   }
-			  
+
 			 }
 		   }
 		return response()->json($reportAvailable,200);
-	 }else if($this->district!='' && ($this->level===3 || $this->level===4|| $this->level===12 || $this->level===6 || $this->level===5)){// For District User
-		
+	 }else if($this->district!='' && ($this->level===3 || $this->level===4|| $this->level===12 || $this->level===8  || $this->level===6 || $this->level===5)){// For District User
+
 		 $sqlAvailable='SELECT d.name,
-		            SUM(CASE WHEN p.post_stat = "NA" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL   THEN 1 ELSE 0  END) AS NA_M, 
+		            SUM(CASE WHEN p.post_stat = "NA" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL   THEN 1 ELSE 0  END) AS NA_M,
 		            SUM(CASE WHEN p.post_stat = "AEO" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS AEO_M,
-                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS MO_M, 
-                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS P1_M, 
+                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS MO_M,
+                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS P1_M,
                     SUM(CASE WHEN p.post_stat = "P2" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS P2_M,
-                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS P3_M, 
+                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS P3_M,
                     SUM(CASE WHEN p.post_stat = "PR" and p.gender="M" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS PR_M,
-					SUM(CASE WHEN p.post_stat = "NA" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS NA_F, 
+					SUM(CASE WHEN p.post_stat = "NA" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS NA_F,
 		            SUM(CASE WHEN p.post_stat = "AEO" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL   THEN 1 ELSE 0  END) AS AEO_F,
-                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS MO_F, 
-                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS P1_F, 
+                    SUM(CASE WHEN p.post_stat = "MO" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0  END) AS MO_F,
+                    SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS P1_F,
                     SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS P2_F,
-                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="F"  and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS P3_F, 
+                    SUM(CASE WHEN p.post_stat = "P3" and p.gender="F"  and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS P3_F,
                     SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0  END) AS PR_F
-                    FROM personnel p inner join districts d on  d.id=p.district_id where p.district_id="'.$this->district.'" 
+                    FROM personnel p inner join districts d on  d.id=p.district_id where p.district_id="'.$this->district.'"
                     group by d.name';
-						
-		  (array)$reportAvailable=DB::select($sqlAvailable);	
-           //$arr['available']=$reportAvailable;		
-	
-	       $sqlRequirement='SELECT d.name,sum(ap.male_party_count) as male_party_count,sum(ap.female_party_count) as female_party_count from districts d 
+
+		  (array)$reportAvailable=DB::select($sqlAvailable);
+           //$arr['available']=$reportAvailable;
+
+	       $sqlRequirement='SELECT d.name,sum(ap.male_party_count) as male_party_count,sum(ap.female_party_count) as female_party_count from districts d
 						inner join assembly_constituencies ac on (ac.district_id=d.id)
 						inner join assembly_party ap on (ap.assembly_id=ac.id) and d.id="'.$this->district.'"
 						group by d.id,d.name';
-	 
-	       (array)$reportRequirement=DB::select($sqlRequirement);	
+
+	       (array)$reportRequirement=DB::select($sqlRequirement);
 	        //$arr['requirement']=$reportRequirement;
-		   
-		
-			 
+
+
+
 			foreach($reportAvailable as $report){
 			 foreach($reportRequirement as $requerment){
 			   if($requerment->name==$report->name){
@@ -116,23 +116,22 @@ class ReportController extends Controller
 					  $report->female_party=$requerment->female_party_count;
 				  }else{
 					  $report->female_party=$requerment->female_party_count;
-				  }  
+				  }
 			   }
-			  
+
 			 }
-		   } 
+		   }
 		 return response()->json($reportAvailable,200);
-	 
+
 	 }else{
-		return response()->json("Unauthorize Access",200);   
-		 
+		return response()->json("Unauthorize Access",200);
+
 	 }
-	
+
 	//print_r($arr);
-	
-     }	
-	
+
+     }
+
 
  }
 
- 
