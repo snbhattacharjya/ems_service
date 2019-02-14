@@ -152,7 +152,7 @@ Route::post('/dotransfer', 'PersonneltransferController@doTransfer');
 Route::post('/getpersonnnelforexcemption', 'ExcemptionController@SearchForExemption');
 Route::post('/doexception', 'ExcemptionController@doExcemption');
 Route::get('/remarkforexcemption', 'ExcemptionController@getRemarks');
-Route::get('/getexemptedlist', 'ExcemptionController@getExemptedList');
+
 
 //Data Sharing
 Route::post('/getsharerequiremnet', 'DatasharingController@queryForDataShare');
@@ -194,6 +194,10 @@ Route::get('/getcategorywisedistrictrequirement/{category}/{gender}', 'Datashari
 ///
 Route::post('/deleteshareinstruction', 'DatasharingController@deleteInstructForDataShare');
 Route::get('/getcontact', 'PersonnelController@getContact');
+//
+Route::get('/getExcemptedOfficeList', 'ExcemptionController@getExcemptedOfficeList');
+Route::post('/getexemptedlist', 'ExcemptionController@getExemptedList');
+
 
 });
 

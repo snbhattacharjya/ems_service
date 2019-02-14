@@ -82,7 +82,7 @@ if(!empty($personnelId)  && !empty($office_id) && ($this->level===3 || $this->le
 
          }
       public function getPPListByDistinctDesignation(Request $request){
-        if($this->level==12 ){
+        if($this->level==12 || $this->level==8 || $this->level==5 ){
          $sql='select distinct(designation),count(post_stat) as poststatcount,post_stat from personnel where district_id="'.$this->district.'" and  post_stat="'.$request->post_stat.'" and gender="M" and exempted is NULL and to_district is NULL group by designation';
          return DB::select($sql);
         }else{
@@ -90,7 +90,7 @@ if(!empty($personnelId)  && !empty($office_id) && ($this->level===3 || $this->le
         }
       }
      public function createAdhocRule(Request $request){
-    if($this->level==12 ){
+    if($this->level==12 || $this->level==8 || $this->level==5 ){
       $designation=$request->designation;
       $current_poststat=$request->current_poststat;
       $change_to_poststat=$request->change_to_poststat;
@@ -108,7 +108,7 @@ if(!empty($personnelId)  && !empty($office_id) && ($this->level===3 || $this->le
             }
      }
   public function bulkUpdateByPostStatType(Request $request){
-    if($this->level==12 ){
+    if($this->level==12 || $this->level==8 || $this->level==5 ){
     if($request->personnl_selected=='ALL' && $request->poststat_to!='' && $request->poststat_from!=''){
         $update = ['post_stat' => $request->poststat_to];
 
