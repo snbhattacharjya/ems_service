@@ -176,7 +176,7 @@ Route::get('/institutewisepp', 'Report\ReportController@instituteWisePP');
 Route::post('/mismatchreport', 'Report\ReportController@groupwiseDesignationMismatchReport');
 Route::get('/getmismatchlist/{designation}/{emp_group}','Report\ReportController@getMisMatchList');
 //
-Route::get('/revokeexcemptionbytype/{exemp_type}', 'ExcemptionController@revokeExemptionByType');
+
 Route::get('/revokepoststat/{post_stat}', 'categorization\PoststatController@revokePostStat');
 //
 Route::post('/prequeryrule', 'categorization\PoststatController@prequeryrule');
@@ -197,10 +197,12 @@ Route::get('/getcontact', 'PersonnelController@getContact');
 //
 Route::get('/getExcemptedOfficeList', 'ExcemptionController@getExcemptedOfficeList');
 Route::post('/getexemptedlist', 'ExcemptionController@getExemptedList');
-
+Route::post('/revokeexcemptionbytype', 'ExcemptionController@revokeExemptionByType');
+//
+Route::get('/getnoepic', 'Report\RemarksWiseController@getNoEpic');
 
 });
-
+Route::get('/getPolice', 'Police\GetPoliceDataFromCsv@get_data');
 
 //Route::post('/deo', 'UserController@diocreation');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');

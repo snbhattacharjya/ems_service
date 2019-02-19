@@ -47,7 +47,8 @@ class PersonnelController extends Controller
                         ->where('district_id','=',$this->district)
                         ->where('office_id' ,'=',$officeid)
                         ->Leftjoin('qualifications','qualifications.id','=','personnel.qualification_id')
-				        ->get();
+                        ->where('exempted',null)
+                        ->get();
 
     }
 

@@ -18,7 +18,7 @@ class ReportController extends Controller
                   $this->userID=auth('api')->user()->user_id;
                   $this->level=auth('api')->user()->level;
                   $this->district=auth('api')->user()->area;
-                  $this->enable=true;
+                  $this->enable=false;
                   $this->start_hh=12;
                   $this->start_mm=00;
                   $this->start_ss=00;
@@ -77,7 +77,7 @@ class ReportController extends Controller
                     $result=array();
                     $officeid=$request->officeId;
                     $result['personel']= DB::select('SELECT p.office_id,p.id as id,p.name as empname,p.designation,p.present_address,p.permanent_address,p.dob,p.gender,p.scale,
-                    p.basic_pay,p.grade_pay,p.emp_group,p.working_status,p.email,p.phone,p.mobile,p.epic,p.part_no,p.sl_no,p.post_stat,
+                    p.basic_pay,p.grade_pay,p.emp_group,p.working_status,p.email,p.phone,p.mobile,p.epic,p.part_no,p.sl_no,"" as post_stat,
                     p.branch_ifsc,p.bank_account_no,p.remark_id,p.qualification_id,p.subdivision_id,p.assembly_temp_id,p.assembly_perm_id,p.assembly_off_id
                     from  personnel p  left join offices o on p.office_id=o.id where p.office_id='.$officeid.'');
 
