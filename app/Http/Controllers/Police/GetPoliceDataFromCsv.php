@@ -15,10 +15,11 @@ class GetPoliceDataFromCsv extends Controller
          $file = fopen($file_n, "r") or die ("Nothing");
          $all_data = array();
         while(($data=fgetcsv($file,200,","))!==FALSE){
-          
-       
+         
+         $arr[]= array('District'=>$data[0],'PS'=>$data[1]);
          }
-         print_r($array);
+         echo '<pre>';
+         print_r($arr);
          fclose($file);
       
         

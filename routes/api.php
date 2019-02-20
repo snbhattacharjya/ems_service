@@ -112,7 +112,7 @@ Route::get('/officeCategoryWise_pp2', 'Report\ReportController@officeCategopryWi
 Route::get('/exportoffice', 'Export\UserExport@officeExport');
 
 //02012018
-Route::get('/poststatusWise_pp', 'Report\ReportController@officeCategopryWisePostStatus');
+
 Route::get('/macrolevel_statistics', 'Report\ReportController@macroLevelStatictis');
 Route::get('/allpoststatus', 'categorization\PoststatController@PollingPost');
 
@@ -199,12 +199,19 @@ Route::get('/getExcemptedOfficeList', 'ExcemptionController@getExcemptedOfficeLi
 Route::post('/getexemptedlist', 'ExcemptionController@getExemptedList');
 Route::post('/revokeexcemptionbytype', 'ExcemptionController@revokeExemptionByType');
 //
+Route::post('/poststatusWise_pp', 'Report\ReportController@officeCategopryWisePostStatus');
+//
 Route::get('/getnoepic', 'Report\RemarksWiseController@getNoEpic');
+//
+Route::get('/getwrongepic', 'Report\RemarksWiseController@getMatchEpic');
+///Police Module///
+
+
 
 });
-Route::get('/getPolice', 'Police\GetPoliceDataFromCsv@get_data');
+Route::get('/getPolice', 'Police\createSpCpController@autoCreate');
 
-//Route::post('/deo', 'UserController@diocreation');
+Route::post('/deo', 'UserController@diocreation');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
  // Route::get('/createpassword', 'UserController@createPassword');
 //Route::get('/passwordinsert', 'UserController@passwordInsert');

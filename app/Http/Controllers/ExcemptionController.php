@@ -185,8 +185,8 @@ class ExcemptionController extends Controller
                                     ->WhereNull('exempted')
                                     ->update($update);
                     return response()->json('Successfully Updated',201);
-   }elseif($request->mode=='remarks'){
-       if($request->reason!='' && $request->remark_personnl_selected=='ALL'){
+   }elseif($request->mode=='remark'){
+       if($request->reason!='' && $request->personnl_selected=='ALL'){
                         $update = [
                             'exempted' => 'Yes',
                             'exemp_type' => '3',
@@ -206,7 +206,7 @@ class ExcemptionController extends Controller
             'exemp_reason' => $request->reason,
             'exemp_date' => NOW(),
             ];
-    Personnel::whereIn('id',$request->remark_personnl_selected)
+    Personnel::whereIn('id',$request->personnl_selected)
                     ->where('remark_id',$request->remark_id)
                     ->where('district_id', $this->district)
                     ->update($update);

@@ -290,4 +290,16 @@ if($this->level==12 || $this->level==8 || $this->level==8){
 
  }
 
+   public function getMatchEpic(){
+    return Personnel::select('personnel.district_id as personelDistrict','personnel.id as personnelId','personnel.name as personnel','personnel.epic as epic','personnel.designation as designation',
+    'personnel.email as email','personnel.mobile as mobile','personnel.phone as phone','offices.name as office','offices.id as officeId',
+    'offices.address as officeAddress','offices.phone as officePhone','offices.post_office as officePost','offices.pin as officePin',
+    'offices.mobile as officeMobile','offices.email as officeEmail')
+                    ->leftjoin('offices','offices.id','=','personnel.office_id')
+                    ->join('personnel_epic','personnel_epic.id','=','personnel.epic')
+                    ->where('personnel.district_id',$this->district);
+       
+   }
+
+
 }

@@ -125,7 +125,7 @@ class ReportController extends Controller
 
 
      public function officeCategopryWisePPadded(){
-       if( $this->level==12 || $this->level==5){
+       if( $this->level==12 || $this->level==5 || $this->level==8){
   $arr['available']= DB::select("SELECT categories.name, COUNT(CASE WHEN personnel.gender = 'M' and exempted is NULL and to_district is NULL THEN 1 END) AS male,
         COUNT(CASE WHEN personnel.gender = 'F' and exempted is NULL and to_district is NULL THEN 1 END) AS female,
         COUNT(personnel.id) AS total
@@ -142,8 +142,8 @@ class ReportController extends Controller
 
     }
 
-    public function officeCategopryWisePostStatus(){
-      if($this->level==12 || $this->level===5){
+    public function officeCategopryWisePostStatus(Request $request){
+      if($this->level==12 || $this->level===5 || $this->level==8){
         $arr['availableMale']= DB::select("SELECT categories.name,
         COUNT(CASE WHEN personnel.post_stat = 'NA' and personnel.gender='M' and exempted is NULL and to_district is NULL  THEN 1 END) AS NA,
         COUNT(CASE WHEN personnel.post_stat = 'AEO' and personnel.gender='M' and exempted is NULL and to_district is NULL THEN 1 END) AS AEO,
@@ -171,6 +171,34 @@ class ReportController extends Controller
 
        return response()->json($arr,201);
 
+      }else if($this->level==2){
+         
+        $arr['availableMale']= DB::select("SELECT categories.name,
+        COUNT(CASE WHEN personnel.post_stat = 'NA' and personnel.gender='M' and exempted is NULL and to_district is NULL  THEN 1 END) AS NA,
+        COUNT(CASE WHEN personnel.post_stat = 'AEO' and personnel.gender='M' and exempted is NULL and to_district is NULL THEN 1 END) AS AEO,
+        COUNT(CASE WHEN personnel.post_stat = 'PR' and personnel.gender='M' and exempted is NULL and to_district is NULL THEN 1 END) AS PR,
+        COUNT(CASE WHEN personnel.post_stat = 'P1' and personnel.gender='M' and exempted is NULL and to_district is NULL THEN 1 END) AS P1,
+        COUNT(CASE WHEN personnel.post_stat = 'P2' and personnel.gender='M' and exempted is NULL and to_district is NULL THEN 1 END) AS P2,
+        COUNT(CASE WHEN personnel.post_stat = 'P3' and personnel.gender='M' and exempted is NULL and to_district is NULL THEN 1 END) AS P3,
+        COUNT(CASE WHEN personnel.post_stat = 'MO' and personnel.gender='M' and exempted is NULL and to_district is NULL THEN 1 END) AS MO
+       FROM (categories INNER JOIN offices ON categories.id = offices.category_id) INNER JOIN
+       personnel ON offices.id = personnel.office_id WHERE offices.district_id = '".$request->district."'
+       GROUP BY categories.name");
+
+      $arr['availableFemale']= DB::select("SELECT categories.name,
+      COUNT(CASE WHEN personnel.post_stat = 'NA' and personnel.gender='F' and exempted is NULL and to_district is NULL THEN 1 END) AS NA,
+      COUNT(CASE WHEN personnel.post_stat = 'AEO' and personnel.gender='F' and exempted is NULL and to_district is NULL THEN 1 END) AS AEO,
+      COUNT(CASE WHEN personnel.post_stat = 'PR' and personnel.gender='F' and exempted is NULL and to_district is NULL THEN 1 END) AS PR,
+      COUNT(CASE WHEN personnel.post_stat = 'P1' and personnel.gender='F' and exempted is NULL and to_district is NULL THEN 1 END) AS P1,
+      COUNT(CASE WHEN personnel.post_stat = 'P2' and personnel.gender='F' and exempted is NULL and to_district is NULL THEN 1 END) AS P2,
+      COUNT(CASE WHEN personnel.post_stat = 'P3' and personnel.gender='F' and exempted is NULL and to_district is NULL THEN 1 END) AS P3,
+      COUNT(CASE WHEN personnel.post_stat = 'MO' and personnel.gender='F' and exempted is NULL and to_district is NULL THEN 1 END) AS MO
+      FROM (categories INNER JOIN offices ON categories.id = offices.category_id) INNER JOIN
+      personnel ON offices.id = personnel.office_id WHERE offices.district_id = '".$request->district."'
+      GROUP BY categories.name");
+
+
+       return response()->json($arr,201);
       }else{
 
        return response()->json('Not Allowed',401);
@@ -179,7 +207,7 @@ class ReportController extends Controller
    }
 
  public function macroLevelStatictis(){
-   if($this->level==12 || $this->level===5){
+   if($this->level==12 || $this->level===5 || $this->level==8){
     $arr['available']=DB::select("SELECT personnel.post_stat, personnel.designation, qualifications.name AS qualification, remarks.name AS remarks,
     MIN(personnel.basic_pay) AS MinBasic, MAX(personnel.basic_pay) AS MaxBasic,
     MIN(personnel.grade_pay) AS MinGrade, MAX(personnel.grade_pay) AS MaxGrade,
@@ -199,7 +227,7 @@ class ReportController extends Controller
 }
 
 public function groupWisePP(){
-  if($this->level==12 || $this->level==5){
+  if($this->level==12 || $this->level==5 || $this->level==8){
   $arr['ávailable']=DB::select("SELECT distinct(categories.name),
   count(CASE WHEN personnel.gender='M' and personnel.emp_group='A' and exempted is NULL and to_district is NULL THEN 1 END) as A_M,
   count(CASE WHEN personnel.gender='M' and personnel.emp_group='B' and exempted is NULL and to_district is NULL THEN 1 END) as B_M,
@@ -217,7 +245,7 @@ public function groupWisePP(){
 }
 
 public function instituteWisePP(){
-  if($this->level==12 || $this->level==5){
+  if($this->level==12 || $this->level==5 || $this->level==8){
   $arr['ávailable']=DB::select("SELECT distinct(institutes.name),
   count(CASE WHEN personnel.gender='M' and personnel.emp_group='A' and exempted is NULL and to_district is NULL  THEN 1 END) as A_M,
   count(CASE WHEN personnel.gender='M' and personnel.emp_group='B' and exempted is NULL and to_district is NULL THEN 1 END) as B_M,
@@ -234,7 +262,7 @@ public function instituteWisePP(){
   }
 }
 public function groupwiseDesignationMismatchReport(Request $request){
-   if($this->level==12 ){
+   if($this->level==12 || $this->level==8 ){
      $sql='select distinct(designation),count(gender) as pp from personnel where district_id="'.$this->district.'" and emp_group="'.$request->group.'"  group by designation';
      return DB::select($sql);
     }else{
@@ -242,7 +270,7 @@ public function groupwiseDesignationMismatchReport(Request $request){
     }
   } 
 public function getMisMatchList(Request $request){
-  if($this->level==12 ){
+  if($this->level==12 || $this->level==8 ){
   if((!empty($request->designation)) || (!empty($request->emp_group))){
   return Personnel::where('designation',$request->designation)
    ->where('emp_group',$request->emp_group)

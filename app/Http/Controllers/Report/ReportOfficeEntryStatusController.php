@@ -69,7 +69,7 @@ class ReportOfficeEntryStatusController extends Controller
        }
 
        public function getOfficePartialEntryStatus(){
-  if($this->level==3 || $this->level==4 || $this->level==5 || $this->level==12){
+  if($this->level==3 || $this->level==4 || $this->level==5 || $this->level==12 || $this->level==8){
         $sql="select distinct(offices.id) as officeId,offices.name as officeName,
     offices.mobile,offices.total_staff as totalStuff,
     offices.identification_code as identification_code,
@@ -483,7 +483,7 @@ class ReportOfficeEntryStatusController extends Controller
         return response()->json($arr,201);
         }
         public function officeNotStartedbydistrict(Request $request){
-            if($this->level==2){
+            if($this->level==2 || $this->level==8){
 
                 $sql="select offices.id ,offices.name,offices.mobile,
                 offices.identification_code,offices.address,offices.post_office,offices.email as email,
@@ -500,7 +500,7 @@ class ReportOfficeEntryStatusController extends Controller
 
         }
     public function officeNotStarted(){
-        if($this->level==3 || $this->level==4 || $this->level==5 || $this->level==12){
+        if($this->level==3 || $this->level==4 || $this->level==5 || $this->level==12 || $this->level==8){
             $sql="select offices.id ,offices.name,offices.mobile,
             offices.identification_code,offices.address,offices.post_office,
             offices.pin,offices.subdivision_id as subdivisionId,subdivisions.name as subdivision,offices.email as email,

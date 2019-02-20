@@ -41,7 +41,9 @@ class SudivreportController extends Controller
                       SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P1_F,
                       SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P2_F,
                       SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P3_F,
-                      SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS PR_F
+                      SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS PR_F,
+					  SUM(CASE WHEN p.exempted = "Yes" and p.gender="F" THEN 1 ELSE 0  END) AS EXE_F,
+					  SUM(CASE WHEN p.exempted = "Yes" and p.gender="M" THEN 1 ELSE 0  END) AS EXE_M
 					  FROM personnel p inner join subdivisions sd on sd.id=p.subdivision_id and sd.district_id="'.$district_id.'"  group by p.subdivision_id,sd.name';
 
 		(array)$reportAvailable['available']=DB::select($sqlAvailable);
@@ -97,7 +99,9 @@ class SudivreportController extends Controller
                       SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P1_F,
                       SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P2_F,
                       SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P3_F,
-                      SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS PR_F
+                      SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS PR_F,
+					  SUM(CASE WHEN p.exempted = "Yes" and p.gender="F" THEN 1 ELSE 0  END) AS EXE_F,
+					  SUM(CASE WHEN p.exempted = "Yes" and p.gender="M" THEN 1 ELSE 0  END) AS EXE_M
 						FROM personnel p inner join subdivisions sd on sd.id=p.subdivision_id and sd.district_id="'.$this->district.'"
 					    group by p.subdivision_id,sd.name';
 
@@ -154,7 +158,9 @@ class SudivreportController extends Controller
 	  SUM(CASE WHEN p.post_stat = "P1" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P1_F,
 	  SUM(CASE WHEN p.post_stat = "P2" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P2_F,
 	  SUM(CASE WHEN p.post_stat = "P3" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL THEN 1 ELSE 0 END) AS P3_F,
-	  SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0 END) AS PR_F
+	  SUM(CASE WHEN p.post_stat = "PR" and p.gender="F" and p.exempted IS NULL and p.to_district IS NULL  THEN 1 ELSE 0 END) AS PR_F,
+	  SUM(CASE WHEN p.exempted = "Yes" and p.gender="F" THEN 1 ELSE 0  END) AS EXE_F,
+	  SUM(CASE WHEN p.exempted = "Yes" and p.gender="M" THEN 1 ELSE 0  END) AS EXE_M
 		FROM personnel p inner join subdivisions sd on sd.id=p.subdivision_id and sd.district_id="'.$this->district.'" and sd.id="'. $subdivision_id.'"
 		group by p.subdivision_id,sd.name';
 

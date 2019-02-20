@@ -11,6 +11,7 @@ use App\Permission;
 use App\Privilege;
 use App\Passwordgeneration;
 use Illuminate\Support\Facades\Auth;
+use App\District;
 class UserController extends Controller
 {
 	public function getState(){
@@ -365,36 +366,39 @@ class UserController extends Controller
 	}
 
      public function diocreation(Request $request){
-	        $AddUser=new User;
+			$district=District::where('id',$request->area)->get();
+			$type='SP';
+			
+            $AddUser=new User;
 			$user_type_code='03';
-			$AddUser->name = $request->name;
-			$AddUser->email = $request->email;
-			$AddUser->mobile = $request->mobile;
-			$AddUser->aadhaar = $request->aadhaar;
-			$AddUser->designation = $request->designation;
-			$AddUser->level =12;
-			//$AddUser->sublevel = $request->sublevel;
-			$AddUser->area = $request->area;
+			$AddUser->name = $district[0]->name.' '.$type;
+			$AddUser->email = strtolower($district[0]->name.$type.'@gmail.com');
+			$AddUser->mobile = '99999999';
+			$AddUser->designation =$district[0]->name.' '.$type;
+			$AddUser->level =13;
+			$AddUser->area = $district[0]->id;
 			$AddUser->is_active = 1;
 			$AddUser->created_at = now();
-			$AddUser->user_id = $request->user_id;
-			$pass=$request->user_id;
+			$AddUser->user_id = 'WB'.$district[0]->id.$type.'01';
+			$pass='WB'.$district[0]->id.$type.'01';
 			$AddUser->password = Hash::make($pass);
-			$AddUser->change_password =0 ;
+			$AddUser->change_password =1 ;
 			$AddUser->save();
 			$lastInsertedId=$AddUser->id; // get office id
-			if(!empty($lastInsertedId)){
 
-			$this->getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code);
+		
+			// if(!empty($lastInsertedId)){
+
+			// $this->getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code);
 			
 			
-			$arr=array('ok'=>'User Created with random Password','UserId'=>$lastInsertedId,'status'=>201);
-			}else{
-			$arr=array('ok'=>'ERROR','status'=>401);
-			}
+			// $arr=array('ok'=>'User Created with random Password','UserId'=>$lastInsertedId,'status'=>201);
+			// }else{
+			// $arr=array('ok'=>'ERROR','status'=>401);
+			// }
 
 
-		    return response()->json($arr);
+		    return response()->json($lastInsertedId);
 
            }
 	public function getDefaultMenuPermission_To_assignPermission($lastInsertedId,$user_type_code){
