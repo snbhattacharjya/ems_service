@@ -172,7 +172,7 @@ class ReportController extends Controller
        return response()->json($arr,201);
 
       }else if($this->level==2){
-         
+
         $arr['availableMale']= DB::select("SELECT categories.name,
         COUNT(CASE WHEN personnel.post_stat = 'NA' and personnel.gender='M' and exempted is NULL and to_district is NULL  THEN 1 END) AS NA,
         COUNT(CASE WHEN personnel.post_stat = 'AEO' and personnel.gender='M' and exempted is NULL and to_district is NULL THEN 1 END) AS AEO,
@@ -197,7 +197,7 @@ class ReportController extends Controller
       personnel ON offices.id = personnel.office_id WHERE offices.district_id = '".$request->district."'
       GROUP BY categories.name");
 
-
+      $arr['district']=$this->getDistrictName($request->district);
        return response()->json($arr,201);
       }else{
 
@@ -205,6 +205,10 @@ class ReportController extends Controller
       }
 
    }
+   public function getDistrictName($district){
+    $stateCode=DB::table('districts')->where('id',$district)->pluck('name');
+    return $stateCode[0];
+}
 
  public function macroLevelStatictis(){
    if($this->level==12 || $this->level===5 || $this->level==8){
@@ -268,7 +272,7 @@ public function groupwiseDesignationMismatchReport(Request $request){
     }else{
         return response()->json('Unathunticated',401);
     }
-  } 
+  }
 public function getMisMatchList(Request $request){
   if($this->level==12 || $this->level==8 ){
   if((!empty($request->designation)) || (!empty($request->emp_group))){

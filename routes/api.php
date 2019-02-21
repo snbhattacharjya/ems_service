@@ -203,15 +203,16 @@ Route::post('/poststatusWise_pp', 'Report\ReportController@officeCategopryWisePo
 //
 Route::get('/getnoepic', 'Report\RemarksWiseController@getNoEpic');
 //
-Route::get('/getwrongepic', 'Report\RemarksWiseController@getMatchEpic');
-///Police Module///
+Route::get('/getunverifiedepic', 'Report\RemarksWiseController@getUnverifiedMatchedEpic');
+Route::get('/doverifyepic', 'Report\RemarksWiseController@doVerifyEpic');
 
+Route::post('/getwrongepic', 'Report\RemarksWiseController@getWrongEpic');
 
 
 });
-Route::get('/getPolice', 'Police\createSpCpController@autoCreate');
+//Route::get('/getPolice', 'Police\createSpCpController@autoCreate');
 
-Route::post('/deo', 'UserController@diocreation');
+//Route::post('/deo', 'UserController@diocreation');
 //Route::get('/print/{report}/{officeId}', 'Report\ReportController@report');
  // Route::get('/createpassword', 'UserController@createPassword');
 //Route::get('/passwordinsert', 'UserController@passwordInsert');
