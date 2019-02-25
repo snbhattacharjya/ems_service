@@ -15,9 +15,9 @@ public function validateUser(Request $request){
  $user_id=$request->user_id;
  $password=$request->password;
  $district=$request->district;
- if($user_id=='WB14DEO'){
+ if($user_id=='WB18DEO'){
   $UserPassword=DB::table('users')->where('user_id',$user_id)->pluck('password');
-		if(Hash::check($password,$UserPassword[0])){
+	if(Hash::check($password,$UserPassword[0])){
           if(!empty($district)){
            $res=Personnel::where('district_id',$district)->get();
            return array($res,200);
@@ -34,15 +34,26 @@ public function validateUser(Request $request){
 
 public function getPersonnelData(Request $request){
 
-  return Personnel::where([
+  return Personnel::select('id','office_id','name','designation','present_address','permanent_address','dob','basic_pay','grade_pay',
+  'emp_group','email','phone','mobile','epic','assembly_constituencies.name as assembly_perm_id','block_munis.name as block_muni_perm_id',
+  'districts.name as district_id','subdivisions.name as subdivision_id','qualifications.name as qualification_id',
+  'bank_account_no','remarks.name as remark_id','languages.name as language_id','part_no','sl_no')
+  ->LeftJoin('assembly_constituencies','assembly_constituencies.id','=','personnel.assembly_perm_id') 
+  ->LeftJoin('block_munis','block_munis.id','=','personnel.block_muni_perm_id')
+  ->LeftJoin('districts','districts.id','=','personnel.district_id')
+  ->LeftJoin('subdivisions','subdivisions.id','=','personnel.subdivision_id')
+  ->LeftJoin('qualifications','qualifications.id','=','personnel.qualification_id')
+  ->LeftJoin('remarks','remarks.id','=','personnel.remark_id')
+  ->LeftJoin('languages','languages.id','=','personnel.language_id')
+  ->where([
     ['epic', $request->s],
-])
-->Orwhere([
+  ])
+  ->Orwhere([
   ['mobile', $request->s],
-])
-->Orwhere([
+   ])
+  ->Orwhere([
   ['bank_account_no', $request->s],
-])->get();
+  ])->get();
 
 
 }
