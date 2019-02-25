@@ -35,13 +35,13 @@ public function validateUser(Request $request){
 public function getPersonnelData(Request $request){
 
   return Personnel::where([
-    ['epic', $request->epic],
+    ['epic', $request->s],
 ])
 ->Orwhere([
-  ['mobile', $request->mobile],
+  ['mobile', $request->s],
 ])
 ->Orwhere([
-  ['bank_account_no', $request->bank_account_no],
+  ['bank_account_no', $request->s],
 ])->get();
 
 
