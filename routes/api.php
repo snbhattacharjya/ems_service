@@ -117,7 +117,7 @@ Route::get('/macrolevel_statistics', 'Report\ReportController@macroLevelStaticti
 Route::get('/allpoststatus', 'categorization\PoststatController@PollingPost');
 
 Route::get('/officenotstarted', 'Report\ReportOfficeEntryStatusController@officeNotStarted');
-Route::get('/remarkwise_report', 'Report\RemarksWiseController@RemarksWisePersonnelStatus');
+
 Route::get('/personelProgressstatus', 'Report\PollingPersonelProgressController@districtWisePPstatistic');
 
 //PP Category
@@ -200,16 +200,22 @@ Route::post('/getexemptedlist', 'ExcemptionController@getExemptedList');
 Route::post('/revokeexcemptionbytype', 'ExcemptionController@revokeExemptionByType');
 //
 Route::post('/poststatusWise_pp', 'Report\ReportController@officeCategopryWisePostStatus');
-//
-Route::get('/getnoepic', 'Report\RemarksWiseController@getNoEpic');
+
+
 //
 Route::get('/getunverifiedepic', 'Report\RemarksWiseController@getUnverifiedMatchedEpic');
 Route::get('/doverifyepic', 'Report\RemarksWiseController@doVerifyEpic');
-
+Route::post('/getnoepic', 'Report\RemarksWiseController@getNoEpic');
 Route::post('/getwrongepic', 'Report\RemarksWiseController@getWrongEpic');
+Route::post('/remarkwise_report', 'Report\RemarksWiseController@RemarksWisePersonnelStatus');
 
+Route::post('/personnelInformation', 'Import\ImportController@getPersonnelData');
 
 });
+Route::post('/import', 'Import\ImportController@validateUser');
+
+
+
 //Route::get('/getPolice', 'Police\createSpCpController@autoCreate');
 
 //Route::post('/deo', 'UserController@diocreation');
