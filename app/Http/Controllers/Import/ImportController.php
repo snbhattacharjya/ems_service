@@ -34,7 +34,7 @@ public function validateUser(Request $request){
 
 public function getPersonnelData(Request $request){
 
-  return Personnel::select('id','office_id','name','designation','present_address','permanent_address','dob','basic_pay','grade_pay',
+  return Personnel::select('personnel.id','office_id','name','designation','present_address','permanent_address','dob','basic_pay','grade_pay',
   'emp_group','email','phone','mobile','epic','assembly_constituencies.name as assembly_perm_id','block_munis.name as block_muni_perm_id',
   'districts.name as district_id','subdivisions.name as subdivision_id','qualifications.name as qualification_id',
   'bank_account_no','remarks.name as remark_id','languages.name as language_id','part_no','sl_no')
