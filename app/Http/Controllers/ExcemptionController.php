@@ -21,7 +21,18 @@ class ExcemptionController extends Controller
     }
 
     public function getExemptedList(Request $request){
-          if($request->mode=='office'){
+        if($request->mode=='all'){
+            $arr['excemptedList']=Personnel::select('personnel.id','personnel.office_id','personnel.dob','personnel.post_stat','personnel.gender','qualifications.name as qualification','offices.name as officename','personnel.name','personnel.designation','personnel.mobile','personnel.exempted','personnel.exemp_type','personnel.exemp_reason','personnel.exemp_date','remarks.name as remark')
+            ->leftJoin('remarks','remarks.id','=','personnel.remark_id')
+            ->leftJoin('offices','offices.id','=','personnel.office_id')
+            ->Leftjoin('qualifications','qualifications.id','=','personnel.qualification_id')
+            ->where('personnel.exempted','Yes')
+            ->where('personnel.district_id', $this->district)
+            ->get();
+            return response()->json($arr,201);
+
+        }
+        elseif($request->mode=='office'){
             $arr['excemptedList']=Personnel::select('personnel.id','personnel.office_id','personnel.dob','personnel.post_stat','personnel.gender','qualifications.name as qualification','offices.name as officename','personnel.name','personnel.designation','personnel.mobile','personnel.exempted','personnel.exemp_type','personnel.exemp_reason','personnel.exemp_date','remarks.name as remark')
             ->leftJoin('remarks','remarks.id','=','personnel.remark_id')
             ->leftJoin('offices','offices.id','=','personnel.office_id')
@@ -102,6 +113,7 @@ class ExcemptionController extends Controller
     public function SearchForExemption(Request $request){
       if($this->level===12 || $this->level===8 || $this->level===5){
               $arr=array();
+
              if($request->mode=='office'){
             $arr['count']= Personnel::where('district_id', $this->district)
                                     ->where('office_id', $request->office_id)
@@ -332,7 +344,23 @@ public function revokeExemptionByType(Request $request){
                             'exemp_reason' => NULL,
                             'exemp_date' =>NULL,
                             ];
-            if($request->mode=='office'){
+            if($request->mode=='all'){
+                                if($request->personnl_selected=='ALL'){
+
+                                    Personnel::where('office_id',$request->officeId)
+                                                    ->where('district_id', $this->district)
+                                                    ->where('exempted','Yes')
+                                                    ->update($update);
+                                    return response()->json('Successfully Updated',201);
+                                }else{
+                                     Personnel::whereIn('id',$request->personnl_selected)
+                                                ->where('district_id', $this->district)
+                                                ->where('exempted','Yes')
+                                                ->update($update);
+                                return response()->json('Successfully Updated',201);
+                                }
+            }
+            elseif($request->mode=='office'){
                         if($request->personnl_selected=='ALL'){
 
                             Personnel::where('office_id',$request->officeId)
@@ -365,14 +393,14 @@ public function revokeExemptionByType(Request $request){
 
             }elseif($request->mode=='remarks'){
 
-            if($request->remark_personnl_selected=='ALL'){
+            if($request->personnl_selected=='ALL'){
                         Personnel::where('remark_id',$request->remarkId)
                                         ->where('district_id', $this->district)
                                         ->where('exempted','Yes')
                                         ->update($update);
                         return response()->json('Successfully Updated',201);
             }else{
-                        Personnel::whereIn('id',$request->remark_personnl_selected)
+                        Personnel::whereIn('id',$request->personnl_selected)
                                     ->where('district_id', $this->district)
                                     ->where('exempted','Yes')
                                     ->update($update);

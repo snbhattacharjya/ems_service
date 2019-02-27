@@ -26,20 +26,20 @@ public function validateUser(Request $request){
            return array('Invalid Password',401);
         }
      }else{
-    
+
            return array('Invalid User Id ',401);
-    
+
     }
   }
 
 public function getPersonnelData(Request $request){
 
   return Personnel::select('personnel.id','office_id','offices.name as officename','offices.mobile as officemobile','offices.phone as officephone','offices.email as officeemail','personnel.name','designation','present_address','permanent_address','dob','basic_pay','grade_pay',
-  'emp_group','email','phone','mobile','epic','assembly_constituencies.name as assembly_perm_id','block_munis.name as block_muni_perm_id',
+  'emp_group','personnel.email','personnel.phone','personnel.mobile','epic','assembly_constituencies.name as assembly_perm_id','block_munis.name as block_muni_perm_id',
   'districts.name as district_id','subdivisions.name as subdivision_id','qualifications.name as qualification_id',
   'bank_account_no','remarks.name as remark_id','languages.name as language_id','part_no','sl_no')
-  ->LeftJoin('offices','offices.id','=','personnel.office_id') 
-  ->LeftJoin('assembly_constituencies','assembly_constituencies.id','=','personnel.assembly_perm_id') 
+  ->LeftJoin('offices','offices.id','=','personnel.office_id')
+  ->LeftJoin('assembly_constituencies','assembly_constituencies.id','=','personnel.assembly_perm_id')
   ->LeftJoin('block_munis','block_munis.id','=','personnel.block_muni_perm_id')
   ->LeftJoin('districts','districts.id','=','personnel.district_id')
   ->LeftJoin('subdivisions','subdivisions.id','=','personnel.subdivision_id')
@@ -47,13 +47,13 @@ public function getPersonnelData(Request $request){
   ->LeftJoin('remarks','remarks.id','=','personnel.remark_id')
   ->LeftJoin('languages','languages.id','=','personnel.language_id')
   ->where([
-    ['epic', $request->s],
+    ['personnel.epic', $request->s],
   ])
   ->Orwhere([
-  ['mobile', $request->s],
+  ['personnel.mobile', $request->s],
    ])
   ->Orwhere([
-  ['bank_account_no', $request->s],
+  ['personnel.bank_account_no', $request->s],
   ])->get();
 
 

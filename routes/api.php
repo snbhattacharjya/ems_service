@@ -210,7 +210,7 @@ Route::post('/getwrongepic', 'Report\RemarksWiseController@getWrongEpic');
 Route::post('/remarkwise_report', 'Report\RemarksWiseController@RemarksWisePersonnelStatus');
 
 Route::post('/personnelInformation', 'Import\ImportController@getPersonnelData');
-
+Route::get('/bankWisePersonnelReport', 'Report\bankWisePersonnelReport@bankWiseReport');
 });
 Route::post('/import', 'Import\ImportController@validateUser');
 
