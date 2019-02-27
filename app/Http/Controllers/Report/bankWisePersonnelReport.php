@@ -13,14 +13,13 @@ use Illuminate\Support\Facades\Auth;
 class bankWisePersonnelReport extends Controller
 {
     //
-
-    public function __construct()
-    {
+      public function __construct()
+        {
         if(Auth::guard('api')->check()){
         $this->userID=auth('api')->user()->user_id;
         $this->level=auth('api')->user()->level;
         $this->district=auth('api')->user()->area;
-      }
+       }
     }   
  public function bankWiseReport(){
     (array)$ifscwise_count= DB::select('select substring(personnel.branch_ifsc,1,4) as ifsc,count(personnel.id) as noofperonnel from personnel where district_id="'.$this->district.'"
